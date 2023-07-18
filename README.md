@@ -28,7 +28,7 @@ You are required to create a FastAPI application that manages city data and thei
     - `date_time`: the date and time when the temperature was recorded.
     - `temperature`: the recorded temperature.
 2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You may use an async function to fetch the temperature data.
+3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
 4. Implement the following endpoints:
     - `GET /temperatures`: Get a list of all temperature records.
     - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
