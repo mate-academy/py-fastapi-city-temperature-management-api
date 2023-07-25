@@ -1,51 +1,64 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List, Dict, Optional
+from sqlalchemy.future import engine
+from database import Base
+
 
 app = FastAPI()
 
-# Simulated database to store city data
-city_db: Dict[int, dict] = {}
+Base.metadata.create_all(bind=engine)
 
 
-class City(BaseModel):
-    id: int
-    name: str
-    additional_info: Optional[str] = None
 
+#
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
+#
+#
+# @app.post("/cities/", response_model=City)
+# def create_city(city: CityCreate, db: Session = Depends(get_db)):
+#     db_city = City(**city.model_dump())
+#     db.add(db_city)
+#     db.commit()
+#     db.refresh(db_city)
+#     return db_city
+#
+#
+# @app.get("/cities/{city_id}", response_model=City)
+# def read_city(city_id: int, db: Session = Depends(get_db)):
+#     city = db.query(City).filter(City.id == city_id).first()
+#     if city is None:
+#         raise HTTPException(status_code=404, detail="City not found")
+#     return city
+#
+#
+# @app.put("/cities/{city_id}", response_model=City)
+# def update_city(city_id: int, city: CityCreate, db: Session = Depends(get_db)):
+#     db_city = db.query(City).filter(City.id == city_id).first()
+#     if db_city is None:
+#         raise HTTPException(status_code=404, detail="City not found")
+#     for key, value in city.dict().items():
+#         setattr(db_city, key, value)
+#     db.commit()
+#     db.refresh(db_city)
+#     return db_city
+#
+#
+# @app.delete("/cities/{city_id}", response_model=City)
+# def delete_city(city_id: int, db: Session = Depends(get_db)):
+#     db_city = db.query(City).filter(City.id == city_id).first()
+#     if db_city is None:
+#         raise HTTPException(status_code=404, detail="City not found")
+#     db.delete(db_city)
+#     db.commit()
+#     return db_city
+#
+#
+# @app.get("/cities/", response_model=List[City])
+# def list_cities(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
+#     cities = db.query(City).offset(skip).limit(limit).all()
+#     return cities
 
-@app.post("/cities/", response_model=City)
-def create_city(city: City):
-    if city.id in city_db:
-        raise HTTPException(status_code=400, detail="City with this id already exists")
-    city_db[city.id] = city.model_dump()
-    return city
-
-
-@app.get("/cities/{city_id}", response_model=City)
-def read_city(city_id: int):
-    city = city_db.get(city_id)
-    if city is None:
-        raise HTTPException(status_code=404, detail="City not found")
-    return City(**city)
-
-
-@app.put("/cities/{city_id}", response_model=City)
-def update_city(city_id: int, city: City):
-    if city_id not in city_db:
-        raise HTTPException(status_code=404, detail="City not found")
-    city_db[city_id] = city.dict()
-    return City(**city_db[city_id])
-
-
-@app.delete("/cities/{city_id}", response_model=City)
-def delete_city(city_id: int):
-    city = city_db.pop(city_id, None)
-    if city is None:
-        raise HTTPException(status_code=404, detail="City not found")
-    return City(**city)
-
-
-@app.get("/cities/", response_model=List[City])
-def list_cities():
-    return [City(**city_data) for city_data in city_db.values()]
