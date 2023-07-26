@@ -1,19 +1,21 @@
-from typing import List, Optional
-from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional, Type
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from schemas import City, CityCreate
-from models import City as CityModel
 
-router = APIRouter()
+from .schemas import City, CityCreate
+from .models import City as CityModel, City
+
+
+
 
 def create_city(db: Session, city: CityCreate) -> City:
-    db_city = CityModel(**city.dict())
+    db_city = CityModel(**city.model_config())
     db.add(db_city)
     db.commit()
     db.refresh(db_city)
     return db_city
 
-def get_cities(db: Session, skip: int = 0, limit: int = 100) -> List[City]:
+def get_cities(db: Session, skip: int = 0, limit: int = 100) -> list[Type[City]]:
     return db.query(CityModel).offset(skip).limit(limit).all()
 
 def get_city(db: Session, city_id: int) -> Optional[City]:

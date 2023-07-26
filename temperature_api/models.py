@@ -1,19 +1,7 @@
-from datetime import datetime
-from typing import Optional
-
 from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey, String, Text
-
-from pydantic import BaseModel
+from sqlalchemy.orm import relationship
 
 from database import Base
-
-class City(Base):
-    __tablename__ = "cities"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    additional_info = Column(Text, nullable=True)
-
 
 
 class Temperature(Base):
@@ -23,3 +11,5 @@ class Temperature(Base):
     city_id = Column(Integer, ForeignKey("cities.id"))
     date_time = Column(DateTime)
     temperature = Column(Float)
+
+    city = relationship("City", back_populates="temperatures")

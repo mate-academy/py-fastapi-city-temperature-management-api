@@ -1,48 +1,48 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-from schemas import City, CityCreate
-from models import City as CityModel
+from dependencies import get_db
+from city_api.schemas import City, CityCreate
+from city_api.models import City as CityModel
 from sqlalchemy.exc import SQLAlchemyError
 
-router = APIRouter()
+city_router = APIRouter()
 
-# POST /cities: Create a new city
-@router.post("/cities/", response_model=City)
-def create_city(city: CityCreate, db: Session = Depends(SessionLocal)):
+
+@city_router.post("/cities/", response_model=City)
+def create_city(city: CityCreate, db: Session = Depends(get_db)):
     try:
-        db_city = CityModel(**city.dict())
+        db_city = CityModel(**city.model_dump())
         db.add(db_city)
         db.commit()
         db.refresh(db_city)
         return db_city
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Database Error")
 
-# GET /cities: Get a list of all cities
-@router.get("/cities/", response_model=List[City])
-def get_cities(skip: int = 0, limit: int = 10, db: Session = Depends(SessionLocal)):
+
+@city_router.get("/cities/", response_model=List[City])
+def get_cities(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     cities = db.query(CityModel).offset(skip).limit(limit).all()
     return cities
 
-# GET /cities/{city_id}: Get the details of a specific city
-@router.get("/cities/{city_id}", response_model=City)
-def get_city(city_id: int, db: Session = Depends(SessionLocal)):
+
+@city_router.get("/cities/{city_id}", response_model=City)
+def get_city(city_id: int, db: Session = Depends(get_db)):
     city = db.query(CityModel).filter(CityModel.id == city_id).first()
     if not city:
         raise HTTPException(status_code=404, detail="City not found")
     return city
 
-# PUT /cities/{city_id}: Update the details of a specific city (Optional)
-@router.put("/cities/{city_id}", response_model=City)
-def update_city(city_id: int, city: CityCreate, db: Session = Depends(SessionLocal)):
+
+@city_router.put("/cities/{city_id}", response_model=City)
+def update_city(city_id: int, city: CityCreate, db: Session = Depends(get_db)):
     try:
         db_city = db.query(CityModel).filter(CityModel.id == city_id).first()
         if not db_city:
             raise HTTPException(status_code=404, detail="City not found")
-        for key, value in city.dict().items():
+        for key, value in city.model_dump().items():
             setattr(db_city, key, value)
         db.commit()
         db.refresh(db_city)
@@ -51,9 +51,9 @@ def update_city(city_id: int, city: CityCreate, db: Session = Depends(SessionLoc
         db.rollback()
         raise HTTPException(status_code=500, detail="Database Error")
 
-# DELETE /cities/{city_id}: Delete a specific city
-@router.delete("/cities/{city_id}")
-def delete_city(city_id: int, db: Session = Depends(SessionLocal)):
+
+@city_router.delete("/cities/{city_id}")
+def delete_city(city_id: int, db: Session = Depends(get_db)):
     try:
         db_city = db.query(CityModel).filter(CityModel.id == city_id).first()
         if not db_city:
