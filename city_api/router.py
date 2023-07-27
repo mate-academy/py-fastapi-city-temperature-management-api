@@ -1,10 +1,12 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+
 from dependencies import get_db
 from city_api.schemas import City, CityCreate
 from city_api.models import City as CityModel
-from sqlalchemy.exc import SQLAlchemyError
+
 
 city_router = APIRouter()
 

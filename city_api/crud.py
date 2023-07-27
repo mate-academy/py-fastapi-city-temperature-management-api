@@ -2,10 +2,8 @@ from typing import Optional, Type
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from .schemas import City, CityCreate
-from .models import City as CityModel, City
-
-
+from city_api.schemas import CityCreate
+from city_api.models import City as CityModel, City
 
 
 def create_city(db: Session, city: CityCreate) -> City:
@@ -25,7 +23,7 @@ def update_city(db: Session, city_id: int, city: CityCreate) -> City:
     db_city = db.query(CityModel).filter(CityModel.id == city_id).first()
     if not db_city:
         raise HTTPException(status_code=404, detail="City not found")
-    for key, value in city.dict().items():
+    for key, value in city.model_dump().items():
         setattr(db_city, key, value)
     db.commit()
     db.refresh(db_city)
