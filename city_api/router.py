@@ -11,7 +11,7 @@ from city_api.models import City as CityModel
 city_router = APIRouter()
 
 
-@city_router.post("/cities/", response_model=City)
+@city_router.post("/cities", response_model=City)
 def create_city(city: CityCreate, db: Session = Depends(get_db)):
     try:
         db_city = CityModel(**city.model_dump())
@@ -24,7 +24,7 @@ def create_city(city: CityCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Database Error")
 
 
-@city_router.get("/cities/", response_model=List[City])
+@city_router.get("/cities", response_model=List[City])
 def get_cities(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     cities = db.query(CityModel).offset(skip).limit(limit).all()
     return cities

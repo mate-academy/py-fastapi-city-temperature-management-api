@@ -1,10 +1,12 @@
 import asyncio
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from city_api.crud import get_temperatures_by_city
 from city_api.models import City
 from temperature_api.schemas import Temperature, TemperatureCreate
 from temperature_api.models import Temperature as TemperatureModel
@@ -15,7 +17,7 @@ from dependencies import get_db
 temp_router = APIRouter()
 
 
-@temp_router.post("/temperatures/update/", response_model=List[Temperature])
+@temp_router.post("/temperatures/update", response_model=List[Temperature])
 async def update_temperatures(db: Session = Depends(get_db)):
     cities = db.query(City).all()
     temperatures_data = []
@@ -48,14 +50,27 @@ async def update_temperatures(db: Session = Depends(get_db)):
     return db_temperatures
 
 
-@temp_router.get("/temperatures/", response_model=list[Temperature])
+
+@temp_router.get("/temperatures", response_model=List[Temperature])
 def get_temperature_by_city(
-    city_id: int,
+    city_id: Optional[int] = None,
     skip: int = 0,
     limit: int = 10,
     db: Session = Depends(get_db)
-):
-    temperatures = db.query(TemperatureModel).filter(
-        TemperatureModel.city_id == city_id
-    ).offset(skip).limit(limit).all()
-    return temperatures
+) -> List[Temperature]:
+    try:
+        if city_id is not None:
+            temperatures = get_temperatures_by_city(db, city_id, skip, limit)
+            if not temperatures:
+                raise HTTPException(
+                    status_code=404, detail="City not found in the database"
+                )
+        else:
+            temperatures = (
+                db.query(TemperatureModel).offset(skip).limit(limit).all()
+            )
+        return temperatures
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=500, detail="Database error occurred"
+        ) from e
