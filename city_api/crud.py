@@ -8,7 +8,7 @@ from temperature_api.models import Temperature as TemperatureModel
 
 
 def create_city(db: Session, city: CityCreate) -> City:
-    db_city = CityModel(name=city.name, additional_info=city.additional_info)  # Create CityModel directly from attributes
+    db_city = CityModel(name=city.name, additional_info=city.additional_info)
     db.add(db_city)
     return db_city
 
