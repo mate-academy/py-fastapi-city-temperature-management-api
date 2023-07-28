@@ -21,5 +21,5 @@ async def get_weather(city_name: str) -> Any:
                 weather_data = data["current"]
                 temperature = weather_data["temp_c"]
                 return temperature
-            else:
-                raise ValueError(f"Failed to fetch temperature for {city_name} - HTTP status: {response.status}")
+
+            raise ValueError(f"Failed to fetch temperature for {city_name} - HTTP status: {response.status}")

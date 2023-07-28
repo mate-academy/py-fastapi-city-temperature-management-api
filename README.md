@@ -35,7 +35,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 ```python
-python manage.py migrate
+alembic upgrade head
 ```
 #### 6.Run server:
 ```python
