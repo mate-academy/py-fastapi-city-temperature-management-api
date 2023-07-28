@@ -1,4 +1,17 @@
+
+## How to run
+
+* clone the repository [git@github.com:avkpol/py-fastapi-city-temperature-management-api.git]()
+* create and activate virtual environment:
+* `python -m venv venv`
+* `source venv/bin/activate`
+* run `pip install requirements.txt`
+* run the server python `-m uvicorn main:app --reload `
+
+
+
 ## Task Description
+
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
 
