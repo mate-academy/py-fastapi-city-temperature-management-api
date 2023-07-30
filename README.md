@@ -1,3 +1,31 @@
+## City Temperature Management API
+FastAPI application that manages city data and their corresponding temperature data. The application have two main components (apps):
+1. A CRUD (Create, Read, Update, Delete) API for managing city data.
+2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+
+
+### How to Install and Run the Project
+1. Clone repository 
+```
+git clone https://github.com/alina-boichenko/py-fastapi-city-temperature-management-api.git
+```
+2. Create and activate virtual environment:
+```
+python -m venv venv
+venv\Scripts\activate (on Windows)
+source venv/bin/activate (on macOS)
+pip install -r requirements.txt
+```
+3. Register on https://www.weatherapi.com and get API_KEY.
+Create a .env file and write the API_KEY as specified in the .sample.env file.
+4. Run the server python 
+```
+uvicorn main:app --reload
+```
+
+
+
+
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
