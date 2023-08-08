@@ -28,7 +28,7 @@ async def update_temperatures(db: Session, city: models.City):
         db.refresh(db_temperature)
 
 
-def get_temperatures(db: Session, city_id: int = None):
+def get_temperatures(db: Session, city_id: int = None) -> list[models.Temperature]:
     query = db.query(models.Temperature)
     if city_id:
         query = query.filter(city_id == models.Temperature.city_id)

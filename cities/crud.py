@@ -9,7 +9,7 @@ def get_cities(db: Session, skip: int = 0, limit: int = 10) -> list[models.City]
     return db.query(models.City).offset(skip).limit(limit).all()
 
 
-def create_city(db: Session, city: schemas.CityCreate):
+def create_city(db: Session, city: schemas.CityCreate) -> models.City:
     db_city = models.City(**city.model_dump())
     db.add(db_city)
     db.commit()
@@ -17,7 +17,11 @@ def create_city(db: Session, city: schemas.CityCreate):
     return db_city
 
 
-def delete_city(db: Session, city_id: int):
+def get_city_by_id(db: Session, city_id: int) -> models.City:
+    return db.query(models.City).filter(models.City.id == city_id).first()
+
+
+def delete_city(db: Session, city_id: int) -> str:
     db_city = db.query(models.City).filter(models.City.id == city_id).first()
 
     if db_city is None:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Dependsgi
 from sqlalchemy.orm import Session
 
 import models
@@ -9,18 +9,19 @@ router = APIRouter()
 
 
 @router.get("/temperatures/")
-def read_temperatures(db: Session = Depends(get_db)):
+def read_temperatures(db: Session = Depends(get_db)) -> list[models.Temperature]:
     return crud.get_temperatures(db)
 
 
 @router.get("/temperatures/{city_id}/")
-def read_temperature_for_city(city_id: int, db: Session = Depends(get_db)):
-    db_temperature = crud.get_temperatures(db, city_id=city_id)
-    return db_temperature
+def read_temperature_for_city(
+        city_id: int, db: Session = Depends(get_db)
+) -> list[models.Temperature]:
+    return crud.get_temperatures(db, city_id=city_id)
 
 
 @router.post("/temperatures/update/")
-async def update_temperature(db: Session = Depends(get_db)):
+async def update_temperature(db: Session = Depends(get_db)) -> dict:
     for city in db.query(models.City).all():
         try:
             await crud.update_temperatures(db=db, city=city)
