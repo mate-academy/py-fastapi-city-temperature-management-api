@@ -17,7 +17,7 @@ def create_city(db: Session, city: schemas.CityCreate) -> models.City:
     return db_city
 
 
-def get_city_by_id(db: Session, city_id: int) -> models.City:
+def get_city_by_id(db: Session, city_id: int) -> models.City | None:
     return db.query(models.City).filter(models.City.id == city_id).first()
 
 
