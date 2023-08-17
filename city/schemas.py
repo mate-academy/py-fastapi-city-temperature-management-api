@@ -10,12 +10,5 @@ class CityCreate(CityBase):
     pass
 
 
-class CityDelete(BaseModel):
-    id: int
-
-
 class City(CityBase):
     id: int
-
-    class Config:
-        orm_mode = True
