@@ -1,3 +1,5 @@
+from typing import Dict, Any
+
 from sqlalchemy import select, insert, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -34,7 +36,7 @@ async def create_city(db: AsyncSession, city: schemas.CityCreate):
 
 async def update_city(
     db: AsyncSession, city_id: int, city: schemas.CityCreate
-):
+) -> Dict[str, Any]:
     query = (
         update(models.DBCity)
         .where(models.DBCity.id == city_id)
@@ -45,7 +47,15 @@ async def update_city(
     )
     result = await db.execute(query)
     await db.commit()
-    return result.rowcount > 0
+
+    if result.rowcount > 0:
+        updated_city = {
+            "id": city_id,
+            **city.model_dump(),  # Convert CityCreate to dictionary
+        }
+        return updated_city
+    else:
+        return {}
 
 
 async def delete_city(db: AsyncSession, city_id: int):

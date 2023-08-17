@@ -10,5 +10,9 @@ class CityCreate(CityBase):
     pass
 
 
+class CityDelete(CityBase):
+    id: int
+
+
 class City(CityBase):
     id: int

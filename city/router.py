@@ -38,9 +38,11 @@ async def update_city(
     return await crud.update_city(db=db, city_id=city_id, city=city)
 
 
-@router.delete("/cities/{city_id}", response_model=schemas.City)
-async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
-    deleted = await delete_city(db=db, city_id=city_id)
+@router.delete("/cities/{city_id}", response_model=schemas.CityDelete)
+async def delete_city_handler(
+    city_id: int, db: AsyncSession = Depends(get_db)
+):
+    deleted = await crud.delete_city(db=db, city_id=city_id)
     if not deleted:
         raise CITY_NOT_FOUND
-    return {"id": city_id}
+    return {"City deleted": city_id}

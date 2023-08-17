@@ -10,14 +10,14 @@ router = APIRouter()
 
 #
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-async def read_cities(
+async def read_temperatures(
     db: AsyncSession = Depends(get_db), city_id: int | None = None
 ):
     return await crud.get_all_temperatures(db=db, city_id=city_id)
 
 
 @router.post("/temperatures/", response_model=schemas.Temperature)
-async def create_city(
+async def create_temperature(
     temperature: schemas.TemperatureCreate, db: AsyncSession = Depends(get_db)
 ):
     return await crud.create_temperature(db=db, temperature=temperature)
