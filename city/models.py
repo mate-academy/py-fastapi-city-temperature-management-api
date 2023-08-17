@@ -14,4 +14,3 @@ class DBCity(Base):
     )
     name = Column(String(255), nullable=False)
     additional_info = Column(String(511), nullable=True)
-    temperatures = relationship("DBTemperature", back_populates="city")
