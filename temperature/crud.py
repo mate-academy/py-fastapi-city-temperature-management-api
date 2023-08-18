@@ -18,7 +18,7 @@ async def get_all_temperatures(db: AsyncSession, city_id: int | None = None):
 
     temperature_list = await db.execute(query)
 
-    return [temperature[0] for temperature in temperature_list.fetchall()]
+    return [temperature for temperature in temperature_list.scalars()]
 
 
 async def get_weather(city_name: str, api_key: str) -> dict:
