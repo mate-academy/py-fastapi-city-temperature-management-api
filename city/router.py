@@ -45,4 +45,4 @@ async def delete_city_handler(
     deleted = await crud.delete_city(db=db, city_id=city_id)
     if not deleted:
         raise CITY_NOT_FOUND
-    return {"City deleted": city_id}
+    return {"id": city_id}
