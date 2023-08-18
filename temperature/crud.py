@@ -1,6 +1,8 @@
-from sqlalchemy import select, insert, delete, update
+from fastapi import HTTPException, status
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from city import models as city_models
 from temperature import models, schemas
 
 
@@ -18,7 +20,17 @@ async def get_all_temperatures(db: AsyncSession, city_id: int | None = None):
 async def create_temperature(
     db: AsyncSession, temperature: schemas.TemperatureCreate
 ):
-    query = insert(models.DBCity).values(
+    city_query = select(city_models.DBCity).where(
+        city_models.DBCity.id == temperature.city_id
+    )
+    result = await db.execute(city_query)
+    existing_city = result.fetchone()
+
+    if not existing_city:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="City not found"
+        )
+    query = insert(models.DBTemperature).values(
         city_id=temperature.city_id,
         date_time=temperature.date_time,
         temperature=temperature.temperature,

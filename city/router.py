@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
@@ -7,10 +7,11 @@ from city import crud, schemas
 
 router = APIRouter()
 
-CITY_NOT_FOUND = HTTPException(status_code=404, detail="City not found")
+CITY_NOT_FOUND = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND, detail="City not found"
+)
 
 
-#
 @router.get("/cities/", response_model=list[schemas.City])
 async def read_cities(db: AsyncSession = Depends(get_db)):
     return await crud.get_all_cities(db=db)
