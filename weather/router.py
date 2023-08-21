@@ -8,7 +8,6 @@ from dependencies import get_db
 from settings import settings
 from weather import schemas, crud
 
-
 router = APIRouter()
 WEATHER_API = (
     f"https://api.weatherapi.com/v1/current.json?key={settings.WEATHER_API_KEY}"
@@ -16,7 +15,9 @@ WEATHER_API = (
 
 
 @router.post("/cities/", response_model=schemas.City)
-def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
+def create_city(
+    city: schemas.CityCreate, db: Session = Depends(get_db)
+) -> schemas.City:
     db_city = crud.get_city_by_name(db=db, city_name=city.name)
 
     if db_city:
@@ -26,12 +27,12 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/cities/", response_model=list[schemas.City])
-def read_cities(db: Session = Depends(get_db)):
+def read_cities(db: Session = Depends(get_db)) -> list[schemas.City]:
     return crud.get_all_cities(db)
 
 
 @router.get("/cities/{city_id}", response_model=schemas.City)
-def read_single_city(city_id: int, db: Session = Depends(get_db)):
+def read_single_city(city_id: int, db: Session = Depends(get_db)) -> schemas.City:
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
     if db_city is None:
@@ -50,7 +51,7 @@ def update_city(
 
 
 @router.delete("/cities/{city_id}")
-def delete_city(city_id: int, db: Session = Depends(get_db)):
+def delete_city(city_id: int, db: Session = Depends(get_db)) -> dict:
     db_city = read_single_city(db=db, city_id=city_id)
 
     crud.delete_city(db=db, city_id=city_id)
@@ -58,12 +59,14 @@ def delete_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-def read_temperatures(db: Session = Depends(get_db)):
+def read_temperatures(db: Session = Depends(get_db)) -> list[schemas.Temperature]:
     return crud.get_all_temperatures(db)
 
 
 @router.get("/temperatures/{city_id}", response_model=schemas.Temperature)
-def read_temperature_by_city(city_id: int, db: Session = Depends(get_db)):
+def read_temperature_by_city(
+    city_id: int, db: Session = Depends(get_db)
+) -> schemas.Temperature:
     db_temperature = crud.get_temperature_by_city_id(db=db, city_id=city_id)
 
     if db_temperature is None:
@@ -73,7 +76,7 @@ def read_temperature_by_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/temperatures/update")
-async def create_temperatures(db: Session = Depends(get_db)):
+async def create_temperatures(db: Session = Depends(get_db)) -> None:
     cities = read_cities(db=db)
     for city in cities:
         weather_api = WEATHER_API + f"&q={city.name}&aqi=no"
