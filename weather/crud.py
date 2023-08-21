@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
 from weather import schemas, models
@@ -19,6 +21,10 @@ def get_city_by_id(db: Session, city_id: int):
     return db.query(models.City).filter(models.City.id == city_id).first()
 
 
+def get_city_by_name(db: Session, city_name: str):
+    return db.query(models.City).filter(models.City.name == city_name).first()
+
+
 def update_city(db: Session, city_id: int, city: schemas.CityCreate):
     db_city = db.query(models.City).filter(models.City.id == city_id).first()
 
@@ -38,8 +44,12 @@ def delete_city(db: Session, city_id: int):
     return {"message": "City deleted successfully."}
 
 
-def create_temperature(db: Session, temperature: schemas.TemperatureCreate):
-    db_temperature = models.Temperature(**temperature.model_dump())
+def create_temperature(
+    db: Session, city_id: int, date_time: datetime, temperature: float
+):
+    db_temperature = models.Temperature(
+        city_id=city_id, date_time=date_time, temperature=temperature
+    )
     db.add(db_temperature)
     db.commit()
     db.refresh(db_temperature)
