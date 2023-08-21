@@ -5,11 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from cities import models, schemas
 
 
-async def get_all_cities(db: AsyncSession) -> list[models.City] | None:
-    """Get all cities from database."""
-    query = select(models.City)
-    cities = await db.execute(query)
-    return [city[0] for city in cities.fetchall()] if cities else None
+async def get_all_cities(db: AsyncSession) -> list[models.City]:
+    """Get all cities from the database using SQLAlchemy querying."""
+    cities = await db.execute(select(models.City))
+    return cities.scalars().all() if cities else []
 
 
 async def get_city_detail(
