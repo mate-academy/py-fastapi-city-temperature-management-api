@@ -10,7 +10,6 @@ app.include_router(temperature_routers.router)
 # alembic revision --autogenerate -m "first migrations"
 # alembic upgrade head
 
-# source venv/Scripts/activate
 # uvicorn main:app --reload
 
 
