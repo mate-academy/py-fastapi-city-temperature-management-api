@@ -8,7 +8,7 @@ from cities import models, schemas
 async def get_all_cities(db: AsyncSession) -> list[models.City]:
     """Get all cities from the database using SQLAlchemy querying."""
     cities = await db.execute(select(models.City))
-    return cities.scalars().all() if cities else []
+    return cities.scalars().all()
 
 
 async def get_city_detail(
@@ -73,8 +73,6 @@ async def update_city(
 
     if result.rowcount:
         return await get_city_detail(db, city_id)
-
-    return None
 
 
 async def delete_city(db: AsyncSession, city_id: int) -> str:
