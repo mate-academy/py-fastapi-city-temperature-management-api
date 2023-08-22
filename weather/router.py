@@ -45,17 +45,12 @@ def read_single_city(city_id: int, db: Session = Depends(get_db)) -> schemas.Cit
 def update_city(
     city_id: int, city: schemas.CityCreate, db: Session = Depends(get_db)
 ) -> schemas.City:
-    db_city = read_single_city(db=db, city_id=city_id)
-
     return crud.update_city(db=db, city_id=city_id, city=city)
 
 
 @router.delete("/cities/{city_id}")
 def delete_city(city_id: int, db: Session = Depends(get_db)) -> dict:
-    db_city = read_single_city(db=db, city_id=city_id)
-
-    crud.delete_city(db=db, city_id=city_id)
-    return {"message": f"{db_city.name} deleted successfully."}
+    return crud.delete_city(db=db, city_id=city_id)
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
