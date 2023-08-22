@@ -17,11 +17,11 @@ def get_all_cities(db: Session) -> list[models.City]:
     return db.query(models.City).all()
 
 
-def get_city_by_id(db: Session, city_id: int) -> models.City:
+def get_city_by_id(db: Session, city_id: int) -> models.City | None:
     return db.query(models.City).filter(models.City.id == city_id).first()
 
 
-def get_city_by_name(db: Session, city_name: str) -> models.City:
+def get_city_by_name(db: Session, city_name: str) -> models.City | None:
     return db.query(models.City).filter(models.City.name == city_name).first()
 
 
@@ -36,8 +36,6 @@ def update_city(
         db.commit()
         db.refresh(db_city)
         return db_city
-
-    return None
 
 
 def delete_city(db: Session, city_id: int) -> dict:
@@ -62,7 +60,7 @@ def get_all_temperatures(db: Session) -> list[models.Temperature]:
     return db.query(models.Temperature).all()
 
 
-def get_temperature_by_city_id(db: Session, city_id: int) -> models.Temperature:
+def get_temperature_by_city_id(db: Session, city_id: int) -> models.Temperature | None:
     return (
         db.query(models.Temperature)
         .filter(models.Temperature.city_id == city_id)
