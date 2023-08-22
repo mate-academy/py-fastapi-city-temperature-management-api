@@ -9,7 +9,7 @@ from city.models import City
 async def get_all_cites(db: AsyncSession):
     query = select(City)
     city_list = await db.execute(query)
-    return [city[0] for city in city_list.fetchall()]
+    return [city for city in city_list.scalars()]
 
 
 async def get_city_by_id(db: AsyncSession, city_id: int):
