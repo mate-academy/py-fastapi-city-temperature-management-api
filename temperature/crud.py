@@ -52,7 +52,6 @@ async def get_temperature_by_city_id(
         db: AsyncSession,
         city_id: int
 ) -> schemas.Temperature:
-    print(city_id)
     query = select(models.Temperature).where(
         models.Temperature.city_id == city_id
     )
