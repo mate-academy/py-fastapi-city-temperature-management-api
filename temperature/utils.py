@@ -73,7 +73,6 @@ def generate_main_message(invalid_cities, valid_cities) -> str:
         message += valid_message
 
     if invalid_cities:
-        invalid_message = (f"Could not update temperatures for the "
-                           f"following cities: {', '.join(invalid_cities)}")
+        invalid_message = generate_invalid_message(invalid_cities)
         message += invalid_message
     return message
