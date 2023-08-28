@@ -1,9 +1,11 @@
 ## Task Description
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+You are required to create a FastAPI application that manages city data and their corresponding temperature data. The
+application will have two main components (apps):
 
 1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+2. An API that fetches current temperature data for all cities in the database and stores this data in the database.
+   This API should also provide a list endpoint to retrieve the history of all temperature data.
 
 ### Part 1: City CRUD API
 
@@ -28,7 +30,9 @@ You are required to create a FastAPI application that manages city data and thei
     - `date_time`: the date and time when the temperature was recorded.
     - `temperature`: the recorded temperature.
 2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
+3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database
+   from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function
+   to fetch the temperature data.
 4. Implement the following endpoints:
     - `GET /temperatures`: Get a list of all temperature records.
     - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
