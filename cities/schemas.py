@@ -20,7 +20,3 @@ class CityCreate(CityBase):
 class CityUpdate(CityBase):
     name: str
     additional_info: str
-
-
-class CityDelete(CityBase):
-    id: int
