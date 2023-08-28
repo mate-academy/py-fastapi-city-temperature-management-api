@@ -1,15 +1,9 @@
 import json
 from datetime import datetime
 
-import httpx
-from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-
 import os
 from dotenv import load_dotenv
 
-from city.models import DBCity
 
 load_dotenv()
 

@@ -10,4 +10,4 @@ app.include_router(temperature_router.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello World"}
+    return {"message": "This is City Temperature Management API"}

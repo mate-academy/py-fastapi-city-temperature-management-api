@@ -1,9 +1,6 @@
-import asyncio
+from fastapi import APIRouter
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from dependencies import get_db, Pagination, DB
+from dependencies import Pagination, DB
 
 from temperature import schemas, crud
 

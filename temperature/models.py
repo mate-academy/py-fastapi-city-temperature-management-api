@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from sqlalchemy import Column, Integer, DateTime, Float, ForeignKey, desc
+from sqlalchemy import Column, Integer, DateTime, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
 from city.models import DBCity
