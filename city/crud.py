@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import models, schemas
@@ -17,11 +17,8 @@ async def get_city(db: AsyncSession, city_id: int):
 
 
 async def create_city(db: AsyncSession, city: schemas.CityCreate):
-    db_city = models.City(**city.model_dump())
-    db.add(db_city)
-    await db.commit()
-    await db.refresh(db_city)
-    return db_city
+    query = insert(models.City).values(**city.model_dump())
+    return await db.execute(query)
 
 
 async def update_city(
