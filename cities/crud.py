@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 
-from models import CityDB
-from schemas import CityCreate, CityUpdate
+from cities.models import CityDB
+from cities.schemas import CityCreate, CityUpdate
 
 
 def create_city(db: Session, city: CityCreate):
     db_city = CityDB(
         name=city.name,
-        additional_info=city.bio,
+        additional_info=city.additional_info,
     )
     db.add(db_city)
     db.commit()
@@ -38,3 +38,7 @@ def delete_city(db: Session, city: CityDB):
 
 def get_city_by_id(db: Session, city_id: int):
     return db.query(CityDB).filter(CityDB.id == city_id).first()
+
+
+def get_city_by_name(db: Session, name: str):
+    return db.query(CityDB).filter(CityDB.name == name).first()

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from models import TemperatureDB
-from schemas import TemperatureCreate
+from temperatures.models import TemperatureDB
+from temperatures.schemas import TemperatureCreate
 
 
 def create_temperature(db: Session, temperature: TemperatureCreate):
