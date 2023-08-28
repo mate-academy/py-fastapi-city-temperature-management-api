@@ -1,60 +1,75 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This is a FastAPI-based API for managing city temperatures.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Table of Contents
 
-### Part 1: City CRUD API
+- [Description](#description)
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Endpoints](#endpoints)
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Description
 
-### Part 2: Temperature API
+The City Temperature Management API provides endpoints to manage city temperature data. It uses FastAPI for its backend and SQLAlchemy for interacting with the database.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Features
 
-### Additional Requirements
+- Add cities you want
+- Retrieve a list of city temperatures
+- Update city temperatures
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Requirements
 
-## Evaluation Criteria
+- Python >= 3.7
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
 
-Your task will be evaluated based on the following criteria:
+## Installation
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+1. Clone this repository:
+    ```bash
+   git clone https://github.com/your-username/your-project.git
+2. Create a virtual environment and activate it:
+    ```
+   python -m venv venv
+    ```
+    - On Windows:
+    ```
+    venv/scripts/activate
+    ```
+    - On MacOS:
+    ```
+    source venv/bin/activate
+    ```
+3. Install dependencies:
+    ```
+    pip install -r requirements.txt
+    ```
+4. Set up your environment variables. Create a .env file in the root directory and add your environment variables following .env.example
 
-## Deliverables
+5. Run the FastAPI development server:
+   ```
+   uvicorn main:app --reload
+   ```
 
-Please submit the following:
+##   Usage
+Open your browser and go to http://127.0.0.1:8000/docs to access the interactive API documentation.
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+You can test the various endpoints using the Swagger UI or the ReDoc documentation.
 
-Good luck!
+## Endpoints
+### Cities:
+- GET /api/v1/cities/: Get a list of cities and their temperatures.
+- POST /api/v1/cities/: Create new city instance.
+- GET /api/v1/cities/{city_id}/: Get detail page for city.
+- PUT /api/v1/cities/{city_id}/: Update the temperature data of a specific city.
+- DELETE /api/v1/cities/{city_id}/: Delete chosen city.
+### Temperature:
+- GET /api/v1/temperatures/: Get list of updated temperatures of cities in DB.
+- POST /api/v1/temperatures/update/: Update temperatures for all cities in DB
+
+## Code design
+To improve performance of app all IO bound operations made asynchrony.To create asynchrony engine for DB function do_run_migrations created and run_migrations_online function rewrote.
