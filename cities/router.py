@@ -29,6 +29,11 @@ def read_cities(
 
 @router.get("/cities/{city_id}/", response_model=schemas.City)
 def read_city(city_id: int, db: Session = Depends(get_db)):
+    db_city = crud.get_city_by_id(db=db, city_id=city_id)
+
+    if not db_city:
+        raise HTTPException(status_code=404, detail="Such city not found")
+
     return crud.get_city_by_id(db=db, city_id=city_id)
 
 
@@ -38,7 +43,7 @@ def update_city(
     city_update: schemas.CityUpdate,
     db: Session = Depends(get_db),
 ):
-    db_city = crud.get_city_by_name(db=db, name=city_update.name)
+    db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
     if not db_city:
         raise HTTPException(status_code=404, detail="Such city not found")
