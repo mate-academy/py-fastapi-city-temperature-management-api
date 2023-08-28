@@ -13,9 +13,21 @@ async def create_temperature(
     return await db.execute(query)
 
 
-async def get_temperatures(db: AsyncSession, city_id: int = None):
-    query = select(models.Temperature).options(
+async def get_temperatures(
+        db: AsyncSession,
+        skip: int = 0,
+        limit: int = 10,
+        city_id: int = None
+
+):
+    query = select(
+        models.Temperature
+    ).options(
         selectinload(models.Temperature.city)
+    ).offset(
+        skip
+    ).limit(
+        limit
     )
     if city_id is not None:
         query = query.where(models.Temperature.city_id == city_id)

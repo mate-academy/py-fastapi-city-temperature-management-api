@@ -14,9 +14,17 @@ router = APIRouter()
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
 async def read_all_temperatures(
-    db: AsyncSession = Depends(get_db), city_id: int = None
+    db: AsyncSession = Depends(get_db),
+        city_id: int = None,
+        skip: int = 0,
+        limit: int = 10
 ):
-    return await crud.get_temperatures(db=db, city_id=city_id)
+    return await crud.get_temperatures(
+        db=db,
+        city_id=city_id,
+        skip=skip,
+        limit=limit
+    )
 
 
 @router.post("/temperatures/update/")

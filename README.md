@@ -4,7 +4,7 @@ Project for managing cities(CRUD), getting and updating temperature records for 
 
 
 ## Installation
-- Python 3.7+ must be installed (3.11 prefer)
+- Python 3.7+ must be installed (3.9+ prefer)
 - Clone this repo on your PC
 - Sign up on https://www.weatherapi.com/ and get API_KEY
 
