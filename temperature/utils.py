@@ -33,4 +33,3 @@ async def get_temperature_from_api(city_name: str,
     last_updated = datetime.strptime(last_updated, "%Y-%m-%d %H:%M")
 
     return temp_celsius, last_updated
-
