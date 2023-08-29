@@ -15,7 +15,7 @@ def get_city(db: Session, city_id: int) -> Optional[DBCity]:
     return db.query(DBCity).filter(DBCity.id == city_id).first()
 
 
-def create_city(db: Session, city: CityCreate):
+def create_city(db: Session, city: CityCreate) -> DBCity:
     db_create_city = DBCity(
         name=city.name,
         additional_info=city.additional_info,
@@ -52,5 +52,5 @@ def delete_city(db: Session, city_id: int) -> DBCity:
 def get_temperatures_by_city(
     db: Session,
     city_id: int,
-):
+) -> List[DBTemperature]:
     return db.query(DBTemperature).filter(DBTemperature.city_id == city_id).all()

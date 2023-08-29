@@ -11,12 +11,12 @@ from dependencies import get_db
 router = APIRouter()
 
 
-@router.get("/cities", response_model=List[City])
+@router.get("/cities/", response_model=List[City])
 def get_cities(db: Session = Depends(get_db)):
     return get_all_cities(db=db)
 
 
-@router.post("/cities", response_model=City)
+@router.post("/cities/", response_model=City)
 def create_new_city(city: CityCreate, db: Session = Depends(get_db)):
     return create_city(db=db, city=city)
 
