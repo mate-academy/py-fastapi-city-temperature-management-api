@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from cities.crud import read_all_cities
 from temperatures.models import TemperatureDB
 from temperatures.schemas import TemperatureCreate
-from temperatures.utils import get_temperature
+from utils import get_temperature
 
 
 def create_temperature(db: Session, temperature: TemperatureCreate):
