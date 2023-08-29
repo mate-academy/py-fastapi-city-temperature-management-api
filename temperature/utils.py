@@ -48,5 +48,3 @@ async def update_temperatures(db: AsyncSession):
                 temperature=temp_c
             ))
     await db.commit()
-
-    return {"message": "Temperature data updated for all cities"}
