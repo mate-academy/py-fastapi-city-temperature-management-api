@@ -1,3 +1,4 @@
+aiosqlite==0.19.0
 alembic==1.11.3
 annotated-types==0.5.0
 anyio==3.7.1
