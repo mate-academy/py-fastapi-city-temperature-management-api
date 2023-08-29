@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
-from temperature import schemas, utils, crud as temperature_crud
+from temperature import schemas, crud as temperature_crud
 
 router = APIRouter()
 
@@ -21,5 +21,5 @@ async def read_all_temperatures(
 
 @router.post("/temperatures/update/", response_model=None)
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
-    await utils.update_temperatures(db=db)
+    await temperature_crud.update_temperatures(db=db)
     return {"message": "Temperatures updated for all cities"}
