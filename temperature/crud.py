@@ -11,7 +11,10 @@ async def list_temperatures(db: AsyncSession):
 
 
 async def retrieve_temperature(db: AsyncSession, city_id: int):
-    query = select(models.Temperature).where(models.Temperature.city_id == city_id)
+    query = (
+        select(models.Temperature)
+        .where(models.Temperature.city_id == city_id)
+    )
     temperature = await db.execute(query)
     return [temperature[0] for temperature in temperature.fetchall()]
 

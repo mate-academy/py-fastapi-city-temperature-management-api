@@ -1,7 +1,6 @@
 import asyncio
-from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
@@ -14,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-async def get_temperatures(city_id: int|None = None, db: AsyncSession = Depends(get_db)):
+async def get_temperatures(db: AsyncSession = Depends(get_db)):
     return await crud.list_temperatures(
         db=db,
     )
