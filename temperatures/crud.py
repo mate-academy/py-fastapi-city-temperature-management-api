@@ -1,7 +1,11 @@
+from datetime import datetime
+
 from sqlalchemy.orm import Session
 
+from cities.crud import read_all_cities
 from temperatures.models import TemperatureDB
 from temperatures.schemas import TemperatureCreate
+from temperatures.utils import get_temperature
 
 
 def create_temperature(db: Session, temperature: TemperatureCreate):
@@ -26,3 +30,23 @@ def read_all_temperatures(
         queryset = queryset.filter(TemperatureDB.city_id == city_id)
 
     return queryset.offset(skip).limit(limit).all()
+
+
+def update_all_city_temperatures(db: Session):
+    cities = read_all_cities(db=db)
+    updated_temperatures = []
+
+    for city in cities:
+        print(f"Updated temperature in {city.name}")
+
+        temperature_data = {
+            "city_id": city.id,
+            "date_time": datetime.now(),
+            "temperature": get_temperature(city=city.name),
+        }
+        temperature = TemperatureCreate(**temperature_data)
+        updated_temperatures.append(
+            create_temperature(db=db, temperature=temperature)
+        )
+
+    return updated_temperatures
