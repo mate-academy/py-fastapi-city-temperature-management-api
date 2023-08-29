@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from settings import settings
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
-# SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./city_temperature_catalog.db"
 
 engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
