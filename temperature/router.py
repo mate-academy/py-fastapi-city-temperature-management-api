@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends
-
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
 from temperature import schemas, utils, crud as temperature_crud
@@ -9,17 +8,21 @@ router = APIRouter()
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-def read_all_temperatures(
-    db: Session = Depends(get_db),
+async def read_all_temperatures(
+    db: AsyncSession = Depends(get_db),
         city_id: int = None,
+        skip: int = 0,
+        limit: int = 10,
 ):
-    return temperature_crud.get_temperatures(
+    return await temperature_crud.get_temperatures(
         db=db,
         city_id=city_id,
+        skip=skip,
+        limit=limit
     )
 
 
 @router.post("/temperatures/update/", response_model=None)
-def update_temperatures(db: Session = Depends(get_db)):
+async def update_temperatures(db: AsyncSession = Depends(get_db)):
 
-    return utils.update_temperatures(db=db)
+    return await utils.update_temperatures(db=db)

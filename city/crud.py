@@ -1,45 +1,43 @@
-# POST /cities: Create a new city.
-# GET /cities: Get a list of all cities.
-# Optional: GET /cities/{city_id}: Get the details of a specific city.
-# Optional: PUT /cities/{city_id}: Update the details of a specific city.
-# DELETE /cities/{city_id}: Delete a specific city.
-
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from city import models, schemas
+from city.models import DBCity
 
 
-def get_all_cities(db: Session):
-    return db.query(models.DBCity).all()
+async def get_all_cities(db: AsyncSession, skip: int = 0, limit: int = 10):
+    query = select(DBCity).offset(skip).limit(limit)
+    cities = await db.execute(query)
+    return cities.scalars().all()
 
 
-def get_city(db: Session, city_id: int) -> list[schemas.City]:
-    return db.query(models.DBCity).filter(
-        models.DBCity.id == city_id
-    ).first()
+async def get_city(db: AsyncSession, city_id: int):
+    query = select(DBCity).filter(DBCity.id == city_id)
+    city = await db.execute(query)
+    return city.scalar_one_or_none()
 
 
-def create_city(db: Session, city: schemas.CityCreate):
+async def create_city(db: AsyncSession, city: schemas.CityCreate):
     db_city = models.DBCity(**city.model_dump())
     db.add(db_city)
-    db.commit()
-    db.refresh(db_city)
+    await db.commit()
+    await db.refresh(db_city)
     return db_city
 
 
-def update_city(db: Session, city_id: int, city_update: schemas.CityUpdate):
-    db_city = get_city(db=db, city_id=city_id)
+async def update_city(db: AsyncSession, city_id: int, city_update: schemas.CityUpdate):
+    db_city = await get_city(db=db, city_id=city_id)
     if db_city:
         for key, value in city_update.model_dump().items():
             setattr(db_city, key, value)
-        db.commit()
-        db.refresh(db_city)
+        await db.commit()
+        await db.refresh(db_city)
     return db_city
 
 
-def delete_city(db: Session, city_id: int):
-    db_city = get_city(db=db, city_id=city_id)
+async def delete_city(db: AsyncSession, city_id: int):
+    db_city = await get_city(db=db, city_id=city_id)
     if db_city:
-        db.delete(db_city)
-        db.commit()
+        await db.delete(db_city)
+        await db.commit()
     return db_city
