@@ -7,6 +7,8 @@ from city import schemas, crud
 
 router = APIRouter()
 
+CITY_NOT_FOUND = HTTPException(status_code=404, detail="City not found")
+
 
 @router.get("/cities/", response_model=list[schemas.City])
 async def read_cities(db: AsyncSession = Depends(get_db)):
@@ -28,7 +30,7 @@ async def read_single_city(
 ):
     db_city = await crud.get_city(db=db, city_id=city_id)
     if db_city is None:
-        raise HTTPException(status_code=404, detail="City not found")
+        raise CITY_NOT_FOUND
     return db_city
 
 
@@ -40,7 +42,7 @@ async def update_city(
 ):
     updated_city = await crud.update_city(db, city_id, city_update)
     if updated_city is None:
-        raise HTTPException(status_code=404, detail="City not found")
+        raise CITY_NOT_FOUND
     return updated_city
 
 
@@ -49,4 +51,8 @@ async def delete_city(
     city_id: int,
     db: AsyncSession = Depends(get_db),
 ):
-    return await crud.delete_city(db=db, city_id=city_id)
+    deleted_city = await crud.delete_city(db=db, city_id=city_id)
+    if not deleted_city:
+        raise CITY_NOT_FOUND
+
+    return deleted_city
