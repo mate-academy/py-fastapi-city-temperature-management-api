@@ -29,7 +29,12 @@ def read_all_temperatures(
     if city_id is not None:
         queryset = queryset.filter(TemperatureDB.city_id == city_id)
 
-    return queryset.offset(skip).limit(limit).all()
+    return (
+        queryset.order_by(TemperatureDB.date_time.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def update_all_city_temperatures(db: Session):
