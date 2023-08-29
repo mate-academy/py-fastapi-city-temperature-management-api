@@ -1,9 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 import cities.crud as crud
 import cities.schemas as schemas
-from dependencies import get_db
+from dependencies import get_db, pagination_param
 
 router = APIRouter()
 
@@ -20,11 +22,10 @@ def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
 
 @router.get("/cities/", response_model=list[schemas.City])
 def read_cities(
+    pagination: Annotated[dict, Depends(pagination_param)],
     db: Session = Depends(get_db),
-    skip: int = Query(0, description="Number of records to skip"),
-    limit: int = Query(10, description="Number of records to fetch"),
 ):
-    return crud.read_all_cities(db=db, skip=skip, limit=limit)
+    return crud.read_all_cities(db=db, **pagination)
 
 
 @router.get("/cities/{city_id}/", response_model=schemas.City)
