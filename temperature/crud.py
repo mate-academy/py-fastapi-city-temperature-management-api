@@ -5,10 +5,10 @@ from sqlalchemy.orm import selectinload
 from temperature.models import DBTemperature
 
 
-async def get_temperatures(db: AsyncSession, city_id: int = None, skip: int = 0, limit: int = 10):
+async def get_temperatures(db: AsyncSession, city_id: int = None):
     query = select(DBTemperature).options(
         selectinload(DBTemperature.city)
-    ).offset(skip).limit(limit)
+    )
     if city_id:
         query = query.where(DBTemperature.city_id == city_id)
 

@@ -5,8 +5,8 @@ from city import models, schemas
 from city.models import DBCity
 
 
-async def get_all_cities(db: AsyncSession, skip: int = 0, limit: int = 10):
-    query = select(DBCity).offset(skip).limit(limit)
+async def get_all_cities(db: AsyncSession):
+    query = select(DBCity)
     cities = await db.execute(query)
     return cities.scalars().all()
 

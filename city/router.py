@@ -9,8 +9,8 @@ router = APIRouter()
 
 
 @router.get("/cities/", response_model=list[schemas.City])
-async def read_cities(db: AsyncSession = Depends(get_db), skip: int = 0, limit: int = 10):
-    return await crud.get_all_cities(db=db, skip=skip, limit=limit)
+async def read_cities(db: AsyncSession = Depends(get_db)):
+    return await crud.get_all_cities(db=db)
 
 
 @router.post("/cities/", response_model=schemas.City)
