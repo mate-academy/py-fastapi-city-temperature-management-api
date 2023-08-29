@@ -50,7 +50,12 @@ The City Temperature Management API provides endpoints to manage city temperatur
     ```
 4. Set up your environment variables. Create a .env file in the root directory and add your environment variables following .env.example
 
-5. Run the FastAPI development server:
+5. Run migrations:
+   ```
+   alembic upgrade head
+   ```
+
+7. Run the FastAPI development server:
    ```
    uvicorn main:app --reload
    ```
