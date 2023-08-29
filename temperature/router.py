@@ -22,4 +22,4 @@ async def read_all_temperatures(
 @router.post("/temperatures/update/", response_model=None)
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     await utils.update_temperatures(db=db)
-    return {"message": "Temperatures updated"}
+    return {"message": "Temperatures updated for all cities"}
