@@ -40,4 +40,4 @@ Installation:
 
 ## Api view:
 
-![img.png](api_demo.PNG)
+![img.png](api_demo.png)
