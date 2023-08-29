@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from . import models, schemas
 
 
-async def get_all_cities(db: AsyncSession):
+async def get_all_cities(db: AsyncSession) -> list:
     query = select(models.City)
     cities_list = await db.execute(query)
     return [city[0] for city in cities_list.fetchall()]
