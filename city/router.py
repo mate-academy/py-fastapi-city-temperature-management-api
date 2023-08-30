@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
 
-from dependencies import get_db
+from city.models import DBCity
 from city.crud import (
     create_city,
     delete_city_data,
@@ -11,6 +12,7 @@ from city.crud import (
     update_city_data,
 )
 from city.schemas import City, CityCreate
+from dependencies import get_db
 
 
 router = APIRouter(
@@ -30,7 +32,7 @@ CITY_ALREADY_EXIST = HTTPException(
 
 
 @router.get("/", response_model=list[City])
-async def read_all_cities(db: AsyncSession = Depends(get_db)):
+async def read_all_cities(db: AsyncSession = Depends(get_db)) -> List[DBCity]:
     return await get_cities_list(db=db)
 
 
@@ -38,7 +40,7 @@ async def read_all_cities(db: AsyncSession = Depends(get_db)):
 async def create_new_city(
         city: CityCreate,
         db: AsyncSession = Depends(get_db),
-):
+) -> DBCity | dict:
     try:
         return await create_city(db=db, city=city)
 
@@ -47,7 +49,10 @@ async def create_new_city(
 
 
 @router.get("/{city_id}", response_model=City)
-async def read_city_by_id(city_id: int, db: AsyncSession = Depends(get_db)):
+async def read_city_by_id(
+        city_id: int,
+        db: AsyncSession = Depends(get_db),
+) -> DBCity:
     city = await get_city_by_id(db=db, city_id=city_id)
 
     if not city:
@@ -61,7 +66,7 @@ async def update_city_by_id(
         city_id: int,
         city_data: CityCreate,
         db: AsyncSession = Depends(get_db),
-):
+) -> dict:
     city = await get_city_by_id(db=db, city_id=city_id)
 
     if not city:
@@ -79,7 +84,10 @@ async def update_city_by_id(
 
 
 @router.delete("/{city_id}", response_model=dict)
-async def delete_city_by_id(city_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_city_by_id(
+        city_id: int,
+        db: AsyncSession = Depends(get_db),
+) -> dict:
     city = await get_city_by_id(db=db, city_id=city_id)
 
     if not city:
