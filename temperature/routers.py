@@ -1,7 +1,6 @@
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from city.crud import get_city
 from temperature import schemas, crud
@@ -10,14 +9,20 @@ from dependencies import get_db
 router = APIRouter()
 
 
-@router.post("/temperatures/update/", response_model=list[schemas.Temperature])
+@router.post(
+    "/temperatures/update/",
+    response_model=list[schemas.Temperature]
+)
 async def update_cities_temperature(
         db: AsyncSession = Depends(get_db)
 ):
     return await crud.update_temperatures(db=db)
 
 
-@router.post("/temperatures/{city-id}", response_model=schemas.Temperature)
+@router.post(
+    "/temperatures/{city-id}",
+    response_model=schemas.Temperature
+)
 async def update_citi_temperature(
         city_id: int,
         db: AsyncSession = Depends(get_db)
@@ -29,12 +34,18 @@ async def update_citi_temperature(
         )
 
 
-@router.get("/temperatures/", response_model=list[schemas.Temperature])
+@router.get(
+    "/temperatures/",
+    response_model=list[schemas.Temperature]
+)
 async def read_temperatures(db: AsyncSession = Depends(get_db)):
     return await crud.get_all_temperatures(db=db)
 
 
-@router.get("/temperatures/{city-id}/", response_model=list[schemas.Temperature])
+@router.get(
+    "/temperatures/{city-id}/",
+    response_model=list[schemas.Temperature]
+)
 async def read_single_city(
         city_id: int,
         db: AsyncSession = Depends(get_db)
@@ -51,6 +62,3 @@ async def read_single_city(
         )
 
     return db_temperature
-
-
-

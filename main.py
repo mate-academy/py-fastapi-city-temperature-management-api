@@ -11,4 +11,4 @@ app.include_router(temperature_router)
 
 @app.get("/")
 async def root() -> dict:
-    return {"message": "Hello Worldddd"}
+    return {"message": "Hello World"}
