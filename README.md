@@ -8,48 +8,42 @@ This is a FastAPI application designed to manage city data and their correspondi
 ### Installation
 
 1. Clone this repository to your local machine:
-
-
+```
     git clone https://github.com/Altahoma/py-fastapi-city-temperature-management-api
-
+```
 2. Navigate to the project directory:
-
-
+```
     cd temperature-management-app
-
+```
 3. Create a virtual environment:
-
-
+```
     python -m venv venv
-
+```
 4. Activate the virtual environment:
 
 On Windows:
-
+```
     venv\Scripts\activate
-
+```
 On macOS and Linux:
-
+```
     source venv/bin/activate
-
+```
 5. Install the required dependencies:
-
-
+```
     pip install -r requirements.txt
-
+```
 6. Copy the `.env.sample` file to `.env` and configure the environment variables:
-   
-
+```
     cp .env.sample .env
-
+```
 
 ### Running the Application
 
 1. Once the virtual environment is activated and the dependencies are installed, you can run the FastAPI application:
-
-
+```
     uvicorn main:app --reload
-
+```
 2. The application will be accessible at http://127.0.0.1:8000.
 
 ### Endpoints
@@ -69,7 +63,7 @@ Temperature API:
 
 Documentation:
 
-- `GET /docs`: To access the API documentation, you can visit the interactive Swagger UI:
+- `GET /docs`: To access the API documentation, you can visit the interactive Swagger UI.
 
 ### Design Choices
 
