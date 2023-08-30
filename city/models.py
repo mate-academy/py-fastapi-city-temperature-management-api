@@ -8,7 +8,7 @@ class DBCity(Base):
     __tablename__ = "city"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False, unique=True)
     additional_info = Column(String(1111))
 
     temperature = relationship("DBTemperature", back_populates="city")
