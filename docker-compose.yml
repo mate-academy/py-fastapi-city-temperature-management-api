@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  web:
+    restart: always
+    build: .
+    container_name: backend_fastapi
+    command: ["/entrypoint.sh"]
+    environment:
+      - PYTHONUNBUFFERED=True
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/fastapi
+    networks:
+      - fastapi_network
+
+
+volumes:
+  mate_fastapi_data:
+    driver: local
+  fastapi_pgadmin_data:
+    driver: local
+
+networks:
+  fastapi_network:
+    driver: bridge
