@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import temperatures.crud as crud
 import temperatures.schemas as schemas
@@ -12,19 +12,22 @@ router = APIRouter()
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-def read_temperatures(
+async def read_temperatures(
     pagination: Annotated[dict, Depends(pagination_param)],
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     city_id: int = Query(None, description="City id"),
 ):
-    db_city = get_city_by_id(db=db, city_id=city_id)
+    db_city = await get_city_by_id(db=db, city_id=city_id)
 
     if city_id and not db_city:
         raise HTTPException(status_code=404, detail="Such city not found")
 
-    return crud.read_all_temperatures(db=db, city_id=city_id, **pagination)
+    return await crud.read_all_temperatures(
+        db=db, city_id=city_id, **pagination
+    )
 
 
-@router.post("/temperatures/update/", response_model=list[schemas.Temperature])
-def update_temperatures(db: Session = Depends(get_db)):
-    return crud.update_all_city_temperatures(db=db)
+@router.post("/temperatures/update/")
+async def update_temperatures(db: AsyncSession = Depends(get_db)):
+    await crud.update_all_city_temperatures(db=db)
+    return {"message": "data was updated"}
