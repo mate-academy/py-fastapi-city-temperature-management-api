@@ -37,6 +37,10 @@ On macOS and Linux:
 ```
     cp .env.sample .env
 ```
+7. Create DB and run migrations:
+```
+    alembic upgrade head
+```
 
 ### Running the Application
 
