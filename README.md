@@ -9,15 +9,16 @@ Project for managing cities(CRUD), getting and updating temperature records for 
 - Sign up on https://www.weatherapi.com/ and get API_KEY
 
 ```shell
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements.txt
+python -m venv venv # Create virtual environment
+venv\Scripts\activate # Activate venv for Windows
+venv/bin/activate # Activate venv for MacOS
+pip install -r requirements.txt # Install needed dependencies
 ```
 Create .env file in project root directory with variables from .env.sample
 ```shell
-alembic init alembic
+alembic init alembic # Initiate alembic
 alembic revision --autogenerate -m "Name commit" # Input name you want
-alembic upgrade head
+alembic upgrade head # Apply migrations for DB
 uvicorn main:app --reload # Run server
 ```
 
