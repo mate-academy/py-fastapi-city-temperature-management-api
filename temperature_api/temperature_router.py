@@ -13,7 +13,7 @@ async def get_all_temperatures(db: AsyncSession = Depends(get_db)):
     return await crud.get_temperatures(db)
 
 
-@router.get("/temperatures/{temp_id}", response_model=schemas.Temperature)
+@router.get("/temperatures/{temp_id}/", response_model=schemas.Temperature)
 async def get_temperature(temp_id: int, db: AsyncSession = Depends(get_db)):
     temp = await crud.get_temperature(db, temp_id)
     if temp is None:
@@ -24,7 +24,7 @@ async def get_temperature(temp_id: int, db: AsyncSession = Depends(get_db)):
     return temp
 
 
-@router.post("/temperatures/update")
+@router.post("/temperatures/update/")
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     await crud.update_temperatures(db)
     return {"message": "Temperature data updated"}

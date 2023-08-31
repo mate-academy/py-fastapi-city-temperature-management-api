@@ -1,11 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert, update
+from sqlalchemy import select
 
 import city_api.models
-from city_api import models as city_models
-from temperature_api import models, schemas
+from temperature_api import models
 from temperature_api.get_weather import get_temperature_from_weatherapi
 
 
@@ -26,10 +25,8 @@ async def update_temperatures(db: AsyncSession):
         cities = await db.execute(select(city_api.models.City))
 
         for city in cities.scalars():
-            # Get the current temperature for each city
             temperature = await get_temperature_from_weatherapi(city.name)
 
-            # Create a new Temperature record
             new_temperature = models.Temperature(date_time=datetime.utcnow(), city_id=city.id, temperature=temperature)
             db.add(new_temperature)
 
