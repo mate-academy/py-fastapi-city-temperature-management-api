@@ -25,7 +25,7 @@ async def create_city(db: AsyncSession, city: CityCreate) -> dict:
     return response
 
 
-async def get_city_by_id(db: AsyncSession, city_id: int) -> int | None:
+async def get_city_by_id(db: AsyncSession, city_id: int) -> DBCity:
     query = select(DBCity).where(DBCity.id == city_id)
     city = await db.execute(query)
 
