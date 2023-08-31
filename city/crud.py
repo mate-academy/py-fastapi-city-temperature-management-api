@@ -46,7 +46,7 @@ async def update_city_data(
     await db.execute(query)
     await db.commit()
 
-    return {f"City with id '{city_id}'": "Updated successfully"}
+    return {"message": f"City with id '{city_id}' updated successfully"}
 
 
 async def delete_city_data(db: AsyncSession, city_id: int) -> dict:
