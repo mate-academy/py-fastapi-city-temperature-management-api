@@ -7,6 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Any
 
+from city.crud import get_cities_list
 from city.models import DBCity
 from temperature.models import DBTemperature
 
@@ -63,9 +64,7 @@ async def update_temperature_for_city(
 
 async def update_temperatures(db: AsyncSession, api_key: str) -> Any:
     try:
-        query = select(DBCity)
-        cities = await db.execute(query)
-        cities_list = cities.scalars()
+        cities_list = await get_cities_list(db=db)
 
         async with httpx.AsyncClient() as client:
             tasks = [
