@@ -19,7 +19,7 @@ async def get_cities(db: DB,
     return await crud.get_all_cities(db=db, **pagination)
 
 
-@router.get("/cities/{city_id}", response_model=schemas.CityDetail)
+@router.get("/cities/{city_id}/", response_model=schemas.CityDetail)
 async def get_city_by_id(db: DB,
                          city_id: int):
     city = await crud.get_city_by_id(db=db, city_id=city_id)
@@ -46,7 +46,7 @@ async def post_city(db: DB,
     return city
 
 
-@router.put("/cities/{city_id}", response_model=schemas.CityDetail)
+@router.put("/cities/{city_id}/", response_model=schemas.CityDetail)
 async def put_city(db: DB,
                    city_id: int,
                    updated_city: schemas.CityUpdate):
@@ -65,7 +65,7 @@ async def put_city(db: DB,
     return city
 
 
-@router.delete("/cities/{city_id}", response_model=schemas.CityDetail)
+@router.delete("/cities/{city_id}/", response_model=schemas.CityDetail)
 async def delete_city(db: DB,
                       city_id: int):
     city = await crud.delete_city(db=db, city_id=city_id)
