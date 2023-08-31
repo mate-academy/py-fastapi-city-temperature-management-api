@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Any
 
 from city.crud import get_cities_list
-from city.models import DBCity
 from temperature.models import DBTemperature
 
 
