@@ -10,7 +10,7 @@ async def get_cities_list(db: AsyncSession) -> List[DBCity]:
     query = select(DBCity)
     db_cities = await db.execute(query)
 
-    return [city for city in db_cities.scalars()]
+    return list(db_cities.scalars())
 
 
 async def create_city(db: AsyncSession, city: CityCreate) -> dict:
