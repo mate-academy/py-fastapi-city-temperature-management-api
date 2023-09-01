@@ -1,60 +1,41 @@
-## Task Description
+# Temperature Tracker
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+Temperature Tracker is an API that manages temperature records for various cities worldwide. You can add cities to the database and use the temperature update endpoint to keep the temperature data up-to-date.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Installation and Usage
 
-### Part 1: City CRUD API
+Follow these steps to set up and run the Temperature Tracker API on your local machine:
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/temperature-tracker.git
+   cd temperature-tracker
+2. Rename `.env.smpl` to `.env` and replace `WEATHER_TOKEN` with your actual WeatherAPI token.
+3. Set up a virtual environment (Windows):
+    ```sh
+    python -m venv venv
+    venv\Scripts\activate
+4. Install required dependencies:
+    ```sh
+   `pip install -r requirements.txt`
+5. Initialize the database: 
+   ```sh
+   `alembic upgrade head`
+6. Start app 
+    ```sh
+    `uvicorn main:app`
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+7. Access the API using a tool like [Postman](https://www.postman.com/) at http://127.0.0.1:8000.
 
-### Part 2: Temperature API
+8. To stop the app, press `ctrl + c` or close the terminal.
+## Usage
+#### Base URL
+* `127.0.0.1:8000`
+#### City endpoints
+* GET `/cities/` - Retrieve a list of cities with additional info
+* POST `/cities/` _with provided `name` and `additional_info`_ - add city to the database
+* DEL `/cities/1` - delete city with ID 1 from the database.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
-
-### Additional Requirements
-
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
-
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+#### Temperature endpoints
+* GET `/temperatures/` - list of **all** Temperature records
+* GET `/temperatures/` _with `id` provided_ - list of **city with this id** Temperature records
+* POST `/temperatures/update/` - update Temperature records for **all cities** in the database
