@@ -48,7 +48,7 @@ The City Temperature Management API provides endpoints to manage city temperatur
     ```
     pip install -r requirements.txt
     ```
-4. Set up your environment variables. Create a .env file in the root directory and add your environment variables following .env.example
+4. Set up your environment variables. Create a .env file in the root directory and add your environment variables following .env.example. To get weather api key you need to register at To get one you need to register on [Weather API](https://www.weatherapi.com/)
 
 5. Run migrations:
    ```
