@@ -26,6 +26,7 @@ Installation:
 
 6. Create migrations:
 
+* ```alembic revision --autogenerate -m "Initial migration"  ```
 * ```alembic upgrade head```
 
 7. Run server:
