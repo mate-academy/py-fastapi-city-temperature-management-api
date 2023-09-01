@@ -18,4 +18,3 @@ class Temperature(TemperatureBase):
 
 class UpdateTemperature(TemperatureBase):
     pass
-

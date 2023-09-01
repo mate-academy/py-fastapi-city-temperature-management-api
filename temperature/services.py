@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 from dotenv import load_dotenv
+from httpx import AsyncClient
 
 load_dotenv()
 
@@ -9,7 +10,9 @@ load_dotenv()
 WEATHER_API_URL = "http://api.weatherapi.com/v1/current.json"
 
 
-async def get_city_weather(city_name: str, client):
+async def get_city_weather(
+        city_name: str, client: AsyncClient
+) -> tuple[datetime, int]:
     city_weather = await client.get(
         url=WEATHER_API_URL,
         params={"key": os.getenv("WEATHER_API_KEY"), "q": city_name}
@@ -18,7 +21,9 @@ async def get_city_weather(city_name: str, client):
     return await parse_city_weather(city_weather)
 
 
-async def parse_city_weather(city_weather: dict):
-    time_measured = datetime.strptime(city_weather["last_updated"], "%Y-%m-%d %H:%M")
+async def parse_city_weather(city_weather: dict) -> tuple[datetime, int]:
+    time_measured = datetime.strptime(
+        city_weather["last_updated"], "%Y-%m-%d %H:%M"
+    )
     temperature = city_weather["temp_c"]
     return time_measured, temperature

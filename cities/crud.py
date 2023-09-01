@@ -1,22 +1,17 @@
-from http import HTTPStatus
-from http.client import HTTPResponse
-
-from fastapi import HTTPException
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from cities import models, schemas
 
 
-async def get_cities_list(db: AsyncSession):
+async def get_cities_list(db: AsyncSession) -> list:
     query = select(models.City)
     cities = await db.execute(query)
     city_list = [city[0] for city in cities.fetchall()]
     return city_list
 
 
-async def get_city(db: AsyncSession, city_id: int):
+async def get_city(db: AsyncSession, city_id: int) -> Result:
     query = select(models.City).where(models.City.id == city_id)
     city = await db.execute(query)
     return city.scalar()
@@ -25,7 +20,7 @@ async def get_city(db: AsyncSession, city_id: int):
 async def create_city(
         db: AsyncSession,
         city: schemas.CreateCity
-):
+) -> dict:
     city_create = insert(models.City).values(
         name=city.name,
         additional_info=city.additional_info,
@@ -36,7 +31,9 @@ async def create_city(
     return response
 
 
-async def update_city(db: AsyncSession, city_id: int, new_city_data: schemas.CityBase):
+async def update_city(
+        db: AsyncSession, city_id: int, new_city_data: schemas.CityBase
+) -> Result | None:
     db_city = await get_city(db, city_id)
 
     if not db_city:
@@ -49,7 +46,8 @@ async def update_city(db: AsyncSession, city_id: int, new_city_data: schemas.Cit
 
     return db_city
 
-async def delete_city(db: AsyncSession, city_id: int):
+
+async def delete_city(db: AsyncSession, city_id: int) -> Result | None:
     db_city = await get_city(db, city_id)
     if not db_city:
         return None
