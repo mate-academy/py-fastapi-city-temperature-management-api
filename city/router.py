@@ -21,7 +21,7 @@ async def create_city(
     return await crud.create_city(db=db, city=city)
 
 
-@router.delete("/cities/{city_id}", response_model=schemas.City)
+@router.delete("/cities/{city_id}/", response_model=schemas.City)
 async def delete_city(
     city_id: int,
     db: AsyncSession = Depends(get_db),
