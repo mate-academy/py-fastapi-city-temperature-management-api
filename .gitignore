@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+.idea
 # Distribution / packaging
 .Python
 build/
@@ -134,7 +134,7 @@ venv.bak/
 
 # Rope project settings
 .ropeproject
-
+city.db
 # mkdocs documentation
 /site
 

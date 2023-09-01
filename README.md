@@ -1,4 +1,17 @@
+
+## How to run
+
+* clone the repository [https://github.com/ochernyi/py-fastapi-city-temperature-management-api.git]()
+* create and activate virtual environment:
+* `python -m venv venv`
+* `source venv/bin/activate`
+* run `pip install requirements.txt`
+* run the server python `-m uvicorn main:app --reload `
+
+
+
 ## Task Description
+
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
 
@@ -16,8 +29,8 @@ You are required to create a FastAPI application that manages city data and thei
 4. Implement the following endpoints:
     - `POST /cities`: Create a new city.
     - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
+    - `GET /cities/{city_id}`: Get the details of a specific city.
+    - `PUT /cities/{city_id}`: Update the details of a specific city.
     - `DELETE /cities/{city_id}`: Delete a specific city.
 
 ### Part 2: Temperature API
@@ -32,29 +45,3 @@ You are required to create a FastAPI application that manages city data and thei
 4. Implement the following endpoints:
     - `GET /temperatures`: Get a list of all temperature records.
     - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
-
-### Additional Requirements
-
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
-
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
