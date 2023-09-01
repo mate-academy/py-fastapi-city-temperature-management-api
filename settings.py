@@ -10,8 +10,6 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "City temperature API"
 
     DATABASE_URL: str | None = "sqlite+aiosqlite:///./city.db"
-    # DATABASE_URL: str | None = "postgresql:" \
-    #                            "//user:password@postgresserver/db"
 
     WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
