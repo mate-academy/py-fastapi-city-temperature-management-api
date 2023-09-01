@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 from city_crud_api.crud import get_temperatures_by_city
 
 from dependencies import get_db
-from models import DBTemperature, DBCity
-from temperature_api.crud import create_temperature_record
+from models import DBCity
+from temperature_api.crud import create_temperature_record, update_temperatures_for_cities
 from temperature_api.schemas import Temperature
 from temperature_api.weather_data import get_current_temperature
 
@@ -32,14 +32,7 @@ async def update_temperatures(db: Session = Depends(get_db)):
     tasks = [fetch_temperature(city.name) for city in cities]
     await asyncio.gather(*tasks)
 
-    db_temperatures = [DBTemperature(**data.model_dump()) for data in temperatures_data]
-    db.add_all(db_temperatures)
-    db.commit()
-
-    for temp in db_temperatures:
-        db.refresh(temp)
-
-    return db_temperatures
+    return update_temperatures_for_cities(db, temperatures_data)
 
 
 @router.get("/temperatures/", response_model=List[Temperature])

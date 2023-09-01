@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from city_crud_api.crud import get_all_cities, create_city, update_city, get_city
+from city_crud_api.crud import get_all_cities, create_city, update_city, get_city, delete_city
 from city_crud_api.schemas import City, CityCreate
 from dependencies import get_db
 
@@ -35,10 +35,5 @@ def update_city_by_id(city_id: int, city: CityCreate, db: Session = Depends(get_
 
 
 @router.delete("/cities/{city_id}")
-def delete_city(city_id: int, db: Session = Depends(get_db)):
-    city = get_city(db, city_id)
-    if city is None:
-        raise HTTPException(status_code=404, detail="City not found")
-    db.delete(city)
-    db.commit()
-    return {"message": "City deleted"}
+def delete_city_by_id(city_id: int, db: Session = Depends(get_db)):
+    return delete_city(db, city_id)
