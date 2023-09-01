@@ -9,7 +9,10 @@ from city_crud_api.crud import get_temperatures_by_city
 
 from dependencies import get_db
 from models import DBCity
-from temperature_api.crud import create_temperature_record, update_temperatures_for_cities
+from temperature_api.crud import (
+    create_temperature_record,
+    update_temperatures_for_cities,
+)
 from temperature_api.schemas import Temperature
 from temperature_api.weather_data import get_current_temperature
 

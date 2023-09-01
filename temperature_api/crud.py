@@ -8,7 +8,7 @@ from temperature_api.schemas import TemperatureCreate
 
 
 def create_temperature_record(
-        db: Session, city_name: str, temperature: float
+    db: Session, city_name: str, temperature: float
 ) -> TemperatureCreate:
     city = db.query(DBCity).filter(DBCity.name == city_name).first()
     if not city:
@@ -19,7 +19,9 @@ def create_temperature_record(
     return temperature_data
 
 
-def update_temperatures_for_cities(db: Session, temperatures_data: list) -> List[DBTemperature]:
+def update_temperatures_for_cities(
+    db: Session, temperatures_data: list
+) -> List[DBTemperature]:
     db_temperatures = [DBTemperature(**data.model_dump()) for data in temperatures_data]
     db.add_all(db_temperatures)
     db.commit()
