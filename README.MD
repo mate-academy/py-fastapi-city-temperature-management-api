@@ -1,4 +1,4 @@
-## City temperature API
+# City temperature API
 Simple FastAPI application for managing cities data and corresponding temperatures records using outer weather API.
 ___
 
@@ -49,7 +49,7 @@ ___
 ---
 ### City app (folder "city")
 Part of the application responsible for CRUD (Create, Read, Update, Delete) API operations for managing city data.
-## Temperature app (folder "temperature")
+### Temperature app (folder "temperature")
 An API that fetches current temperature data from WeatherAPI for all cities in the database and stores this data, also responds for retrieving the history of all temperature data.
-## Endpoints
+### Endpoints
 All project endpoints are available in clear documentation. Use "http://127.0.0.1:8000/docs".
