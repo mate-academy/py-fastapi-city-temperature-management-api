@@ -58,3 +58,39 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Installation 
+```python
+git clone https://github.com/kovaliskoveronika/py-fastapi-city-temperature-management-api.git
+```
+
+```python
+cd py-fastapi-city-temperature-management-api
+```
+
+```python
+python -m venv venv
+```
+#### Activate virtual environment
+##### - For Windows:
+```python
+venv\Scripts\activate
+```
+##### -	For macOS and Linux:
+```python
+source venv/bin/activate
+```
+
+### Apply migrations
+```python
+pip install -r requirements.txt
+```
+```python
+alembic upgrade head
+```
+
+### Run application
+
+```python
+uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+```
