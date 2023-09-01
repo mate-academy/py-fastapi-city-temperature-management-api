@@ -54,7 +54,7 @@ async def update_temperatures(
     return {"message": "Temperature data updated"}
 
 
-@router.get("/temperatures")
+@router.get("/temperatures/")
 async def get_all_temperatures(
         general: Annotated[dict, Depends(general_parameter)]
 ) -> List[schemas.TemperatureBase]:
