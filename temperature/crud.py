@@ -14,7 +14,7 @@ from temperature.utils import get_weather
 async def get_all_cities(db: AsyncSession):
     query = select(models.DBCity)
     cities = await db.execute(query)
-    return [city[0] for city in cities.fetchall()]
+    return cities.scalars()
 
 
 async def create_city(db: AsyncSession, city: schemas.CityCreate):
@@ -74,4 +74,4 @@ async def get_all_temperatures(db: AsyncSession, city_id: int):
     if city_id is not None:
         query = query.where(models.DBTemperature.city_id == city_id)
     temperatures_list = await db.execute(query)
-    return [temperature[0] for temperature in temperatures_list.fetchall()]
+    return temperatures_list.scalars()
