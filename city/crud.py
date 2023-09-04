@@ -47,3 +47,13 @@ async def update_city(data_base: AsyncSession, city_id: int, data: dict) -> None
 
     return None
 
+
+async def get_city_by_id(data_base: AsyncSession, city_id: int) -> schemas.City | None:
+    query = select(models.DBCity).where(models.DBCity.id == city_id)
+    city = await data_base.execute(query)
+    city = city.fetchone()
+    if city:
+        return city[0]
+    return None
+
+
