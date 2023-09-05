@@ -57,3 +57,13 @@ async def get_city_by_id(data_base: AsyncSession, city_id: int) -> schemas.City 
     return None
 
 
+async def delete_city(data_base: AsyncSession, city_id: int) -> bool:
+    city = await data_base.get(models.DBCity, city_id)
+    if city:
+        await data_base.delete(city)
+        await data_base.commit()
+        return True
+    return False
+
+
+

@@ -38,6 +38,16 @@ async def read_city(city_id: int, data_base: AsyncSession = Depends(get_data_bas
     return city
 
 
+@router.delete("/cities/{city_id}", response_model=schemas.City)
+async def delete_city(city_id: int, data_base: AsyncSession = Depends(get_data_base)):
+    city = await crud.get_city_by_id(data_base=data_base, city_id=city_id)
+    if city is None:
+        raise HTTPException(status_code=404, detail=f"City with id {city_id} not found")
+
+    await crud.delete_city(data_base=data_base, city_id=city_id)
+    return city
+
+
 
 
 
