@@ -24,9 +24,8 @@ Installation:
 5. Install dependencies
    ```pip install requirements.txt```
 
-6. Create migrations:
+6. Аpply all migrations:
 
-* ```alembic revision --autogenerate -m "Initial migration"  ```
 * ```alembic upgrade head```
 
 7. Run server:
