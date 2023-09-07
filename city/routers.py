@@ -21,12 +21,12 @@ async def city_get(db: AsyncSession = Depends(get_db)):
     return await get_all_cities(db=db)
 
 
-@router.get("/cities/{id}", response_model=schemas.City)
+@router.get("/cities/{id}/", response_model=schemas.City)
 async def city_get_by_id(id: int, db: AsyncSession = Depends(get_db)):
     return await get_city_by_id(db=db, id=id)
 
 
-@router.delete("/cities/{id}", response_model=schemas.CityDelete)
+@router.delete("/cities/{id}/", response_model=schemas.CityDelete)
 async def city_delete(id: int, db: AsyncSession = Depends(get_db)):
     city = await delete_city(db=db, id=id)
     if city:
