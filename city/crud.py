@@ -4,7 +4,7 @@ from city import models
 from city import schemas
 
 
-async def get_all_cities(data_base: AsyncSession, skip: int, limit: int):
+async def get_all_cities(data_base: AsyncSession, skip: int, limit: int) -> list:
     queryset = select(models.DBCity).offset(skip).limit(limit)
     cities = await data_base.execute(queryset)
 

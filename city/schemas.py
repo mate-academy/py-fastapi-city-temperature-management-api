@@ -3,10 +3,11 @@ from pydantic import BaseModel
 
 class CityBase(BaseModel):
     name: str
+    additional_info: str
 
 
 class CityCreate(CityBase):
-    additional_info: str
+    pass
 
 
 class City(CityBase):
@@ -16,10 +17,12 @@ class City(CityBase):
         from_attributes = True
 
 
-class CityDetail(CityBase):
-    id: int
+class CityDelete(BaseModel):
+    message: str
+
+
+class CityName(BaseModel):
     name: str
-    additional_info: str
 
     class Config:
         from_attributes = True

@@ -46,10 +46,3 @@ async def delete_city(city_id: int, data_base: AsyncSession = Depends(get_data_b
 
     await crud.delete_city(data_base=data_base, city_id=city_id)
     return city
-
-
-
-
-
-
-

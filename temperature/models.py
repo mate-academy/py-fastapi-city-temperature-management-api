@@ -5,12 +5,11 @@ from sqlalchemy import Column, Integer, DateTime, ForeignKey, Float
 
 
 class DBTemperature(Base):
-    __tablename__ = "temperature"
+    __tablename__ = "temperatures"
 
     id = Column(Integer, primary_key=True, index=True)
-    city_id = Column(DateTime, ForeignKey("cities.id"))
+    city_id = Column(Integer, ForeignKey("cities.id"))
     date_time = Column(DateTime)
     temperature = Column(Float)
 
-    city = relationship("City", back_populates="temperatures")
-
+    city = relationship("DBCity", back_populates="temperatures")
