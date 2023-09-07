@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from city.models import DBCity
-# from temperature.models import DBTemperature
+from temperature.models import DBTemperature
 
 from engine import Base
 
