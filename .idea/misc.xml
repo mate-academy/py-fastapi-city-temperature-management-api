@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (py-fastapi-city-temperature-management-api)" project-jdk-type="Python SDK" />
+  <component name="Black">
+    <option name="sdkUUID" value="530ea41b-2646-4eb0-a846-52870e819ed5" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.11 (py-fastapi-city-temperature-management-api) (2)" project-jdk-type="Python SDK" />
 </project>
