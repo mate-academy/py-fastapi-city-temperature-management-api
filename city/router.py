@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get("/cities/", response_model=list[schemas.City])
-def list_authors(db: Session = Depends(get_db)):
+def list_cities(db: Session = Depends(get_db)):
     return crud.get_all_cities(db=db)
 
 
