@@ -2,7 +2,6 @@ import json
 import os
 import httpx
 from dotenv import load_dotenv
-from sqlalchemy import select
 
 load_dotenv()
 
@@ -24,7 +23,3 @@ async def get_temperature(city_name):
         print(city_temp)
 
     return city_temp
-
-
-
-

@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from pydantic import BaseModel
-from city import schemas
 
 
 class TemperatureBase(BaseModel):

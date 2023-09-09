@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from sqlalchemy import distinct, desc
+from sqlalchemy import desc
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from temperature import models
-from temperature import schemas
 from city import models
 from temperature.temperatures_manager import get_temperature
 
@@ -17,7 +16,9 @@ async def update_temperatures(data_base):
         date_time = datetime.utcnow()
 
         data_base.add(
-            models.DBTemperature(city_id=city.id, date_time=date_time, temperature=city_temp)
+            models.DBTemperature(
+                city_id=city.id, date_time=date_time, temperature=city_temp
+            )
         )
 
     await data_base.commit()
@@ -30,6 +31,10 @@ async def get_all_temperatures(data_base, skip: int, limit: int) -> list:
 
 
 async def get_temperature_by_city_id(data_base: AsyncSession, city_id: int):
-    query = select(models.DBTemperature).filter(models.DBTemperature.city_id == city_id).order_by(desc(models.DBTemperature.date_time))
+    query = (
+        select(models.DBTemperature)
+        .filter(models.DBTemperature.city_id == city_id)
+        .order_by(desc(models.DBTemperature.date_time))
+    )
     temperature = await data_base.execute(query)
     return temperature.scalar()

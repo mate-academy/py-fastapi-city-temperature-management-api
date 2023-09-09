@@ -4,7 +4,9 @@ from city import models
 from city import schemas
 
 
-async def get_all_cities(data_base: AsyncSession, skip: int, limit: int) -> list:
+async def get_all_cities(
+        data_base: AsyncSession, skip: int, limit: int
+) -> list:
     queryset = select(models.DBCity).offset(skip).limit(limit)
     cities = await data_base.execute(queryset)
 
@@ -29,7 +31,9 @@ async def check_city_by_name(data_base: AsyncSession, name: str) -> bool:
     return False
 
 
-async def update_city(data_base: AsyncSession, city_id: int, data: dict) -> None | models.DBCity:
+async def update_city(
+        data_base: AsyncSession, city_id: int, data: dict
+) -> None | models.DBCity:
     query = select(models.DBCity).where(models.DBCity.id == city_id)
     new_city = await data_base.execute(query)
     new_city = new_city.fetchone()
@@ -48,7 +52,9 @@ async def update_city(data_base: AsyncSession, city_id: int, data: dict) -> None
     return None
 
 
-async def get_city_by_id(data_base: AsyncSession, city_id: int) -> schemas.City | None:
+async def get_city_by_id(
+        data_base: AsyncSession, city_id: int
+) -> schemas.City | None:
     query = select(models.DBCity).where(models.DBCity.id == city_id)
     city = await data_base.execute(query)
     city = city.fetchone()
@@ -64,6 +70,3 @@ async def delete_city(data_base: AsyncSession, city_id: int) -> bool:
         await data_base.commit()
         return True
     return False
-
-
-
