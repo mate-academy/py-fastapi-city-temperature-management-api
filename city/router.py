@@ -41,6 +41,7 @@ def update_city_by_id(
         return crud.update_city(
             db=db, city_id=city_id, updated_city=updated_city
         )
+    raise HTTPException(status_code=404, detail="City not found")
 
 
 @router.delete("/cities/{city_id}", response_model=dict)

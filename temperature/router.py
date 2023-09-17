@@ -5,10 +5,11 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
 from httpx import AsyncClient
 from sqlalchemy.orm import Session
+
 from city import crud as city_crud
+from dependencies import get_db
 from settings import settings
 from temperature import schemas, crud, models
-from dependencies import get_db
 
 router = APIRouter()
 
@@ -59,12 +60,10 @@ async def update_temperatures(db: Session = Depends(get_db)):
                 )
             else:
                 crud.update_temperature(
-                    db=db,
-                    city_id=dict_cities[city[0]],
-                    temp=city[1]
+                    db=db, city_id=dict_cities[city[0]], temp=city[1]
                 )
 
         return {"message": "Temperatures updated successfully"}
 
     except Exception as e:
-        return HTTPException(status_code=500, detail="Error")
+        return HTTPException(status_code=500, detail=str(e))

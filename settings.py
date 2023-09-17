@@ -6,6 +6,8 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "sqlite:///./city_temperature.db"
 
+    WEATHER_API_URL = "https://api.weatherapi.com/v1/current.json"
+
     class Config:
         case_sensitive = True
         env_file = ".env"
