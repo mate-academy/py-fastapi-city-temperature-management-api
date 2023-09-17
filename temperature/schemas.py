@@ -7,7 +7,7 @@ from city.schemas import City
 
 class TemperatureBase(BaseModel):
     date_time: datetime
-    temperature: int
+    temperature: float
 
 
 class TemperatureCreate(TemperatureBase):
@@ -23,4 +23,4 @@ class Temperature(TemperatureBase):
     city: City
 
     class Config:
-        orm_mode = True
+        from_attributes = True

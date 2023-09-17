@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from temperature import schemas, crud
+from temperature import schemas, crud, models
 from dependencies import get_db
 
 router = APIRouter()
@@ -14,6 +14,8 @@ def list_temperatures(
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-    return crud.get_all_temperatures(
-        skip=skip, limit=limit, db=db, city_id=city_id
-    )
+    queryset = db.query(models.Temperature)
+    if city_id is not None:
+        queryset = queryset.filter(models.Temperature.city_id == city_id)
+
+    return queryset.offset(skip).limit(limit).all()
