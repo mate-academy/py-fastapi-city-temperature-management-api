@@ -1,8 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from city import models
-from city import schemas
+from city import models, schemas
 
 
 def get_all_cities(db: Session) -> list[models.City]:
@@ -27,7 +26,9 @@ def create_city(db: Session, city: schemas.CityCreate) -> models.City:
     return db_city
 
 
-def update_city(db: Session, city_id: int, updated_city: schemas.CityUpdate) -> models.City:
+def update_city(
+    db: Session, city_id: int, updated_city: schemas.CityUpdate
+) -> models.City:
     db_city = db.query(models.City).filter(models.City.id == city_id).first()
     if db_city:
         db_city.name = updated_city.name

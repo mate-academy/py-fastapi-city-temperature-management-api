@@ -2,7 +2,7 @@ import datetime
 
 from sqlalchemy.orm import Session
 
-from temperature import models, schemas
+from temperature import models
 
 
 def get_all_temperatures(
@@ -54,7 +54,7 @@ def update_temperature(
         .first()
     )
     if db_temp:
-        db_temp.temp = temp
+        db_temp.temperature = temp
         db_temp.date_time = datetime.datetime.now()
         db.commit()
         db.refresh(db_temp)
