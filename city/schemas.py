@@ -10,6 +10,10 @@ class CityCreate(CityBase):
     pass
 
 
+class CityUpdate(CityBase):
+    pass
+
+
 class City(BaseModel):
     id: int
 
