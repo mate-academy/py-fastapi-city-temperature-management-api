@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+city_temperature_management_api.db
+.env
 
 # C extensions
 *.so
