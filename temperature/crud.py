@@ -1,12 +1,13 @@
 import asyncio
 import os
+from typing import Tuple, Any, Sequence
 
 from dotenv import load_dotenv
 
 from datetime import datetime
 
 import httpx
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, Row, RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from city.crud import get_all_cities
@@ -18,7 +19,7 @@ load_dotenv()
 async def get_city_temperature(
         city_name: str,
         client: httpx.AsyncClient
-):
+) -> int:
     weather_data = await client.get(
         f"https://api.openweathermap.org/data/2.5/weather?q="
         f"{city_name}&appid={os.getenv('API_KEY')}&units=metric"
@@ -31,7 +32,7 @@ async def create_temperature(
         db: AsyncSession,
         db_city: models.DBCity,
         client: httpx.AsyncClient
-):
+) -> dict[str, Any]:
     city_temperature = await get_city_temperature(
         city_name=db_city.name,
         client=client
@@ -51,7 +52,7 @@ async def create_temperature(
     return resp
 
 
-async def update_temperatures(db: AsyncSession):
+async def update_temperatures(db: AsyncSession) -> Tuple[Any]:
     async with db.begin():
         cities = await get_all_cities(db)
 
@@ -66,7 +67,7 @@ async def update_temperatures(db: AsyncSession):
         return temperatures
 
 
-async def get_all_temperatures(db: AsyncSession):
+async def get_all_temperatures(db: AsyncSession) -> Sequence[Row | RowMapping | Any]:
     query = select(models.DBTemperature)
     result = await db.execute(query)
     return result.scalars().all()
@@ -75,7 +76,7 @@ async def get_all_temperatures(db: AsyncSession):
 async def get_temperature(
         city_id: int,
         db: AsyncSession
-):
+) -> Sequence[Row | RowMapping | Any]:
     query = (
         select(models.DBTemperature)
         .where(models.DBTemperature.city_id == city_id)

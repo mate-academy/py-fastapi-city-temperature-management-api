@@ -1,8 +1,10 @@
 import time
+from typing import Any, Sequence
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_cache.decorator import cache
+from sqlalchemy import Row, RowMapping
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from city.crud import get_city
@@ -36,7 +38,8 @@ async def update_citi_temperature(
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
 @cache(expire=30)
-async def read_temperatures(db: AsyncSession = Depends(get_db)):
+async def read_temperatures(db: AsyncSession = Depends(get_db)
+                            ) -> Sequence[Row | RowMapping | Any]:
     return await crud.get_all_temperatures(db=db)
 
 
@@ -45,7 +48,7 @@ async def read_temperatures(db: AsyncSession = Depends(get_db)):
 async def read_single_city(
         city_id: int,
         db: AsyncSession = Depends(get_db)
-):
+) -> Sequence[Row | RowMapping | Any]:
     db_temperature = await crud.get_temperature(
         db=db,
         city_id=city_id
