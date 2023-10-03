@@ -1,60 +1,49 @@
-## Task Description
+## City Temperature Management App
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This is a FastAPI application that allows you to manage city data and temperature records. 
+The application consists of two main components:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+CRUD API for managing city data.
+Temperature API for fetching and storing temperature data for cities.
 
-### Part 1: City CRUD API
+## How to install
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+Clone this repository:
 
-### Part 2: Temperature API
+git clone https://github.com/yourusername/py-fastapi-city-temperature-management-api.git
+cd city-temperature-app
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Accessing the Application
 
-### Additional Requirements
+You can now access the FastAPI application by opening your web browser and navigating 
+to http://localhost:8000. You will be able to interact with the API using the Swagger 
+UI provided by FastAPI by http://localhost:8000/docs/.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
 
-## Evaluation Criteria
+## Endpoints
 
-Your task will be evaluated based on the following criteria:
+### City CRUD API
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+- POST /cities: Create a new city.
+- GET /cities: Get a list of all cities.
+- GET /cities/{city_id}: Get the details of a specific city.
+- PUT /cities/{city_id}: Update the details of a specific city.
+- DELETE /cities/{city_id}: Delete a specific city.
+- 
+### Temperature API
 
-## Deliverables
+- POST /temperatures/update: Fetch current temperature data for 
+all cities and store it in the database.
+- GET /temperatures: Get a list of all temperature records.
+- GET /temperatures/?city_id={city_id}: Get the temperature records 
+for a specific city.
 
-Please submit the following:
+### User
+- POST / login (with JWT)
+- POST / Logout (with JWT)
+- POST / register
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## WeatherAPI Integration
+- The application uses the OpenweathermapAPI to fetch temperature data. 
+Your API key is read from the .env file automatically.
 
-Good luck!
