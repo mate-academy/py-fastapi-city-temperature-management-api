@@ -15,11 +15,11 @@ fastapi_users = FastAPIUsers[User, int](
 current_user = fastapi_users.current_user()
 
 
-@router.get("/protected-route")
+@router.get("/protected-route/")
 def protected_route(user: User = Depends(current_user)):
     return f"Hello, {user.email}"
 
 
-@router.get("/unprotected-route")
+@router.get("/unprotected-route/")
 def protected_route():
     return f"Hello, anonim"
