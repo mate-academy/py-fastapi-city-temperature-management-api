@@ -1,50 +1,68 @@
 from fastapi import HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy import select, insert, delete, update
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from city import models, schemas
 
 
-def get_all_cities(db: Session) -> list[models.City]:
-    return db.query(models.City).all()
+async def get_all_cities(db: AsyncSession) -> list[models.City]:
+    query = select(models.City)
+    cities_list = await db.execute(query)
+    return [city[0] for city in cities_list.fetchall()]
 
 
-def get_city_by_id(db: Session, city_id: int) -> models.City:
-    return db.query(models.City).filter(models.City.id == city_id).first()
+async def get_city_by_id(db: AsyncSession, city_id: int) -> models.City:
+    query = select(models.City).filter(models.City.id == city_id)
+    city = await db.execute(query)
+    return city.scalar()
 
 
-def get_city_by_name(db: Session, name: str) -> models.City:
-    return db.query(models.City).filter(models.City.name == name).first()
+async def get_city_by_name(db: AsyncSession, name: str) -> models.City:
+    query = select(models.City).filter(models.City.name == name)
+    city = await db.execute(query)
+    return city.scalar()
 
 
-def create_city(db: Session, city: schemas.CityCreate) -> models.City:
-    db_city = models.City(name=city.name, additional_info=city.additional_info)
-
-    db.add(db_city)
-    db.commit()
-    db.refresh(db_city)
-
-    return db_city
-
-
-def update_city(
-    db: Session, city_id: int, updated_city: schemas.CityUpdate
+async def create_city(
+    db: AsyncSession, city: schemas.CityCreate
 ) -> models.City:
-    db_city = db.query(models.City).filter(models.City.id == city_id).first()
+    query = insert(models.City).values(
+        name=city.name, additional_info=city.additional_info
+    )
+    result = await db.execute(query)
+    await db.commit()
+    response = {**city.model_dump(), "id": result.lastrowid}
+    return response
+
+
+async def update_city(
+    db: AsyncSession, city_id: int, updated_city: schemas.CityUpdate
+) -> models.City:
+    db_city = await get_city_by_id(db=db, city_id=city_id)
     if db_city:
-        db_city.name = updated_city.name
-        db_city.additional_info = updated_city.additional_info
-        db.commit()
-        db.refresh(db_city)
-        return db_city
+        query = (
+            update(models.City)
+            .where(models.City.id == city_id)
+            .values(
+                name=updated_city.name,
+                additional_info=updated_city.additional_info,
+            )
+        )
+        await db.execute(query)
+        await db.commit()
+
+        response = {**updated_city.model_dump(), "id": city_id}
+        return response
 
     raise HTTPException(status_code=404, detail="City not found")
 
 
-def delete_city(db: Session, city_id: int) -> dict:
-    db_city = db.query(models.City).filter(models.City.id == city_id).first()
+async def delete_city(db: AsyncSession, city_id: int) -> dict:
+    db_city = await get_city_by_id(db=db, city_id=city_id)
     if db_city:
-        db.delete(db_city)
-        db.commit()
+        query = delete(models.City).where(models.City.id == city_id)
+        await db.execute(query)
+        await db.commit()
         return {"message": "City deleted"}
 
     raise HTTPException(status_code=404, detail="City not found")
