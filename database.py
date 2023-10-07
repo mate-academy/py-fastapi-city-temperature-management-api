@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from settings import settings
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
-# SQLALCHEMY_DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
 engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
