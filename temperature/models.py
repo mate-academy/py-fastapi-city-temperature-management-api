@@ -14,4 +14,4 @@ class Temperature(Base):
     )
     temperature = Column(Float, nullable=False)
 
-    city = relationship(City)
+    city = relationship(City, lazy="selectin")
