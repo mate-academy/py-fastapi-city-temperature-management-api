@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from city.models import *
+from temperature.models import *
 from database import Base
 
 # this is the Alembic Config object, which provides
