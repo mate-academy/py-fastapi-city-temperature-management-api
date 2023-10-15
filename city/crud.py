@@ -1,12 +1,12 @@
 from typing import Optional, Any, Sequence
-from sqlalchemy import select, Row, RowMapping, insert, update, delete
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from city import models, schemas
 
 
 async def get_all_cities(
         db: AsyncSession
-) -> Sequence[Row | RowMapping | Any]:
+) -> Sequence[models.City]:
     query = select(models.City)
     result = await db.execute(query)
     city_list = result.scalars().all()
