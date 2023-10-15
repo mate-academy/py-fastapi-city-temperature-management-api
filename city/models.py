@@ -9,4 +9,3 @@ class City(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(255), nullable=False)
     additional_info = Column(String(511))
-    
