@@ -20,7 +20,10 @@ alembic upgrade head
 uvicorn main:app --reload
 ```
 Instead of "touch .env" use, please, command "echo > .env" for Windows.
-Fill .env file in according to .env_sample
+
+Fill .env file in according to .env_sample:
+you have to create an account at https://openweathermap.org, receive an APi key and add it to your .env file.
+
 
 ## Features:
 - Documentation is located at: </docs/>
