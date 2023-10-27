@@ -1,3 +1,5 @@
+from typing import Optional, List, Union
+
 from sqlalchemy import String, cast
 from sqlalchemy.orm import Session
 
@@ -6,15 +8,15 @@ from schemas import TemperatureCreate, CityCreate
 
 
 # CRUD for City
-def get_city(db: Session, city_id: int):
+def get_city(db: Session, city_id: int) -> Optional[City]:
     return db.query(City).filter(City.id == city_id).first()
 
 
-def get_cities(db: Session, skip: int = 0, limit: int = 100):
+def get_cities(db: Session, skip: int = 0, limit: int = 100) -> List[City]:
     return db.query(City).offset(skip).limit(limit).all()
 
 
-def create_city(db: Session, city: CityCreate):
+def create_city(db: Session, city: CityCreate) -> City:
     db_city = City(**city.dict())
     db.add(db_city)
     db.commit()
@@ -22,7 +24,7 @@ def create_city(db: Session, city: CityCreate):
     return db_city
 
 
-def update_city(db: Session, city_id: int, city: CityCreate):
+def update_city(db: Session, city_id: int, city: CityCreate) -> City:
     db_city = get_city(db, city_id)
     for key, value in city.dict().items():
         setattr(db_city, key, value)
@@ -30,7 +32,7 @@ def update_city(db: Session, city_id: int, city: CityCreate):
     return db_city
 
 
-def delete_city(db: Session, city_id: int):
+def delete_city(db: Session, city_id: int) -> City:
     db_city = get_city(db, city_id)
     db.delete(db_city)
     db.commit()
@@ -39,11 +41,11 @@ def delete_city(db: Session, city_id: int):
 # CRUD for Temperature
 
 
-def get_temperature(db: Session, temperature_id: int):
+def get_temperature(db: Session, temperature_id: int) -> Optional[Temperature]:
     return db.query(Temperature).filter(Temperature.id == temperature_id).first()
 
 
-def get_temperatures(db: Session, skip: int = 0, limit: int = 100, city_id: int = None):
+def get_temperatures(db: Session, skip: int = 0, limit: int = 100, city_id: int = None) -> List[Union[Temperature, tuple]]:
     if city_id:
         return db.query(Temperature).filter(Temperature.city_id == city_id).with_entities(
             Temperature.id,
@@ -54,7 +56,7 @@ def get_temperatures(db: Session, skip: int = 0, limit: int = 100, city_id: int 
     return db.query(Temperature).offset(skip).limit(limit).all()
 
 
-def create_temperature(db: Session, temperature: TemperatureCreate):
+def create_temperature(db: Session, temperature: TemperatureCreate) -> Temperature:
     db_temperature = Temperature(**temperature.dict())
     db.add(db_temperature)
     db.commit()
@@ -62,7 +64,7 @@ def create_temperature(db: Session, temperature: TemperatureCreate):
     return db_temperature
 
 
-def update_temperature(db: Session, temperature_id: int, temperature: TemperatureCreate):
+def update_temperature(db: Session, temperature_id: int, temperature: TemperatureCreate) -> Temperature:
     db_temperature = get_temperature(db, temperature_id)
     for key, value in temperature.dict().items():
         setattr(db_temperature, key, value)
@@ -70,7 +72,7 @@ def update_temperature(db: Session, temperature_id: int, temperature: Temperatur
     return db_temperature
 
 
-def delete_temperature(db: Session, temperature_id: int):
+def delete_temperature(db: Session, temperature_id: int) -> Temperature:
     db_temperature = get_temperature(db, temperature_id)
     db.delete(db_temperature)
     db.commit()
