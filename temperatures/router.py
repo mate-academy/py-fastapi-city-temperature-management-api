@@ -13,7 +13,7 @@ from weather import get_weather
 router = APIRouter()
 
 
-@router.post("/temperatures/update")
+@router.post("/temperatures/update/")
 async def update_temperatures(db: Session = Depends(get_db)):
     cities = db.query(DBCity).all()
 

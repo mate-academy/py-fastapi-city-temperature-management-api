@@ -30,7 +30,7 @@ def read_cities(
     return crud.get_all_cities(db=db)
 
 
-@router.get("/cities/{city_id}", response_model=schemas.City)
+@router.get("/cities/{city_id}/", response_model=schemas.City)
 def retrieve_city(
         city_id: int,
         db: Session = Depends(dependencies.get_db)
@@ -46,7 +46,7 @@ def retrieve_city(
     return db_city
 
 
-@router.delete("/cities/{city_id}")
+@router.delete("/cities/{city_id}/")
 def delete_city(city_id: int, db: Session = Depends(dependencies.get_db)):
     db_city = crud.retrieve_city(db=db, city_id=city_id)
 
@@ -62,7 +62,7 @@ def delete_city(city_id: int, db: Session = Depends(dependencies.get_db)):
     return {"ok": True}
 
 
-@router.put("/cities/{city_id}", response_model=schemas.City)
+@router.put("/cities/{city_id}/", response_model=schemas.City)
 def update_city(
         city_id: int,
         city: schemas.CityUpdate,
