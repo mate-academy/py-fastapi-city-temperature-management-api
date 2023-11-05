@@ -39,3 +39,6 @@ DELETE /cities/{city_id}: Delete a specific city.
 POST /temperatures/update: Fetch and store current temperature for all cities.
 GET /temperatures: Retrieve a list of all temperature records.
 GET /temperatures/?city_id={city_id}: Retrieve temperature records for a specific city.
+
+## Features
+The Temperature API fetches data from an external service (https://www.weatherapi.com/); error handling is implemented with the assumption that this service can be occasionally unavailable or return errors.
