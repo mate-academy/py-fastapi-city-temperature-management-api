@@ -6,7 +6,7 @@ from temperatures.models import DBTemperature
 def get_temperatures(
         db: Session,
         city_id: int | None = None,
-):
+) -> list[DBTemperature] | DBTemperature:
     queryset = db.query(DBTemperature)
 
     if city_id:
