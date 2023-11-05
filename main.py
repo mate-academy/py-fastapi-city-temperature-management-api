@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 
+from city import router as cities_router
+
 app = FastAPI()
+
+app.include_router(cities_router.router)
 
 
 @app.get("/")
-async def root():
+def root() -> dict:
     return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
