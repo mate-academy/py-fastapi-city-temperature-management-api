@@ -1,60 +1,126 @@
-## Task Description
+# City and Temperature Data Management Application
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This FastAPI application is designed to manage city data and their corresponding temperature data. It uses Alembic for database migrations, SQLAlchemy as the database ORM, and Pydantic for request and response validation. This README will guide you through the steps to set up and run the application.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Prerequisites
 
-### Part 1: City CRUD API
+Before you can run the application, make sure you have the following prerequisites installed on your system:
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- Python 3.7 or higher
+- pip (Python package manager)
+- A virtual environment tool like virtualenv or conda (optional but recommended)
 
-### Part 2: Temperature API
+## Get Started
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+Follow these steps to set up and run the application:
 
-### Additional Requirements
+### 1. Clone the Repository
+```bash 
+git clone https://github.com/aarrtemm/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### 2. Create a Virtual Environment (optional but recommended)
+It's a good practice to create a virtual environment to isolate the project dependencies.
 
-## Evaluation Criteria
+```bash
+# Using virtualenv
+virtualenv venv
 
-Your task will be evaluated based on the following criteria:
+# Activate the virtual environment
+source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+### 3. Install Dependencies
+Use pip to install the required Python packages
 
-## Deliverables
+```bash 
+pip install -r requirements.txt
+```
 
-Please submit the following:
+### 4.Configuration
+Open the `database.py` file and configure the application settings as needed. You may specify the database connection details, API base URL, and other parameters. Also in the `.env` file, do not forget to insert the `API KEY` from the weatherapi website
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+### 5. Set Up the Database with Alembic
+Initialize the database and create the necessary tables using Alembic for database migrations.
 
-Good luck!
+```bash
+# Initialize Alembic
+alembic init alembic
+
+#initialize first migration
+alembic revision --autogenerate -m "Initial" 
+
+# Run database migrations
+alembic upgrade head
+```
+
+### 6. Run the Application
+Start the FastAPI application by running the following command:
+```bash
+uvicorn main:app --reload
+```
+The --reload flag enables automatic code reloading during development. You can access the API documentation at http://localhost:8000/docs in your web browser.
+
+### 7. API Usage
+You can use the Swagger UI or ReDoc documentation provided by FastAPI to interact with the API. The API endpoints are documented, and you can test and use the application from there.
+
+
+# API Endpoints
+The following API endpoints are available for managing city and temperature data:
+
+- **GET/cities**: Retrieve a list of all cities.
+- **POST/cities**: Create a new city
+- **GET/cities/{city_id}**: Retrieve a city by id
+- **DELETE/cities/{city_id}**: Delete a city
+- **PUT/cities/{city_id}**: Update a city
+- **POST/temperatures/update**: Update temperature for all cities
+- **GET/temperatures/**: Retrieve a list of all temperatures for all city
+
+# Example API Requests
+Here are some example API requests you can make using tools like curl, Postman, or your favorite HTTP client:
+
+- Create a new city record:
+```http request
+POST http://localhost:8000/cities
+
+{
+    "name": "New York",
+    "additional_info": "USA",
+}
+```
+
+- Retrieve city information:
+```http request
+GET http://localhost:8000/cities/{city_id}
+```
+
+- Delete city:
+``` http request
+DELETE http://localhost:8000/cities/{city_id}
+```
+
+- Update city info:
+``` http request
+PUT http://localhost:8000/cities/{city_id}
+{
+    "name": "string",
+    "additional_info": "string",
+}
+
+```
+
+- Update temperatures for all cities:
+``` http request
+POST http://localhost:8000/temperatures/update
+```
+
+- Retrieve list the temperature records for a specific city:
+```http request
+GET http://localhost:8000/temperatures/?city_id={city_id}
+```
+
+Please refer to the Swagger UI or ReDoc documentation for more details on API endpoints and request payloads.
+
+# Closing Notes
+You now have the City and Temperature Data Management Application up and running with Alembic, SQLAlchemy, and Pydantic integration. Feel free to explore the API and integrate it into your projects. If you encounter any issues or have questions, please refer to the FastAPI, Alembic, and SQLAlchemy documentation or raise any concerns in the project's issue tracker on GitHub.
