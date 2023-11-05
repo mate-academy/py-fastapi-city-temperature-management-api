@@ -1,18 +1,19 @@
 import asyncio
 import os
 from datetime import datetime
+from typing import Optional
 
+import httpx
 from dotenv import load_dotenv
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from httpx import HTTPError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from city.crud import read_cities
 from city.schemas import City
 from database import SessionLocal
 from dependencies import get_db_session
 from temperature import schemas, crud
-from city.crud import read_cities
-import httpx
 
 load_dotenv()
 
@@ -62,3 +63,16 @@ async def update_temperatures() -> list[schemas.Temperature]:
 
     return [schemas.Temperature.model_validate(record) for record in
             temperature_records]
+
+
+@router.get("/temperatures/", response_model=list[schemas.Temperature])
+async def get_all_temperatures(
+        city_id: Optional[int] = None,
+        db: AsyncSession = Depends(get_db_session)
+):
+    if city_id is not None:
+        temperatures = await crud.get_temperature_by_id(city_id, db)
+    else:
+        temperatures = await crud.get_temperatures(db)
+
+    return temperatures
