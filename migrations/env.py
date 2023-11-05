@@ -4,7 +4,8 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
-from city.models import City
+from city.models import *
+from temperature.models import *
 from database import Base
 
 # this is the Alembic Config object, which provides
