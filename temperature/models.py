@@ -11,5 +11,4 @@ class Temperature(Base):
     date_time = Column(DateTime, nullable=False)
     temperature = Column(Float, nullable=False)
 
-    # Establish the relationship with the City table
     city = relationship("City", back_populates="temperatures")
