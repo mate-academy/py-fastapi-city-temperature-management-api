@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from city.schemas import CityRead
-
 
 class TemperatureBase(BaseModel):
     date_time: datetime
@@ -15,7 +13,7 @@ class TemperatureBase(BaseModel):
 
 class TemperatureRead(TemperatureBase):
     id: int
-    city: CityRead
+    city_id: int
 
 
 class TemperatureCreateUpdate(TemperatureBase):
