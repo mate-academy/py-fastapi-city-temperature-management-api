@@ -6,10 +6,10 @@ This FastAPI application is a powerful tool for managing city data and temperatu
 ## 🚀 Features
 ___
 - City CRUD API:
-  - Create, Read, Update, and Delete city data.
+  - Create, Read, Update, and Delete city-data.
   - Retrieve details of specific cities.
 - Temperature API:
-  - Fetch and store current temperature data for all cities.
+  - Fetch and store current temperature data for all cities concurrently (using `async`/`await`).
   - Retrieve temperature records for a specific city.
 - Dependency Injection: Efficient use of dependency injection.
 - Project Structure: Organized according to FastAPI project structure guidelines.
