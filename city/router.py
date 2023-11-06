@@ -51,7 +51,9 @@ def delete_single_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/city/{city_id}/", response_model=City)
-def update_single_city(city_id: int, city: CityCreate, db: Session = Depends(get_db)):
+def update_single_city(
+        city_id: int, city: CityCreate, db: Session = Depends(get_db)
+):
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
     if db_city is None:

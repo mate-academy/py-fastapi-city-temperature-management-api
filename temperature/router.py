@@ -21,13 +21,15 @@ API_KEY = os.environ["API_KEY"]
 
 
 @router.get("/temperatures/", response_model=list[Temperature])
-def read_temperature(db: Session = Depends(get_db), city_id: int | None = None):
+def read_temperature(
+        db: Session = Depends(get_db), city_id: int | None = None
+):
     return crud.get_all_temperatures(
         db=db, city_id=city_id
     )
 
 
-@router.put("/temperatures/update/")
+@router.post("/temperatures/update/")
 async def update_temperatures(db: Session = Depends(get_db)):
     cities = get_cities_from_database(db)
     for city in cities:
@@ -55,9 +57,9 @@ async def update_temperatures(db: Session = Depends(get_db)):
                     )
 
             except Exception as e:
-                print(f"Failed to fetch temperature for city {city.name}: {str(e)}")
+                print(f"Failed to fetch temperature for city "
+                      f"{city.name}: {str(e)}")
 
 
 def get_cities_from_database(db: Session = Depends(get_db)):
     return city_crud.get_all_city(db=db)
-
