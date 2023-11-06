@@ -9,8 +9,8 @@ To run this application, follow these steps:
 
 ### Clone the repository:
 ```shell
-  git clone <repository-url>
-  cd <project-name>
+  git clone [<repository-url>](https://github.com/OlegatorLE/py-fastapi-city-temperature-management-api.git)
+  cd py-fastapi-city-temperature-management-api
   python -m venv venv
   source venv/bin/activate # or venv\Scripts\activate in Windows
   pip install -r requirements.txt
