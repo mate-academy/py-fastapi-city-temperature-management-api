@@ -1,7 +1,7 @@
 # 🏙️ City and Temperature Management FastAPI Application
 ___
 
-This FastAPI application is a powerful tool for managing city data and temperature records efficiently. It consists of two main components: a CRUD API for city data and an API for fetching and recording temperature data for cities. Below, you'll find everything you need to know to get started with this project.
+This FastAPI application is a powerful tool for managing city data and temperature records efficiently. It consists of two main components: a CRUD API for city data and an API for fetching and recording temperature data for cities. I've included everything you need to know to start this project.
 
 ## 🚀 Features
 ___
@@ -10,17 +10,14 @@ ___
   - Retrieve details of specific cities.
 - Temperature API:
   - Fetch and store current temperature data for all cities concurrently (using `async`/`await`).
+  - Retrieve all temperatures.
   - Retrieve temperature records for a specific city.
-- Dependency Injection: Efficient use of dependency injection.
-- Project Structure: Organized according to FastAPI project structure guidelines.
-- Error Handling: Graceful handling of potential errors.
-- Clean Code: Well-documented, clean, and readable code.
 
 ## 🛠️ Getting Started
 ___
 - Python 3 should be installed
-- Register account on https://www.weatherapi.com/ and get your API key
-- Create `.env` file with your API key inside using `.env.sample` file
+- Register an account on https://www.weatherapi.com/ and get your API key
+- Create a `.env` file with your API key inside using the `.env.sample` file
 
 ### 📦 Installation
 ___
@@ -34,5 +31,5 @@ uvicorn main:app --reload
 
 ## 📚 Documentation
 ___
-Please refer to the API documentation for details on available endpoints, request/response formats, and examples. The documentation can be accessed at http://localhost:8000/docs when the application is running.
+Please take a look at the API documentation for details on available endpoints, request/response formats, and examples. The documentation can be accessed at http://localhost:8000/docs when the application is running.
 
