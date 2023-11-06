@@ -2,12 +2,12 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from temperature import models
-from city import models
+from city import models as city_models
 from scraper import get_city_temperature
 
 
 def create_update_temperatures(db: Session):
-    all_cities = db.query(models.City).all()
+    all_cities = db.query(city_models.City).all()
     for city in all_cities:
         city_temperature = get_city_temperature(city.name)
         db_temperature = models.Temperature(
@@ -21,10 +21,7 @@ def create_update_temperatures(db: Session):
 
 
 def get_temperatures(
-        db: Session,
-        skip: int = 0,
-        limit: int = 100,
-        city_id: int = None
+    db: Session, skip: int = 0, limit: int = 100, city_id: int = None
 ):
     query = db.query(models.Temperature).offset(skip).limit(limit).all()
     if city_id:
