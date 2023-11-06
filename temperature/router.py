@@ -12,8 +12,8 @@ router = APIRouter()
 
 
 @router.post("/update/", response_class=PrettyJSONResponse)
-def create_update_temperatures(db: Session = Depends(get_db)):
-    crud.create_update_temperatures(db)
+async def create_update_temperatures(db: Session = Depends(get_db)):
+    await crud.create_update_temperatures(db)
     return {
         "message": "Fetching temperatures initiated, "
                    "please wait a few minutes."
