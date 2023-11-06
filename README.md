@@ -1,60 +1,38 @@
-## Task Description
+# 🏙️ City and Temperature Management FastAPI Application
+___
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This FastAPI application is a powerful tool for managing city data and temperature records efficiently. It consists of two main components: a CRUD API for city data and an API for fetching and recording temperature data for cities. Below, you'll find everything you need to know to get started with this project.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## 🚀 Features
+___
+- City CRUD API:
+  - Create, Read, Update, and Delete city data.
+  - Retrieve details of specific cities.
+- Temperature API:
+  - Fetch and store current temperature data for all cities.
+  - Retrieve temperature records for a specific city.
+- Dependency Injection: Efficient use of dependency injection.
+- Project Structure: Organized according to FastAPI project structure guidelines.
+- Error Handling: Graceful handling of potential errors.
+- Clean Code: Well-documented, clean, and readable code.
 
-### Part 1: City CRUD API
+## 🛠️ Getting Started
+___
+- Python 3 should be installed
+- Register account on https://www.weatherapi.com/ and get your API key
+- Create `.env` file with your API key inside using `.env.sample` file
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### 📦 Installation
+___
+```bash
+git clone https://github.com/eduardhabryd/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn main:app --reload
+```
 
-### Part 2: Temperature API
+## 📚 Documentation
+___
+Please refer to the API documentation for details on available endpoints, request/response formats, and examples. The documentation can be accessed at http://localhost:8000/docs when the application is running.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
-
-### Additional Requirements
-
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
-
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
