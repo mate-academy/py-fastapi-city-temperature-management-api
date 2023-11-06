@@ -17,7 +17,7 @@ def create_update_temperatures(db: Session = Depends(get_db)):
     return {"message": "Fetching temperatures initiated, please wait a few minutes."}
 
 
-@router.get("/", response_model=schemas.TemperatureRead, response_class=PrettyJSONResponse)
+@router.get("/", response_model=list[schemas.TemperatureRead], response_class=PrettyJSONResponse)
 def read_temperatures(
         skip: int = 0,
         limit: int = 100,
