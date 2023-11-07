@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -18,7 +16,9 @@ async def get_all_temperatures(db: AsyncSession, city_id: int | None = None):
     return [temperature[0] for temperature in temperature_list.fetchall()]
 
 
-async def create_temperature(db: AsyncSession, temperature: schemas.TemperatureCreate):
+async def create_temperature(
+        db: AsyncSession, temperature: schemas.TemperatureCreate
+):
     query = insert(DBTemperature).values(
         city_id=temperature.city_id,
         date_time=temperature.date_time,

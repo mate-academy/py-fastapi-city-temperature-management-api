@@ -1,6 +1,5 @@
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from .models import DBCity
 from .schemas import CityCreate
@@ -17,6 +16,7 @@ async def get_city_by_name(db: AsyncSession, name: str):
     result = await db.execute(query)
     return result.scalar_one_or_none()
 
+
 async def get_city_by_id(db: AsyncSession, city_id: int):
     query = select(DBCity).filter(DBCity.id == city_id)
     result = await db.execute(query)
@@ -32,4 +32,3 @@ async def create_city(db: AsyncSession, city: CityCreate):
     await db.commit()
     resp = {**city.model_dump(), "id": result.lastrowid}
     return resp
-
