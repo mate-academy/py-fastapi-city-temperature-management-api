@@ -4,7 +4,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 
 from city import crud as city_crud
@@ -21,17 +21,17 @@ API_KEY = os.environ["API_KEY"]
 
 
 @router.get("/temperatures/", response_model=list[Temperature])
-def read_temperature(
-        db: Session = Depends(get_db), city_id: int | None = None
+async def read_temperature(
+        db: AsyncSession = Depends(get_db), city_id: int | None = None
 ):
-    return crud.get_all_temperatures(
+    return await crud.get_all_temperatures(
         db=db, city_id=city_id
     )
 
 
 @router.post("/temperatures/update/")
-async def update_temperatures(db: Session = Depends(get_db)):
-    cities = get_cities_from_database(db)
+async def update_temperatures(db: AsyncSession = Depends(get_db)):
+    cities = await get_cities_from_database(db)
     for city in cities:
         params = {
             "key": API_KEY,
@@ -49,7 +49,7 @@ async def update_temperatures(db: Session = Depends(get_db)):
                         date_time=date_time,
                         temperature=temperature
                     )
-                    crud.create_temperature(db, temperature_create)
+                    return await crud.create_temperature(db, temperature_create)
                 else:
                     raise HTTPException(
                         status_code=response.status_code,
@@ -60,6 +60,5 @@ async def update_temperatures(db: Session = Depends(get_db)):
                 print(f"Failed to fetch temperature for city "
                       f"{city.name}: {str(e)}")
 
-
-def get_cities_from_database(db: Session = Depends(get_db)):
-    return city_crud.get_all_city(db=db)
+async def get_cities_from_database(db: AsyncSession = Depends(get_db)):
+    return await city_crud.get_all_city(db=db)
