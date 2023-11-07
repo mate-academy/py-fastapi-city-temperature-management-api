@@ -42,4 +42,4 @@ The API will be accessible at http://localhost:8000.
 - An additional endpoint POST /temperatures/update fetches current temperature data for all cities and stores it in the database. 
 - Endpoints are provided to retrieve temperature records, optionally filtered by city.
 
-![endpoints.png](demo%2Fendpoints.png)
+![ednpoints.png](demo%2Fednpoints.png)
