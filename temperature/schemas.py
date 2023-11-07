@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -11,7 +12,7 @@ class TemperatureCreate(TemperatureBase):
 
 
 class TemperatureNested(TemperatureBase):
-    id: int
+    date_time: datetime
 
 
 class Temperature(TemperatureBase):

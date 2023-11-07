@@ -1,3 +1,5 @@
+from urllib.parse import urljoin
+
 from httpx import AsyncClient
 
 from cities import models
@@ -7,7 +9,7 @@ from settings import settings
 async def fetch_temperature_for_city(
     city: models.City, client: AsyncClient
 ) -> dict | None:
-    url = settings.WEATHER_BASE_URL + "current.json"
+    url = urljoin(settings.WEATHER_BASE_URL, "current.json")
     resp = await client.get(
         url, params={"key": settings.WEATHER_API_KEY, "q": city.name}
     )

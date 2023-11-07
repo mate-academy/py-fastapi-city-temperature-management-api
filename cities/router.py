@@ -1,8 +1,8 @@
-from fastapi import Depends, HTTPException, Response, status
+from fastapi import Depends, HTTPException, status
 from fastapi.routing import APIRouter
 from sqlalchemy.ext.asyncio import AsyncSession
-from cities import schemas, crud
 
+from cities import schemas, crud
 from dependencies import get_db
 
 

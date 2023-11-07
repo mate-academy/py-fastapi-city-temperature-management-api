@@ -7,9 +7,9 @@ from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from temperature import crud, schemas, models
-from cities.models import City
-from dependencies import get_db
 from temperature.utils import fetch_temperature_for_city
+from dependencies import get_db
+from cities.models import City
 
 
 router = APIRouter()
