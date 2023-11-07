@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 
 from city import schemas
 from city.schemas import CityCreate
-from db.models import DBCity
+from city.models import DBCity
 
 
 def get_all_cities(db: Session):
@@ -36,5 +36,4 @@ def delete_city(db: Session, city_id: int):
         db.delete(city)
         db.commit()
         return True
-    else:
-        return False
+    return False

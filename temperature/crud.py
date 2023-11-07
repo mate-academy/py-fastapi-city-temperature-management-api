@@ -1,12 +1,16 @@
 import os
 
-import requests
 from sqlalchemy.orm import Session
+import requests
+from dotenv import load_dotenv
 
-from db.models import DBTemperature, DBCity
+from city.models import DBCity
+from temperature.models import DBTemperature
 
 
-API_KEY = os.environ.get(API_KEY)
+load_dotenv()
+
+API_KEY = os.environ.get("API_KEY")
 BASE_URL = "http://api.weatherapi.com/v1/current.json"
 
 
@@ -22,6 +26,7 @@ def get_temperatures_by_city(db: Session, city_id: int):
 
 
 def fetch_temperature_data(db: Session) -> None:
+
     cities = db.query(DBCity).all()
     for city in cities:
         city_name = city.name
@@ -39,4 +44,4 @@ def fetch_temperature_data(db: Session) -> None:
         except Exception as e:
             print(f"Failed to fetch data for city {city_name}: {str(e)}")
 
-    db.commit()
+        db.commit()
