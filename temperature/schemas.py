@@ -9,10 +9,6 @@ class TemperatureBase(BaseModel):
     temperature: float
 
 
-class TemperatureCreate(TemperatureBase):
-    pass
-
-
 class Temperature(TemperatureBase):
     id: int
 

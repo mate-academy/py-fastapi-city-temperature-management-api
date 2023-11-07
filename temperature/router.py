@@ -3,13 +3,15 @@ import os
 from datetime import datetime
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from httpx import AsyncClient
 
 from city import crud as city_crud
 from dependencies import get_db
 from temperature import crud
-from temperature.schemas import Temperature, TemperatureCreate
+from temperature.models import DBTemperature
+from temperature.schemas import Temperature
 
 router = APIRouter()
 
@@ -31,6 +33,7 @@ async def read_temperature(
 @router.post("/temperatures/update/")
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     cities = await get_cities_from_database(db)
+
     for city in cities:
         params = {
             "key": API_KEY,
@@ -43,13 +46,12 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
                     temperature_data = response.json()
                     date_time = datetime.now()
                     temperature = temperature_data["current"]["temp_c"]
-                    temperature_create = TemperatureCreate(
-                        city_id=city.id,
-                        date_time=date_time,
-                        temperature=temperature
-                    )
-                    return await crud.create_temperature(
-                        db, temperature_create
+                    await db.execute(
+                        insert(DBTemperature).values(
+                            city_id=city.id,
+                            date_time=date_time,
+                            temperature=temperature
+                        )
                     )
                 else:
                     raise HTTPException(
@@ -60,6 +62,8 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
             except Exception as e:
                 print(f"Failed to fetch temperature for city "
                       f"{city.name}: {str(e)}")
+    await db.commit()
+    return {"message": "Temperatures updated for all cities"}
 
 
 async def get_cities_from_database(db: AsyncSession = Depends(get_db)):
