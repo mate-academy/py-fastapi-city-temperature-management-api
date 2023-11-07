@@ -10,8 +10,8 @@ router = APIRouter()
 
 
 @router.post("/temperatures/update/", status_code=status.HTTP_200_OK)
-def update_temperatures(db: Session = Depends(get_db)):
-    crud.update_temperatures(db=db)
+async def update_temperatures(db: Session = Depends(get_db)):
+    await crud.update_temperatures(db=db)
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature] | schemas.Temperature)

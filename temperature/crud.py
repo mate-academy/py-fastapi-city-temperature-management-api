@@ -1,13 +1,13 @@
+import asyncio
 import os
 from datetime import datetime
 
-import requests
 import httpx
 from dotenv import load_dotenv
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-
+from city.models import City
 from . import models
 from city.crud import get_all_cities
 
@@ -16,6 +16,7 @@ load_dotenv()
 
 
 URL = "http://api.weatherapi.com/v1/current.json"
+WEATHER_URL = f"{URL}?key={os.environ.get('WEATHER_API_KEY')}"
 
 
 def get_all_temperatures(db: Session):
@@ -31,21 +32,6 @@ def get_temperature_by_city_id(db: Session, city_id: int):
         raise HTTPException(status_code=404, detail="City not found")
 
     return db_temperature
-
-
-def get_weather_data(url: str, params: dict):
-
-    print(f"fetching temperature for {params['q']}")
-
-    weather = requests.get(url=url, params=params).json()
-    current_weather = weather["current"]
-
-    date_time = current_weather["last_updated"]
-    temperature = current_weather["temp_c"]
-
-    print(f"stopped fetching temperature for {params['q']}")
-
-    return date_time, temperature
 
 
 def change_temperature_status(
@@ -71,21 +57,30 @@ def change_temperature_status(
         db.commit()
 
 
-def update_temperatures(db: Session):
+async def get_weather_data(db: Session, url: str, city: City, client: httpx.AsyncClient):
+
+    weather = await client.get(url=f"{url}&q={city.name}")
+    current_weather = weather.json()["current"]
+
+    date_time = current_weather["last_updated"]
+    temperature = current_weather["temp_c"]
+
+    change_temperature_status(
+        db=db,
+        city_id=city.id,
+        date_time=date_time,
+        temperature=temperature
+    )
+
+
+async def update_temperatures(db: Session):
     cities = get_all_cities(db)
 
-    params = {
-        "q": "Paris",
-        "key": os.environ.get("WEATHER_API_KEY")
-    }
-
-    for city in cities:
-        params["q"] = city.name
-        city_id = city.id
-        date_time, temperature = get_weather_data(url=URL, params=params)
-        change_temperature_status(
-            db=db,
-            city_id=city_id,
-            date_time=date_time,
-            temperature=temperature
-        )
+    async with httpx.AsyncClient() as client:
+        async with asyncio.TaskGroup() as tg:
+            [
+                tg.create_task(
+                    get_weather_data(db=db, url=WEATHER_URL, city=city, client=client)
+                )
+                for city in cities
+            ]
