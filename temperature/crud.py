@@ -5,6 +5,7 @@ from datetime import datetime
 import httpx
 from dotenv import load_dotenv
 from fastapi import HTTPException
+from httpx import HTTPError
 from sqlalchemy.orm import Session
 
 from city.models import City
@@ -57,20 +58,25 @@ def change_temperature_status(
         db.commit()
 
 
-async def get_weather_data(db: Session, url: str, city: City, client: httpx.AsyncClient):
+async def update_weather_data(db: Session, url: str, city: City, client: httpx.AsyncClient):
 
-    weather = await client.get(url=f"{url}&q={city.name}")
-    current_weather = weather.json()["current"]
+    try:
+        weather = await client.get(url=f"{url}&q={city.name}")
+        current_weather = weather.json()["current"]
 
-    date_time = current_weather["last_updated"]
-    temperature = current_weather["temp_c"]
+        date_time = current_weather["last_updated"]
+        temperature = current_weather["temp_c"]
 
-    change_temperature_status(
-        db=db,
-        city_id=city.id,
-        date_time=date_time,
-        temperature=temperature
-    )
+        change_temperature_status(
+            db=db,
+            city_id=city.id,
+            date_time=date_time,
+            temperature=temperature
+        )
+    except HTTPError as http_exception:
+        print(str(http_exception))
+    except Exception as exception:
+        print(str(exception))
 
 
 async def update_temperatures(db: Session):
@@ -80,7 +86,7 @@ async def update_temperatures(db: Session):
         async with asyncio.TaskGroup() as tg:
             [
                 tg.create_task(
-                    get_weather_data(db=db, url=WEATHER_URL, city=city, client=client)
+                    update_weather_data(db=db, url=WEATHER_URL, city=city, client=client)
                 )
                 for city in cities
             ]
