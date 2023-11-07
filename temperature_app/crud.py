@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 import city_app.models
 import temperature_app.models
-from city_app.utils import fetch_temperatures
+from temperature_app.utils import fetch_temperatures
 
 
 def update_temperatures(db: Session):
