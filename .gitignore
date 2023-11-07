@@ -60,6 +60,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+*.db
 
 # Flask stuff:
 instance/
@@ -142,6 +143,7 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+.mypy.ini
 
 # Pyre type checker
 .pyre/
@@ -158,3 +160,5 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+pyrightconfig.json

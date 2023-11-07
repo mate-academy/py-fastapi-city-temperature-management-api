@@ -1,0 +1,1 @@
+from temperature.models import *
