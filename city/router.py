@@ -7,11 +7,6 @@ from dependencies import get_db
 router = APIRouter()
 
 
-@router.get("/")
-def root():
-    return {"endpoints": "/cities/, /cities/{city_id}"}
-
-
 @router.get("/cities/", response_model=list[schemas.City])
 def read_cities(db: Session = Depends(get_db)):
     return crud.get_all_cities(db=db)

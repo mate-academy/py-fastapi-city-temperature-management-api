@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from db.engine import Base
+from database import Base
 
 
 class DBCity(Base):

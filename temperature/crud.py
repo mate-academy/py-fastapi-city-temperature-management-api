@@ -1,7 +1,8 @@
 import os
+import asyncio
+import httpx
 
 from sqlalchemy.orm import Session
-import requests
 from dotenv import load_dotenv
 
 from city.models import DBCity
@@ -25,23 +26,36 @@ def get_temperatures_by_city(db: Session, city_id: int):
     return temperatures
 
 
-def fetch_temperature_data(db: Session) -> None:
-
+async def fetch_temperature_data(db: Session) -> None:
     cities = db.query(DBCity).all()
-    for city in cities:
-        city_name = city.name
-        request_url = f"{BASE_URL}?key={API_KEY}&q={city_name}"
-        response = requests.get(request_url)
-        try:
-            if response.status_code == 200:
-                data = response.json()
-                temperature = data.get("current", {}).get("temp_c")
-                if temperature:
-                    db_temperature = DBTemperature(
-                        city_id=city.id, temperature=temperature
-                    )
-                    db.add(db_temperature)
-        except Exception as e:
-            print(f"Failed to fetch data for city {city_name}: {str(e)}")
 
-        db.commit()
+    async with httpx.AsyncClient() as client:
+        tasks = []
+
+        for city in cities:
+            city_name = city.name
+            request_url = f"{BASE_URL}?key={API_KEY}&q={city_name}"
+            task = asyncio.create_task(
+                fetch_city_temperature(client, db, city, request_url)
+            )
+            tasks.append(task)
+
+        await asyncio.gather(*tasks)
+
+
+async def fetch_city_temperature(client, db, city, request_url):
+    try:
+        response = await client.get(request_url)
+
+        if response.status_code == 200:
+            data = response.json()
+            temperature = data.get("current", {}).get("temp_c")
+            if temperature:
+                db_temperature = DBTemperature(
+                    city_id=city.id, temperature=temperature
+                )
+                db.add(db_temperature)
+    except Exception as e:
+        print(f"Failed to fetch data for city {city.name}: {str(e)}")
+
+    db.commit()

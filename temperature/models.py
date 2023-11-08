@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from city.models import DBCity
-from db.engine import Base
+from database import Base
 
 
 class DBTemperature(Base):
