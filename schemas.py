@@ -17,7 +17,7 @@ class CityList(CityBase):
 
 class TemperatureBase(BaseModel):
     city_id: int
-    city_id: datetime
+    date_time: datetime
     temperature: float
 
 
