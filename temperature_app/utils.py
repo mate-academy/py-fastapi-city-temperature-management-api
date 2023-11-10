@@ -4,8 +4,10 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from httpx import AsyncClient
+from sqlalchemy.orm import Session
 
 import city_app.models
+import temperature_app.models
 
 load_dotenv()
 
@@ -27,8 +29,8 @@ async def make_request(city: city_app.models.City, client: AsyncClient):
     return response_with_city_id
 
 
-async def fetch_temperatures(cities: list[city_app.models.City]):
-    fetched_temperatures = list(dict())
+async def fetch_temperatures(cities: list[city_app.models.City], db: Session):
+    fetched_temperatures = []
 
     async with AsyncClient() as client:
         responses_with_cities_ids = await asyncio.gather(
@@ -43,12 +45,14 @@ async def fetch_temperatures(cities: list[city_app.models.City]):
             date_time_string, "%Y-%m-%d %H:%M"
         )
         temperature = response["current"]["temp_c"]
-        fetched_temperatures.append(
-            {
-                "city_id": city_id,
-                "date_time": date_time_object,
-                "temperature": temperature,
-            }
+        db_temperature = temperature_app.models.Temperature(
+            city_id=city_id,
+            date_time=date_time_object,
+            temperature=temperature,
         )
+        db.add(db_temperature)
+        db.commit()
+        db.refresh(db_temperature)
+        fetched_temperatures.append(db_temperature)
 
     return fetched_temperatures

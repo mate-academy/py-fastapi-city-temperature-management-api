@@ -9,21 +9,9 @@ from temperature_app.utils import fetch_temperatures
 
 def update_temperatures(db: Session):
     cities = db.query(city_app.models.City).all()
-    fetched_temperatures = asyncio.run(fetch_temperatures(cities))
-    temperatures_to_return = list()
+    fetched_temperatures = asyncio.run(fetch_temperatures(cities, db))
 
-    for temperature in fetched_temperatures:
-        db_temperature = temperature_app.models.Temperature(
-            city_id=temperature["city_id"],
-            date_time=temperature["date_time"],
-            temperature=temperature["temperature"],
-        )
-        db.add(db_temperature)
-        db.commit()
-        db.refresh(db_temperature)
-        temperatures_to_return.append(db_temperature)
-
-    return temperatures_to_return
+    return fetched_temperatures
 
 
 def get_temperatures(db: Session, city_id: int | None = None):
