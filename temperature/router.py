@@ -13,7 +13,7 @@ from temperature import schemas, crud
 router = APIRouter()
 
 BASE_URL = f"https://api.weatherapi.com/v1/current.json"
-parameters = {"WEATHER_API_KEY": settings.WEATHER_API_KEY}
+parameters = {"key": settings.WEATHER_API_KEY}
 
 
 @router.get("/temperatures/", response_model=list[schemas.TemperatureList])
