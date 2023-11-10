@@ -34,12 +34,12 @@ async def read_temperature(
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     cities = await get_cities_from_database(db)
 
-    for city in cities:
-        params = {
-            "key": API_KEY,
-            "q": city.name
-        }
-        async with AsyncClient() as client:
+    async with AsyncClient() as client:
+        for city in cities:
+            params = {
+                "key": API_KEY,
+                "q": city.name
+            }
             try:
                 response = await client.get(URL, params=params)
                 if response.status_code == 200:
@@ -62,6 +62,7 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
             except Exception as e:
                 print(f"Failed to fetch temperature for city "
                       f"{city.name}: {str(e)}")
+
     await db.commit()
     return {"message": "Temperatures updated for all cities"}
 

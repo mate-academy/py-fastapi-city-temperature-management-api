@@ -1,8 +1,8 @@
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import DBCity
-from .schemas import CityCreate
+from city.models import DBCity
+from city.schemas import CityCreate
 
 
 async def get_all_city(db: AsyncSession):

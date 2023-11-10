@@ -1,7 +1,7 @@
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .models import DBTemperature
+from temperature.models import DBTemperature
 
 
 async def get_all_temperatures(db: AsyncSession, city_id: int | None = None):
