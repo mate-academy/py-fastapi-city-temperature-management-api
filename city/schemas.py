@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel
 
 
@@ -12,4 +10,4 @@ class CityList(CityBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
