@@ -1,7 +1,7 @@
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import models, schemas
+from city import models, schemas
 
 
 async def create_city(city: schemas.CityCreate, db: AsyncSession):

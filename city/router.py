@@ -21,7 +21,7 @@ async def get_all_cities(db: AsyncSession = Depends(get_db_session)):
     return await crud.read_cities(db=db)
 
 
-@router.get("/cities/{city_id}", response_model=schemas.City)
+@router.get("/cities/{city_id}/", response_model=schemas.City)
 async def get_city(
     city_id: int,
     db: AsyncSession = Depends(get_db_session),
@@ -32,7 +32,7 @@ async def get_city(
     return city
 
 
-@router.put("/cities/{city_id}", response_model=schemas.City)
+@router.put("/cities/{city_id}/", response_model=schemas.City)
 async def update_city(
     city_id: int,
     city_update: schemas.CityUpdate,
@@ -42,7 +42,7 @@ async def update_city(
     return await crud.read_city(city_id=city_id, db=db)
 
 
-@router.delete("/cities/{city_id}", response_model=schemas.Message)
+@router.delete("/cities/{city_id}/", response_model=schemas.Message)
 async def delete_city(
     city_id: int,
     db: AsyncSession = Depends(get_db_session),

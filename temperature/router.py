@@ -24,18 +24,8 @@ URL = "https://api.weatherapi.com/v1/current.json"
 WEATHER_URL = f"{URL}?key={WEATHER_KEY}"
 
 
-@router.post(
-    "/temperatures/update", response_model=list[schemas.Temperature]
-)
-async def update_temperatures() -> list[schemas.Temperature]:
-    async with SessionLocal() as db_main:
-        cities = await read_cities(db_main)
-
-    temperature_records = []
-
-    client = httpx.AsyncClient()
-
-    async def fetch_temperature(city: City):
+async def fetch_temperature(city: City, temperature_records: list):
+    async with httpx.AsyncClient() as client:
         try:
             response = await client.get(f"{WEATHER_URL}&q={city.name}")
             data = response.json()
@@ -57,12 +47,26 @@ async def update_temperatures() -> list[schemas.Temperature]:
         except Exception as err:
             print(err)
 
-    tasks = [fetch_temperature(city) for city in cities]
-    await asyncio.gather(*tasks)
-    await client.aclose()
 
-    return [schemas.Temperature.model_validate(record) for record in
-            temperature_records]
+
+@router.post(
+    "/temperatures/update", response_model=list[schemas.Temperature]
+)
+async def update_temperatures() -> list[schemas.Temperature]:
+    async with SessionLocal() as db_main:
+        cities = await read_cities(db_main)
+
+        temperature_records = []
+
+        tasks = [
+            fetch_temperature(city, temperature_records) for city in cities
+        ]
+        await asyncio.gather(*tasks)
+
+        return [
+            schemas.Temperature.model_validate(record)
+            for record in temperature_records
+        ]
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
