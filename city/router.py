@@ -24,8 +24,7 @@ async def get_city(city_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.post("/cities/", response_model=schemas.City)
 async def create_city(
-        city: schemas.CityCreate,
-        db: AsyncSession = Depends(get_db)
+    city: schemas.CityCreate, db: AsyncSession = Depends(get_db)
 ):
     db_city = await crud.get_city_by_name(db=db, city_name=city.name)
 
@@ -52,9 +51,7 @@ async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
 
 @router.put("/cities/{city_id}/")
 async def update_city(
-        city_id: int,
-        city: dict,
-        db: AsyncSession = Depends(get_db)
+    city_id: int, city: dict, db: AsyncSession = Depends(get_db)
 ):
     updated_city = await crud.update_city(
         db=db,

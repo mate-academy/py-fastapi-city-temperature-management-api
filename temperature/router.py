@@ -20,14 +20,11 @@ async def get_temperatures(db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/temperatures/update/")
-async def update_temperature(
-        db: AsyncSession = Depends(get_db)
-):
+async def update_temperature(db: AsyncSession = Depends(get_db)):
     cities = await list_cities(db=db)
-    await asyncio.gather(*[
-        temperature_for_specific_city(city=city, db=db)
-        for city in cities
-    ])
+    await asyncio.gather(
+        *[temperature_for_specific_city(city=city, db=db) for city in cities]
+    )
 
     await db.commit()
 

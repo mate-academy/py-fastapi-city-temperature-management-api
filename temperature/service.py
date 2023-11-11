@@ -13,13 +13,9 @@ API_KEY = os.getenv("API_KEY")
 URL = "http://api.weatherapi.com/v1/current.json"
 
 
-async def get_weather(city: str) -> int:
-    params = {
-        "key": API_KEY,
-        "q": city
-    }
-    async with httpx.AsyncClient() as client:
-        result = await client.get(URL, params=params)
+async def get_weather(client: httpx.AsyncClient, city: str) -> int:
+    params = {"key": API_KEY, "q": city}
+    result = await client.get(URL, params=params)
 
     json_result = result.json()
     temp = json_result["current"]["temp_c"]

@@ -57,7 +57,10 @@ async def update_city(db: AsyncSession, city_id: int, city: dict):
     return None
 
 
-async def delete_city(db: AsyncSession, city_id: int,):
+async def delete_city(
+    db: AsyncSession,
+    city_id: int,
+):
     query = select(models.City).where(models.City.id == city_id)
     deleted_city = await db.execute(query)
     deleted_city = deleted_city.fetchone()
