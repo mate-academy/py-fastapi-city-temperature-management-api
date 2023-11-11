@@ -32,4 +32,3 @@ uvicorn main:app --reload
 ## 📚 Documentation
 ___
 Please take a look at the API documentation for details on available endpoints, request/response formats, and examples. The documentation can be accessed at http://localhost:8000/docs when the application is running.
-
