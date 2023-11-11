@@ -8,7 +8,7 @@ class TemperatureBase(BaseModel):
     temperature: float
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TemperatureRead(TemperatureBase):
