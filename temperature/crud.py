@@ -1,36 +1,40 @@
 from datetime import datetime
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select, insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from temperature import models
 
 
-def get_all_temperatures(db: Session):
-    return db.query(models.Temperature).all()
+async def get_all_temperatures(db: AsyncSession):
+    query = select(models.Temperature)
+    temperatures = await db.execute(query)
+    return [temperature[0] for temperature in temperatures.fetchall()]
 
 
-def get_temperature_by_city_id(db: Session, city_id: int):
-    return (
-        db.query(models.Temperature)
+async def get_temperature_by_city_id(db: AsyncSession, city_id: int):
+    query = (
+        select(models.Temperature)
         .filter(models.Temperature.city_id == city_id)
         .first()
     )
+    temperature = await db.execute(query)
+    return temperature
 
 
-def create_temperature(
-        db: Session,
+async def create_temperature(
+        db: AsyncSession,
         city_id: int,
         date_time: datetime,
         temperature: float
 ):
-    db_temperature = models.Temperature(
+    query = insert(models.Temperature).values(
         city_id=city_id,
         date_time=date_time,
         temperature=temperature
     )
 
-    db.add(db_temperature)
-    db.commit()
-    db.refresh(db_temperature)
-
-    return db_temperature
+    result = await db.execute(query)
+    await db.commit()
+    await db.refresh(result)
+    return result
