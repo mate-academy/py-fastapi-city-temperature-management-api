@@ -33,7 +33,6 @@ def get_city_by_name(database: Session, city_name: int):
     return city
 
 
-
 def delete_city(database: Session, city_id: int):
     db_city = get_city(database, city_id)
     if db_city:

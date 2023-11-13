@@ -24,10 +24,7 @@ async def update_temperature(
         db: AsyncSession = Depends(get_db)
 ):
     cities = await get_all_cities(db=db)
-    await asyncio.gather(*[
-        temperature_for_specific_city(city=city, db=db)
-        for city in cities
-    ])
+    temperature_for_specific_city(cities=cities, db=db)
 
     await db.commit()
 

@@ -10,8 +10,7 @@ async def list_temperatures(db: AsyncSession):
 
     if temperature_list is not None:
         return [temperature[0] for temperature in temperature_list]
-    else:
-        return []
+    return []
 
 
 async def retrieve_temperature(db: AsyncSession, city_id: int):
