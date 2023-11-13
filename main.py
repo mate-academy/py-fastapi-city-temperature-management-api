@@ -7,12 +7,6 @@ app = FastAPI()
 app.include_router(city_router)
 app.include_router(temperature_router)
 
-
-@app.get("/")
-def root() -> dict:
-    return {"message": "Hello world"}
-
-
 if __name__ == "__main__":
     import uvicorn
 

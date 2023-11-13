@@ -3,6 +3,7 @@ import httpx
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
+from city.models import DBCity
 from temperature.models import DBTemperature
 
 load_dotenv()
@@ -36,8 +37,6 @@ async def fetch_temperature(city_name):
 
 
 async def update_temperatures(db: Session):
-    from city.models import DBCity
-    from temperature.models import DBTemperature
 
     cities = db.query(DBCity).all()
 

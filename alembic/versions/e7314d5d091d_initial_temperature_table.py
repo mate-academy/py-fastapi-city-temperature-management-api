@@ -30,4 +30,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    pass
+    op.drop_index(op.f("ix_temperature_id"), table_name="temperature")
+    op.drop_table("temperature")
