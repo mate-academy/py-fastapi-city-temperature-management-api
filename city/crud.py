@@ -40,7 +40,7 @@ async def create_city(db: AsyncSession, city: schemas.CityBase):
 async def update_city(db: AsyncSession, city_id: int, city: schemas.CityBase):
     db_city = await get_city_by_id(db=db, city_id=city_id)
 
-    if db_city is None:
+    if db_city is not None:
         for key, value in city.model_dump().items():
             setattr(db_city, key, value)
 
