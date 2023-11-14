@@ -13,13 +13,13 @@ def read_cities(db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/temperatures/{city_id}", response_model=list[schemas.Temperature]
+    "/temperatures/{city_id}/", response_model=list[schemas.Temperature]
 )
 def read_temperature_by_city(city_id: int, db: Session = Depends(get_db)):
     return crud.get_temperatures_by_city(db=db, city_id=city_id)
 
 
-@router.post("/temperatures/update", response_model=schemas.UpdateResponse)
+@router.post("/temperatures/update/", response_model=schemas.UpdateResponse)
 def update_temperatures(db: Session = Depends(get_db)):
     try:
         crud.fetch_temperature_data(db)

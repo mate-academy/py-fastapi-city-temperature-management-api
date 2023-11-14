@@ -27,7 +27,7 @@ def read_single_city(city_id: int, db: Session = Depends(get_db)):
     return db_city
 
 
-@router.put("/cities/{city_id}", response_model=schemas.City)
+@router.put("/cities/{city_id}/", response_model=schemas.City)
 def update_city(
     city_id: int, city: schemas.City, db: Session = Depends(get_db)
 ):
@@ -40,7 +40,7 @@ def update_city(
     return updated_city
 
 
-@router.delete("/cities/{city_id}")
+@router.delete("/cities/{city_id}/")
 def delete_city(city_id: int, db: Session = Depends(get_db)):
     city_to_delete = crud.delete_city(db=db, city_id=city_id)
 

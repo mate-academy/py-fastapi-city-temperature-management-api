@@ -6,11 +6,3 @@ app = FastAPI()
 
 app.include_router(city_router)
 app.include_router(temperature_router)
-
-
-@app.get("/")
-def root() -> dict:
-    return {
-        "endpoints": "/cities/, /cities/{city_id}, /temperatures/, "
-                     "/temperatures/?city_id={city_id}, /temperatures/update/"
-    }
