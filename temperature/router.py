@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -37,16 +38,21 @@ async def create_temperatures(db: AsyncSession = Depends(get_db)) -> None:
     local_parameters = parameters
 
     async with AsyncClient() as client:
+        tasks = []
+
         for city in cities:
             local_parameters["q"] = city.name
             response = await client.get(BASE_URL, params=local_parameters)
             response = response.json()
-
-            await crud.create_temperature(
-                db=db,
-                city_id=city.id,
-                date_time=datetime.strptime(
-                    response["current"]["last_updated"], "%Y-%m-%d %H:%M"
-                ),
-                temperature=response["current"]["temp_c"],
+            tasks.append(
+                crud.create_temperature(
+                    db=db,
+                    city_id=city.id,
+                    date_time=datetime.strptime(
+                        response["current"]["last_updated"], "%Y-%m-%d %H:%M"
+                    ),
+                    temperature=response["current"]["temp_c"],
+                )
             )
+
+        await asyncio.gather(*tasks)
