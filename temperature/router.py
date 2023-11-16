@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from city import models as city_models
 from dependencies import get_db
 from settings import settings
 from city.crud import get_all_cities
@@ -42,17 +43,25 @@ async def create_temperatures(db: AsyncSession = Depends(get_db)) -> None:
 
         for city in cities:
             local_parameters["q"] = city.name
-            response = await client.get(BASE_URL, params=local_parameters)
-            response = response.json()
-            tasks.append(
-                crud.create_temperature(
-                    db=db,
-                    city_id=city.id,
-                    date_time=datetime.strptime(
-                        response["current"]["last_updated"], "%Y-%m-%d %H:%M"
-                    ),
-                    temperature=response["current"]["temp_c"],
-                )
-            )
+            tasks.append(create_temperature(db, client, city, local_parameters))
 
         await asyncio.gather(*tasks)
+
+
+async def create_temperature(
+    db: AsyncSession,
+    client: AsyncClient,
+    city: city_models.City,
+    local_parameters: dict,
+) -> None:
+    response = await client.get(BASE_URL, params=local_parameters)
+    response = response.json()
+
+    await crud.create_temperature(
+        db=db,
+        city_id=city.id,
+        date_time=datetime.strptime(
+            response["current"]["last_updated"], "%Y-%m-%d %H:%M"
+        ),
+        temperature=response["current"]["temp_c"],
+    )
