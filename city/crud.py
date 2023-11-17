@@ -35,7 +35,7 @@ async def get_city(db: AsyncSession, city_id: int) -> City | Any:
 async def create_city(
         db: AsyncSession,
         city: schemas.CityCreateSerializer
-) -> City:
+) -> dict:
     query = insert(City).values(
         name=city.name, additional_info=city.additional_info
     )
@@ -48,12 +48,12 @@ async def create_city(
 
 async def update_city(
         db: AsyncSession,
-        city_data: schemas.CityCreateSerializer,
+        city_data: schemas.CityBaseSerializer,
         city_id: int
 ) -> City:
-    db_city = await get_city(db, city_id=city_id)
+    db_city = await get_city(db=db, city_id=city_id)
     for attr, value in city_data.model_dump().items():
-        setattr(city_data, attr, value)
+        setattr(db_city, attr, value)
 
     await db.commit()
     await db.refresh(db_city)

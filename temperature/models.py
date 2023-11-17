@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
+from city.models import City
 from database import Base
 
 
@@ -12,4 +13,4 @@ class Temperature(Base):
     date_time = Column(DateTime, nullable=False)
     temperature = Column(Float, nullable=False)
 
-    city = relationship("City", back_populates="temperature")
+    city = relationship(City)

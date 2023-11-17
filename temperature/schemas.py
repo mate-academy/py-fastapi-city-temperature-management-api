@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 
-from city.schemas import City
+from city.schemas import CitySerializer
 
 
 class TemperatureBaseSerializer(BaseModel):
@@ -15,7 +15,7 @@ class TemperatureCreateSerializer(TemperatureBaseSerializer):
 
 class TemperatureSerializer(TemperatureBaseSerializer):
     id: int
-    city: City
+    city: CitySerializer
 
     class Config:
         orm_mode = True
