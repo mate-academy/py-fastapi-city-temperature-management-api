@@ -1,10 +1,10 @@
+from datetime import datetime
 from typing import Any, Sequence
 
 from fastapi import HTTPException
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from temperature import schemas
 from temperature.models import Temperature
 
 
@@ -34,15 +34,17 @@ async def get_temperature_by_city_id(db: AsyncSession, city_id: int) -> Temperat
 
 async def create_temperature_by_city(
         db: AsyncSession,
-        temperature: schemas.TemperatureCreateSerializer
-) -> dict:
+        city_id: int,
+        date_time: datetime,
+        temperature: float
+):
     query = insert(Temperature).values(
-        city_id=temperature.city_id,
-        date_time=temperature.date_time,
-        temperature=temperature.temperature
+        city_id=city_id,
+        date_time=date_time,
+        temperature=temperature
     )
     result = await db.execute(query)
     await db.commit()
-    response = {**temperature.model_dump(), "id": result.lastrowid}
+    await db.refresh(result)
 
-    return response
+    return result
