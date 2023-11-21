@@ -35,4 +35,4 @@ async def update_temperature_for_all_cities(
         db: AsyncSession = Depends(get_db)
 ) -> dict:
     await crud.update_temperatures(db=db)
-    return {"temperatures": "update"}
+    return {"response": "update"}
