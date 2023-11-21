@@ -1,7 +1,5 @@
-from typing import Any, Sequence
-
 from fastapi import HTTPException
-from sqlalchemy import select, insert
+from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from city import schemas
@@ -12,13 +10,13 @@ async def get_all_cities(
         db: AsyncSession,
         skip: int = 0,
         limit: int = 100
-) -> Sequence[City | Any]:
+):
     query = select(City).offset(skip).limit(limit)
     city_list = await db.execute(query)
     return city_list.scalars().all()
 
 
-async def get_city(db: AsyncSession, city_id: int) -> City | Any:
+async def get_city(db: AsyncSession, city_id: int):
     query = select(City).where(City.id == city_id)
     response = await db.execute(query)
     city = response.scalars().first()
@@ -35,15 +33,13 @@ async def get_city(db: AsyncSession, city_id: int) -> City | Any:
 async def create_city(
         db: AsyncSession,
         city: schemas.CityCreateSerializer
-) -> dict:
-    query = insert(City).values(
-        name=city.name, additional_info=city.additional_info
-    )
-    result = await db.execute(query)
+):
+    new_city = City(**city.model_dump())
+    db.add(new_city)
     await db.commit()
-    response = {**city.model_dump(), "id": result.lastrowid}
+    await db.refresh(new_city)
 
-    return response
+    return new_city
 
 
 async def update_city(

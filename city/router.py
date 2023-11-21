@@ -5,6 +5,7 @@ from . import crud
 from . import schemas
 from dependencies import get_db
 
+
 router = APIRouter()
 
 
@@ -36,7 +37,9 @@ async def update_city(
         city_data: schemas.CityBaseSerializer,
         db: AsyncSession = Depends(get_db)
 ):
-    return await crud.update_city(db=db, city_id=city_id, city_data=city_data)
+    return await crud.update_city(
+        db=db, city_id=city_id, city_data=city_data
+    )
 
 
 @router.delete("/cities/{city_id}")

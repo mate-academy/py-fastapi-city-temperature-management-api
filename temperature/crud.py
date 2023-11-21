@@ -1,27 +1,30 @@
 from datetime import datetime
-from typing import Any, Sequence
 
 from fastapi import HTTPException
-from sqlalchemy import select, insert
+from sqlalchemy import desc
+from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from city.models import City
 from temperature.models import Temperature
+from temperature.create_temp_func import create_temperature
 
 
 async def get_all_temperatures(
         db: AsyncSession,
         skip: int = 0,
         limit: int = 100
-) -> Sequence[Temperature | Any]:
+):
     query = select(Temperature).offset(skip).limit(limit)
     temperatures_list = await db.execute(query)
     return temperatures_list.scalars().all()
 
 
-async def get_temperature_by_city_id(db: AsyncSession, city_id: int) -> Temperature | Any:
-    query = select(Temperature).where(Temperature.city_id == city_id)
-    response = await db.execute(query)
-    temperature = response.scalars().first()
+async def get_temperature_by_city_id(db: AsyncSession, city_id: int):
+    query = (select(Temperature)
+             .where(Temperature.city_id == city_id)
+             .order_by(desc(Temperature.date_time)))
+    temperature = await db.execute(query)
 
     if temperature is None:
         raise HTTPException(
@@ -29,22 +32,22 @@ async def get_temperature_by_city_id(db: AsyncSession, city_id: int) -> Temperat
             detail=f"The city with id {city_id} does not exist"
         )
 
-    return temperature
+    return temperature.scalar()
 
 
-async def create_temperature_by_city(
+async def update_temperatures(
         db: AsyncSession,
-        city_id: int,
-        date_time: datetime,
-        temperature: float
 ):
-    query = insert(Temperature).values(
-        city_id=city_id,
-        date_time=date_time,
-        temperature=temperature
-    )
-    result = await db.execute(query)
-    await db.commit()
-    await db.refresh(result)
+    cities = await db.execute(select(City))
 
-    return result
+    for city in cities.scalars():
+        city_temp = await create_temperature(city.name)
+        city_datetime = datetime.utcnow()
+
+        db.add(Temperature(
+            city_id=city.id,
+            date_time=city_datetime,
+            temperature=city_temp)
+        )
+
+    await db.commit()

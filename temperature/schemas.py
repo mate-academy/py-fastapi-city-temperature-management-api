@@ -8,6 +8,14 @@ class TemperatureBaseSerializer(BaseModel):
     temperature: float
 
 
+class TemperatureCreateSerializer(TemperatureBaseSerializer):
+    pass
+
+
+class TemperatureUpdateSerializer(BaseModel):
+    message: str
+
+
 class TemperatureSerializer(TemperatureBaseSerializer):
     id: int
 
