@@ -14,13 +14,15 @@ async def get_all_temperatures(
         db: AsyncSession,
         skip: int = 0,
         limit: int = 100
-):
+) -> list[dict]:
     query = select(Temperature).offset(skip).limit(limit)
     temperatures_list = await db.execute(query)
     return temperatures_list.scalars().all()
 
 
-async def get_temperature_by_city_id(db: AsyncSession, city_id: int):
+async def get_temperature_by_city_id(
+        db: AsyncSession, city_id: int
+) -> dict:
     query = (select(Temperature)
              .where(Temperature.city_id == city_id)
              .order_by(desc(Temperature.date_time)))
@@ -37,7 +39,7 @@ async def get_temperature_by_city_id(db: AsyncSession, city_id: int):
 
 async def update_temperatures(
         db: AsyncSession,
-):
+) -> None:
     cities = await db.execute(select(City))
 
     for city in cities.scalars():
