@@ -33,6 +33,7 @@ git clone https://github.com/AndriyKy/py-fastapi-city-temperature-management-api
 python3.11 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 ```
 3. Run the migration: `alembic upgrade head`.
-4. Run the FastAPI server: `uvicorn src.main:app --reload`.
+4. Create an `.env` file from the `.env.sample` and fill it with required variables.
+5. Run the FastAPI server: `uvicorn src.main:app --reload`.
 
 Explore the powerful features of this FastAPI application for managing city and temperature data effortlessly!
