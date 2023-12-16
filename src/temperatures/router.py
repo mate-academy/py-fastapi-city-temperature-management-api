@@ -51,7 +51,6 @@ async def fetch_temperatures(
             )
         ]
     cities = [{"id": city.id, "name": city.name} for city in all_cities]
-    print(cities)
     temperatures = await fetch_temperatures_for_all_cities(cities)
     await create_temperatures(db, temperatures)
     return temperatures

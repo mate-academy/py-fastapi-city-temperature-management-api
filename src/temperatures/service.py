@@ -11,7 +11,6 @@ async def _fetch_temperature(
     session: ClientSession, city: dict[str, int | str]
 ) -> TemperatureCreate | FetchTemperatureError:
     params = {"q": city["name"], "key": settings.WEATHERAPI_KEY}
-    print(params)
     async with session.get(settings.WEATHER_URL, params=params) as response:
         response_json = await response.json()
         if error := response_json.get("error"):
