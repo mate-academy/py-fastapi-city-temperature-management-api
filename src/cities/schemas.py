@@ -21,4 +21,4 @@ class City(CityBase):
 class CRUDDetails(BaseModel):
     id: int | None
     message: str = ""
-    status: Literal["success", "does_not_exists", "failure"]
+    status: Literal["success", "does_not_exist", "failure"]

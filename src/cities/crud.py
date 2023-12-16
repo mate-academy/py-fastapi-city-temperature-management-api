@@ -35,5 +35,5 @@ async def delete_city_by_id(db: AsyncSession, city_id: int) -> CRUDDetails:
     success = bool(result.rowcount)
     await db.commit()
     return CRUDDetails(
-        id=city_id, status="success" if success else "does_not_exists"
+        id=city_id, status="success" if success else "does_not_exist"
     )
