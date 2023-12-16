@@ -1,30 +1,23 @@
-from fastapi import HTTPException
 from sqlalchemy import insert, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.exceptions import FetchTemperatureError
 from src.temperatures.models import DBTemperature
-from src.temperatures.schemas import Temperature, TemperatureCreate
+from src.temperatures.schemas import TemperatureCreate
 
 
-async def get_all_temperatures(db: AsyncSession) -> list[Temperature]:
+async def get_all_temperatures(db: AsyncSession) -> list[DBTemperature]:
     query = select(DBTemperature)
     temperature_list = await db.execute(query)
-    return [temperature[0] for temperature in temperature_list.fetchall()]
+    return temperature_list.scalars()
 
 
-async def get_temperature_by_city_id(
+async def get_temperatures_by_city_id(
     city_id: int, db: AsyncSession
-) -> Temperature:
+) -> list[DBTemperature]:
     query = select(DBTemperature).where(DBTemperature.city_id == city_id)
     temperature = await db.execute(query)
-    if not (temperature := temperature.first()):
-        raise HTTPException(
-            status_code=404,
-            detail=f"There is no city with the ID {city_id}.",
-        )
-
-    return temperature[0]
+    return temperature.scalars()
 
 
 async def create_temperatures(
