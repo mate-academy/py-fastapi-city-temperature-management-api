@@ -7,7 +7,7 @@ from src.exceptions import FetchTemperatureError
 from src.temperatures.crud import (
     create_temperatures,
     get_all_temperatures,
-    get_temperature_by_city_id,
+    get_temperatures_by_city_id,
 )
 from src.temperatures.models import DBTemperature
 from src.temperatures.schemas import Temperature, TemperatureCreate
@@ -27,12 +27,12 @@ async def read_temperatures(
     return await get_all_temperatures(db)
 
 
-@router.get("/{city_id}", response_model=Temperature)
-async def read_temperature_by_city_id(
+@router.get("/{city_id}", response_model=list[Temperature])
+async def read_temperatures_by_city_id(
     city_id: int,
     db: AsyncSession = Depends(get_db),
-) -> DBTemperature:
-    return await get_temperature_by_city_id(city_id, db)
+) -> list[DBTemperature]:
+    return await get_temperatures_by_city_id(city_id, db)
 
 
 @router.post(
