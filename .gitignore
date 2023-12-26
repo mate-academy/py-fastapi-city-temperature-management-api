@@ -127,6 +127,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+.idea
+city_temperature_management.db
 
 # Spyder project settings
 .spyderproject
