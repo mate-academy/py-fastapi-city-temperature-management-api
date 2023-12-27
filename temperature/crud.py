@@ -1,30 +1,32 @@
-from sqlalchemy.orm import Session
-import models, schemas
-from utils import get_weather
 from datetime import datetime
-from city.models import City
+
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
+from sqlalchemy.future import select
+
+from city.crud import get_all_city
+from . import models
+from .utils import get_weather
 
 
-def all_temperature(db: Session):
-    return db.query(models.Temperature).all()
+async def all_temperature(db: AsyncSession):
+    result = await db.execute(select(models.Temperature))
+    return result.scalars().all()
 
 
-def all_temperature_by_city_id(db: Session, city_id: int):
-    return db.query(models.Temperature).filter(models.Temperature.city_id == city_id).all()
+async def all_temperature_by_city_id(db: AsyncSession, city_id: int):
+    result = await db.execute(select(models.Temperature)
+                                .filter(models.Temperature.city_id == city_id))
+    return result.scalars().all()
 
 
-async def update_all_city_temperature(db: Session):
-    cities = db.query(City).all()
+async def update_all_city_temperature(db: AsyncSession):
+    cities = await get_all_city(db=db)
+
+    temperature_records = []
 
     for city in cities:
-        try:
-            temperature_result = await get_weather(city.name)
-        except Exception as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Error fetching temperature for {city.name}: {str(e)}",
-            )
+        temperature_result = await get_weather(city.name)
 
         db_temperature = models.Temperature(
             city_id=city.id,
@@ -32,8 +34,9 @@ async def update_all_city_temperature(db: Session):
             temperature=temperature_result,
         )
 
-        db.add(db_temperature)
-        db.commit()
-        db.refresh(db_temperature)
+        temperature_records.append(db_temperature)
 
-    return True
+    db.add_all(temperature_records)
+    await db.commit()
+
+    return "Temperature updated"

@@ -1,39 +1,40 @@
 import os
 
-import requests
+import httpx
 from dotenv import load_dotenv
 from urllib.parse import urlparse
 
 load_dotenv()
 
 URL = "https://api.weatherapi.com/v1/current.json"
-FILTERING = "Paris"
-API_KEY = os.environ.get("API_KEY")
+API_KEY = os.environ.get("WEATHER_API_KEY")
 
 
-def get_weather(
-        filtering: str,
-        url: str = URL,
-        api_key: str = API_KEY
-) -> None:
-    """Get weather from API and print it."""
+async def get_weather(location: str, url: str = URL, api_key: str = API_KEY) -> tuple:
+    """Get weather from API and return the result as a tuple (success, result)."""
     parsed_url = urlparse(url)
     domain = parsed_url.netloc
     msg_api = f"You need to visit {domain} and get your API key."
     msg_doc = f"You may visit {domain}/docs/ for more information."
 
-    params = {"key": api_key, "q": filtering}
+    if not api_key:
+        return False, f"No API key provided. {msg_api}"
 
-    try:
-        res = requests.get(url, params=params).json()
-    except Exception as e:
-        print(e, msg_doc)
-        return
+    params = {"key": api_key, "q": location}
 
-    if "error" not in res:
-        temp = res["current"]["temp_c"]
-        return temp
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+            weather_data = response.json()
 
-    else:
-        print(msg_api, res["error"]["message"])
-        return
+            if "error" not in weather_data:
+                temperature = weather_data["current"]["temp_c"]
+                return temperature
+            else:
+                return f"API error: {weather_data['error']['message']}"
+
+        except httpx.RequestError as e:
+            return False, f"Request error: {e}. {msg_doc}"
+        except Exception as e:
+            return False, f"Unexpected error: {e}. {msg_doc}"
