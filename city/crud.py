@@ -12,16 +12,14 @@ async def get_all_cities(db: AsyncSession):
 
 async def get_cities_by_name(db: AsyncSession, name: str):
     query = select(City).filter(City.name == name)
-    city = await db.execute(query).first()
-    city = city.fetchall()
-    return city[0]
+    city = await db.execute(query)
+    return city.scalar_one_or_none()
 
 
 async def get_city_by_id(db: AsyncSession, city_id: int):
     query = select(City).filter(City.id == city_id)
-    city = await db.execute(query).first()
-    city = city.fetchall()
-    return city[0]
+    city = await db.execute(query)
+    return city.scalar_one_or_none()
 
 
 async def create_city(db: AsyncSession, city: CityCreate):
