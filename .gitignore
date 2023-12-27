@@ -33,7 +33,7 @@ MANIFEST
 *.spec
 .env
 .idea/
-temperature.db
+temerature.db
 
 # Installer logs
 pip-log.txt
