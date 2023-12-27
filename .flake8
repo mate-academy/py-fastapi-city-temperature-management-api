@@ -1,0 +1,6 @@
+[flake8]
+inline-quotes = "
+exclude =
+    .git,
+    __pycache__,
+    .venv
