@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException, status
 from sqlalchemy.future import select
 
 from city.crud import get_all_city
