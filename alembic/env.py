@@ -7,7 +7,10 @@ from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-from city.models import Base
+from database import Base
+
+from city.models import *
+from temperature.models import *
 
 config = context.config
 
