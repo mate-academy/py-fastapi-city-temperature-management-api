@@ -32,7 +32,10 @@ def create_temperature(
     return crud.create_temperature(db=db, temperature=temperature)
 
 
-@router.post("/temperatures/update")
-async def trigger_update_temperatures(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+@router.post("/temperatures/update/")
+async def trigger_update_temperatures(
+        background_tasks: BackgroundTasks,
+        db: Session = Depends(get_db)
+):
     background_tasks.add_task(update_temperatures, db=db)
     return {"message": "Temperature update triggered."}

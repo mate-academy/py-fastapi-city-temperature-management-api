@@ -2,8 +2,9 @@ import os
 import httpx
 
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, HTTPException
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from starlette import status
 
 from city import crud as city_crud
 from temperature import crud as temperature_crud
@@ -24,12 +25,15 @@ async def update_temperatures(db: Session):
         temperature = await fetch_temperature(city_name)
 
         if temperature is not None:
-            temperature_model = models.Temperature(city_id=city_id, temperature=temperature)
+            temperature_model = models.Temperature(
+                city_id=city_id,
+                temperature=temperature
+            )
             temperature_crud.create_temperature(db, temperature_model)
 
 
 # Function to fetch temperature based on city name using www.weatherapi.com API
-async def fetch_temperature(city_name: str) -> int:
+async def fetch_temperature(city_name: str) -> int | None:
     api_url = BASE_URL + f"key={API_KEY}" + "&" + f"q={city_name}"
 
     async with httpx.AsyncClient() as client:
@@ -40,6 +44,12 @@ async def fetch_temperature(city_name: str) -> int:
         temperature = data["current"]["temp_c"]
         return round(temperature)
     else:
+        error_message = (
+            f"Failed to fetch temperature data for {city_name}. "
+            f"Status code: {response.status_code}"
+        )
+        print(error_message)
         raise HTTPException(
-            status_code=400, detail=f"Failed to fetch temperature data for {city_name}. Status code: {response.status_code}"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=error_message
         )
