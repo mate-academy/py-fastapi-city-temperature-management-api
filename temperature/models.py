@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from datetime import datetime
+
+from sqlalchemy import Column, Integer, DateTime, ForeignKey, func
 from sqlalchemy.orm import relationship
 
 from city.models import City
@@ -10,7 +12,12 @@ class Temperature(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     city_id = Column(Integer, ForeignKey("city.id"))
-    date_time = Column(DateTime, nullable=False)
+    date_time = Column(
+        DateTime,
+        default=func.now(),
+        onupdate=func.now(),
+        nullable=False
+    )
     temperature = Column(Integer, nullable=False)
 
-    city = relationship(City, back_populates="temperatures")
+    city = relationship(City)
