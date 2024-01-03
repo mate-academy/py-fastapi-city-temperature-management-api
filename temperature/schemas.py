@@ -1,9 +1,10 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class BaseTemperature(BaseModel):
     city_id: int
-    date_time: str
+    date_time: datetime
     temperature: float
 
 

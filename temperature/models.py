@@ -11,4 +11,4 @@ class DBTemperature(Base):
     date_time = Column(DateTime)
     temperature = Column(Float)
 
-    city = relationship("DBCity", back_populates="temperatures")
+    city = relationship("DBCity", uselist=True)
