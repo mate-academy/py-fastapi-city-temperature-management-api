@@ -1,0 +1,27 @@
+Temperature management API
+
+## Description
+It is API for checking weather in different cities, you can add city and then check temperature there.
+If city is not exist, there won't any info about temperature there.
+
+## Guideline how to use
+
+1) Open terminal and clone the repo (`https://github.com/prochigor/py-fastapi-city-temperature-management-api.git`)
+
+2) Open cloned folder
+
+3) Activate venv on the project
+- Open terminal and write:
+  - On Windows: (`python -m venv venv`) and (`venv\Scripts\activate`)
+  - On Mac: (`python3 -m venv venv`) and (`source venv/bin/activate`)
+
+4) Install needed requirements:
+  Write in terminal (`pip install -r requirements.txt`)
+
+5) Migrate
+  Write in terminal (`alembic upgrade head`)
+
+6) Run server in terminal
+  Write in terminal `uvicorn main:app --host 0.0.0.0 --port 8000 --reload`
+
+7) Open page with link in terminal
