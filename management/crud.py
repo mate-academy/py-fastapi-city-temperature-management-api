@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Sequence
 
 from fastapi import HTTPException
 from sqlalchemy import select, insert, update
@@ -15,12 +16,12 @@ async def check_if_city_exists_in_db(db: AsyncSession, city_id: int) -> None:
         raise HTTPException(status_code=404, detail="City not found")
 
 
-async def get_cities(db: AsyncSession):
+async def get_cities(db: AsyncSession) -> Sequence:
     result = await db.execute(select(models.City))
     return result.scalars().all()
 
 
-async def get_city(db: AsyncSession, city_id: int):
+async def get_city(db: AsyncSession, city_id: int) -> Sequence:
     await check_if_city_exists_in_db(db=db, city_id=city_id)
     query = select(models.City).where(models.City.id == city_id)
     city = await db.execute(query)
@@ -28,7 +29,7 @@ async def get_city(db: AsyncSession, city_id: int):
     return city_data
 
 
-async def create_city(db: AsyncSession, city: schemas.CityCreate):
+async def create_city(db: AsyncSession, city: schemas.CityCreate) -> dict:
     query = insert(models.City).values(
         name=city.name, additional_info=city.additional_info
     )
@@ -42,7 +43,7 @@ async def update_city(
         db: AsyncSession,
         city_id: int,
         city: schemas.CityUpdate
-):
+) -> None:
     await check_if_city_exists_in_db(db=db, city_id=city_id)
     query = (
         update(models.City)
@@ -55,7 +56,7 @@ async def update_city(
     await db.commit()
 
 
-async def delete_city(db: AsyncSession, city_id: int):
+async def delete_city(db: AsyncSession, city_id: int) -> str | None:
     db_city = await db.execute(
         select(models.City)
         .filter(models.City.id == city_id)
@@ -69,12 +70,12 @@ async def delete_city(db: AsyncSession, city_id: int):
         return "City deleted"
 
 
-async def temperatures(db: AsyncSession):
+async def temperatures(db: AsyncSession) -> Sequence:
     result = await db.execute(select(models.Temperature))
     return result.scalars().all()
 
 
-async def temperatures_by_city_id(db: AsyncSession, city_id: int):
+async def temperatures_by_city_id(db: AsyncSession, city_id: int) -> Sequence:
     result = await db.execute(
         select(models.Temperature)
         .filter(models.Temperature.city_id == city_id)
@@ -82,7 +83,7 @@ async def temperatures_by_city_id(db: AsyncSession, city_id: int):
     return result.scalars().all()
 
 
-async def update_cities_temperature(db: AsyncSession):
+async def update_cities_temperature(db: AsyncSession) -> str:
     cities = await get_cities(db=db)
 
     temperature_records = []
