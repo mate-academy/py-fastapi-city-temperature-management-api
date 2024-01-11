@@ -28,5 +28,3 @@ async def get_weather_temperatures(db: AsyncSession) -> dict:
             temperature_records[city.id] = weather_data
 
     return temperature_records
-
-

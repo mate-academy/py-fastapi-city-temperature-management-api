@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependencies import get_db
 from . import crud, schemas
-from .weather import get_weather_temperatures
+from temperature.weather import get_weather_temperatures
 
 
 router = APIRouter()
