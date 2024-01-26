@@ -33,7 +33,7 @@ async def get_temperature_for_all_cities(db: Session):
     return zip(cities, temperatures)
 
 
-def update_or_create_temperature(
+async def update_or_create_temperature(
         db: Session, city_id: int, temperature: int
 ) -> None:
     old_temperature = db.query(DBTemperature).filter(

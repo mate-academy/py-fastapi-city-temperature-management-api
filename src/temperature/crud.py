@@ -9,7 +9,7 @@ def get_temperature_list(
         skip: int,
         limit: int,
         city_id: int | None = None
-) -> list[DBTemperature]:
+) -> list[DBTemperature] | DBTemperature | None:
     temperatures = db.query(DBTemperature)
 
     if city_id:
@@ -18,11 +18,11 @@ def get_temperature_list(
     return temperatures.offset(skip).limit(limit).all()
 
 
-async def update_cities_temperature(db: Session):
+async def update_cities_temperature(db: Session) -> list[DBTemperature]:
     data_to_update = await get_temperature_for_all_cities(db=db)
 
     for city, temperature in data_to_update:
-        update_or_create_temperature(
+        await update_or_create_temperature(
             db=db, city_id=city.id, temperature=temperature
         )
     db.commit()
