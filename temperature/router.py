@@ -25,10 +25,12 @@ def get_all_temperature(db: Session = Depends(get_db)):
 @router.get("/{temperature_id}", response_model=Temperature)
 def get_temperature(temperature_id: int,
                     db: Session = Depends(get_db)):
-    temperature = crud.get_temperature(db=db, temperature_id=temperature_id)
-    if temperature is None:
-        raise HTTPException(status_code=404, detail="Temperature not found")
-    return temperature
+    return crud.get_temperature(db=db, temperature_id=temperature_id)
+
+
+@router.get("/{city_id}")
+def get_temperature_by_city_name(city_id: int, db: Session = Depends(get_db)):
+    return crud.get_temperature_by_city_name(db=db, city_id=city_id)
 
 
 @router.post("/update")
