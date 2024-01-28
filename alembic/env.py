@@ -5,6 +5,9 @@ from sqlalchemy import pool
 
 from alembic import context
 
+from city.models import *
+from temperature.models import *
+
 from city.models import Base
 
 from city.models import DBCity

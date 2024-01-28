@@ -11,10 +11,10 @@ class DBCity(Base):
     additional_info = Column(String(500))
 
 
-class DBTemperature(Base):
-    __tablename__ = "Temperature"
-
-    id = Column(Integer, primary_key=True, index=True)
-    city_id = Column(Integer, ForeignKey("City.id"))
-    data_time = Column(DateTime, default=datetime.utcnow, nullable=True)
-    temperature = Column(Float)
+# class DBTemperature(Base):
+#     __tablename__ = "Temperature"
+#
+#     id = Column(Integer, primary_key=True, index=True)
+#     city_id = Column(Integer, ForeignKey("City.id"))
+#     data_time = Column(DateTime, default=datetime.utcnow, nullable=True)
+#     temperature = Column(Float)

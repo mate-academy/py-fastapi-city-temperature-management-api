@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
-from city.models import DBTemperature, DBCity
+from city.models import DBCity
+from temperature.models import DBTemperature
 from fastapi import HTTPException
 
 
