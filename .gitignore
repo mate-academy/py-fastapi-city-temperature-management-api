@@ -3,6 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.idea
+city_temperature.db
+alembic/
+alembic.ini
+
+requirements.txt
+
+
+
 # C extensions
 *.so
 
