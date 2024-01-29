@@ -5,6 +5,12 @@ __pycache__/
 
 .idea
 city_temperature.db
+alembic/
+alembic.ini
+
+requirements.txt
+
+
 
 # C extensions
 *.so
