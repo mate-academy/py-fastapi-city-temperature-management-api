@@ -18,12 +18,19 @@ async def get_city(city_id: int, db: AsyncSession = Depends(get_db)):
 
 
 @router.post("/cities/", response_model=schemas.City)
-async def create_city(city: schemas.CityCreate, db: AsyncSession = Depends(get_db)):
+async def create_city(
+        city: schemas.CityCreate,
+        db: AsyncSession = Depends(get_db)
+):
     return await crud.create_city(db=db, city=city)
 
 
 @router.put("/cities/{city_id}/", response_model=schemas.City)
-async def update_city(city_id: int, city: schemas.CityUpdate, db: AsyncSession = Depends(get_db)):
+async def update_city(
+        city_id: int,
+        city: schemas.CityUpdate,
+        db: AsyncSession = Depends(get_db)
+):
     return await crud.update_city(city_id=city_id, city=city, db=db)
 
 

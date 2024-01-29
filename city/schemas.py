@@ -17,7 +17,7 @@ class City(BaseModel):
 
     class Config:
         from_attributes = True
-        
+
 
 class CityUpdate(CityBase):
     pass
