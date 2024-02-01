@@ -8,15 +8,23 @@ from src.dependencies import get_db, common_parameters
 from . import crud
 
 
-router = APIRouter(prefix="/temperatures")
+router = APIRouter(prefix="/temperatures", tags=["temperatures"])
 
 
 @router.get("/", response_model=list[Temperature])
 def read_temperature_list(
         parameters: Annotated[dict, Depends(common_parameters)],
+        db: Session = Depends(get_db)
+) -> list[Temperature]:
+    return crud.get_temperature_list(db=db, **parameters)
+
+
+@router.get("/{city_id}/", response_model=Temperature)
+def rear_temperature_by_city_id(
+        city_id: int,
         db: Session = Depends(get_db),
-        city_id: int | None = None) -> list[Temperature] | None:
-    return crud.get_temperature_list(db=db, city_id=city_id, **parameters)
+):
+    return crud.get_temperature_for_a_city(db, city_id)
 
 
 @router.post("/update/", response_model=list[Temperature])

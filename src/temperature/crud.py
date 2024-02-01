@@ -8,14 +8,14 @@ def get_temperature_list(
         db: Session,
         skip: int,
         limit: int,
-        city_id: int | None = None
-) -> list[DBTemperature] | DBTemperature | None:
+) -> list[DBTemperature]:
     temperatures = db.query(DBTemperature)
 
-    if city_id:
-        temperatures = temperatures.filter(DBTemperature.city_id == city_id).first()
-
     return temperatures.offset(skip).limit(limit).all()
+
+
+def get_temperature_for_a_city(db: Session, city_id: int) -> DBTemperature | None:
+    return db.query(DBTemperature).filter(DBTemperature.city_id == city_id).first()
 
 
 async def update_cities_temperature(db: Session) -> list[DBTemperature]:
