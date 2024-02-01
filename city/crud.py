@@ -6,13 +6,20 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from city import models, schemas
 
 
-async def get_city_by_name_or_none(name: str, db: AsyncSession) -> models.City | None:
-    city = await db.execute(select(models.City).filter(models.City.name == name))  # type: ignore
-    return city.scalars().first()
+async def get_city_by_name_or_none(
+    name: str, db: AsyncSession
+) -> models.DBCity | HTTPException:
+    result = await db.execute(select(models.DBCity).filter(models.DBCity.name == name))  # type: ignore
+    city = result.scalars().first()
+    if city is None:
+        return HTTPException(status_code=404, detail="City not found")
+    return city  # type: ignore
 
 
-async def get_city_by_id_or_404(city_id: int, db: AsyncSession) -> models.City:
-    result = await db.execute(select(models.City).filter(models.City.id == city_id))  # type: ignore
+async def get_city_by_id_or_404(
+    city_id: int, db: AsyncSession
+) -> models.DBCity | HTTPException:
+    result = await db.execute(select(models.DBCity).filter(models.DBCity.id == city_id))  # type: ignore
     city = result.scalars().first()
     if city is None:
         raise HTTPException(status_code=404, detail="City not found")
@@ -21,14 +28,14 @@ async def get_city_by_id_or_404(city_id: int, db: AsyncSession) -> models.City:
 
 async def create_city_or_exist(
     city: schemas.CityCreate, db: AsyncSession
-) -> models.City:
+) -> models.DBCity:
     existing_city = await get_city_by_name_or_none(city.name, db)
     if existing_city:
         raise HTTPException(
             status_code=400, detail="City with this name already exists"
         )
 
-    new_city = models.City(
+    new_city = models.DBCity(
         name=city.name,
         additional_info=city.additional_info,
     )
@@ -38,8 +45,8 @@ async def create_city_or_exist(
     return new_city
 
 
-async def get_all_city(db: AsyncSession) -> Sequence[models.City]:
-    result = await db.execute(select(models.City))  # type: ignore
+async def get_all_cities(db: AsyncSession) -> Sequence[models.DBCity]:
+    result = await db.execute(select(models.DBCity))  # type: ignore
     return result.scalars().all()
 
 
