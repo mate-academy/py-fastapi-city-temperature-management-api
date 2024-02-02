@@ -20,7 +20,7 @@ def read_temperature_list(
 
 
 @router.get("/{city_id}/", response_model=Temperature)
-def rear_temperature_by_city_id(
+def read_temperature_by_city_id(
         city_id: int,
         db: Session = Depends(get_db),
 ):
