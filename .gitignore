@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.idea
+city_catalog.db
 
 # C extensions
 *.so
