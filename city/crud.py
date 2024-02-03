@@ -1,5 +1,6 @@
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from city import models, schemas
 from dependencies import CommonsDep
@@ -10,11 +11,11 @@ async def get_all_cities(
 ) -> list[models.CityDB]:
     query = select(models.CityDB)
     if commons:
-        if "q" in commons and commons["q"]:
+        if commons.get("q"):
             query = query.filter(models.CityDB.name.ilike(f"%{commons['q']}%"))
         query = query.offset(commons.get("skip", 0)).limit(commons.get("limit", 100))
     cities_list = await db.execute(query)
-    return [city[0] for city in cities_list.fetchall()]
+    return [city for city in cities_list.scalars()]
 
 
 async def create_city(db: AsyncSession, city: schemas.CityCreate) -> dict[str, None]:
@@ -27,7 +28,7 @@ async def create_city(db: AsyncSession, city: schemas.CityCreate) -> dict[str, N
     return resp
 
 
-async def get_city_by_id(db: AsyncSession, city_id: int) -> models.CityDB:
+async def get_city_by_id(db: AsyncSession, city_id: int) -> models.CityDB | None:
     query = select(models.CityDB).filter(models.CityDB.id == city_id)
     result = await db.execute(query)
 
@@ -55,13 +56,19 @@ async def update_city(
 
 
 async def delete_city(db: AsyncSession, city_id: int):
-    query = select(models.CityDB).filter(models.CityDB.id == city_id)
+    query = (
+        select(models.CityDB)
+        .options(joinedload(models.CityDB.temperature))
+        .filter(models.CityDB.id == city_id)
+    )
     result = await db.execute(query)
 
-    city = result.scalar_one_or_none()
+    city = result.scalars().first()
 
     if city:
+        for temperature in city.temperature:
+            await db.delete(temperature)
         await db.delete(city)
         await db.commit()
 
-    return city
+    return "City has been deleted successfully"
