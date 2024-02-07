@@ -20,5 +20,5 @@ async def fetch_current_temperature(city: str) -> float | HTTPException:
         if response.status_code == 200:
             temperature_data = response.json()
             return temperature_data["main"]["temp"]
-        else:
-            raise HTTPException(status_code=response.status_code, detail="Failed to fetch temperature data")
+
+        raise HTTPException(status_code=response.status_code, detail="Failed to fetch temperature data")
