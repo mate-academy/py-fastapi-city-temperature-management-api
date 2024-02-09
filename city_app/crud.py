@@ -58,5 +58,4 @@ async def delete_city(
     query = delete(models.City).where(models.City.id == city_id)
     result = await db.execute(query)
     await db.commit()
-    print(result)
     return result.rowcount
