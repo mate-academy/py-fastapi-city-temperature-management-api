@@ -6,7 +6,7 @@ from database import Base
 
 
 class Temperature(Base):
-    __tablename__ = "temperature"
+    __tablename__ = "temperatures"
 
     id = Column(Integer, primary_key=True, index=True)
     date_time = Column(DateTime(timezone=True))

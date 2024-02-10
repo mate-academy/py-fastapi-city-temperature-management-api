@@ -32,7 +32,9 @@ async def get_temperature_by_city_id(
         city_id: int,
         db: AsyncSession = Depends(get_db)
 ) -> schemas.TemperatureCity | HTTPException:
-    db_temperature = await crud.get_temperature_by_city_id(db=db, city_id=city_id)
+    db_temperature = await crud.get_temperature_by_city_id(
+        db=db, city_id=city_id
+    )
 
     if db_temperature is None:
         return HTTPException(status_code=404, detail="City not found")
