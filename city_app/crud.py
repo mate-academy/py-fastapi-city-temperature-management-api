@@ -8,8 +8,9 @@ from . import models, schemas
 
 async def get_all_cities(db: AsyncSession) -> list[models.City]:
     query = select(models.City)
-    city_list = await db.execute(query)
-    return [city[0] for city in city_list.fetchall()]
+    result = await db.execute(query)
+    city_list = result.scalars()
+    return city_list
 
 
 async def create_city(
@@ -32,7 +33,7 @@ async def get_city_by_id(
     )
     result = await db.execute(query)
     city = result.scalars().first()
-    return city if city else None
+    return city
 
 
 async def update_city(

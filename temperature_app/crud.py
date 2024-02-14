@@ -36,8 +36,9 @@ async def create_update_temperature(
 
 async def get_all_temperatures(db: AsyncSession) -> List[Temperature]:
     query = select(Temperature)
-    temperature_list = await db.execute(query)
-    return [temp[0] for temp in temperature_list.fetchall()]
+    result = await db.execute(query)
+    temperature_list = result.scalars()
+    return temperature_list
 
 
 async def get_temperatures_for_city(
