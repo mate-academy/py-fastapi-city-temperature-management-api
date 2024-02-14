@@ -1,23 +1,41 @@
-from typing import List, Any, Dict
+from datetime import datetime
+from typing import List
 
-from sqlalchemy import insert, select
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from temperature_app import models, schemas
+
+from temperature_app.models import Temperature
 
 
-async def create_temperature(
+async def create_update_temperature(
         db: AsyncSession,
-        temperature: schemas.TemperatureCreate
-) -> Dict[str, Any]:
-    query = insert(models.Temperature).values(**temperature.dict())
-    result = await db.execute(query)
+        data: dict,
+):
+    for city_id, temperature in data.items():
+        query = select(Temperature).filter(
+            Temperature.city_id == city_id
+        )
+        result = await db.execute(query)
+        temp_object = result.scalar()
+
+        if not temp_object:
+            new_object = Temperature(
+                city_id=city_id,
+                date_time=datetime.now(),
+                temperature=temperature
+            )
+            db.add(new_object)
+        else:
+            temp_object.temperature = temperature
+            temp_object.date_time = datetime.now()
+
     await db.commit()
-    response = {"id": result.lastrowid, **temperature.model_dump()}
-    return response
+
+    return {"message": "Temperature updated successfully"}
 
 
-async def get_all_temperatures(db: AsyncSession) -> List[models.Temperature]:
-    query = select(models.Temperature)
+async def get_all_temperatures(db: AsyncSession) -> List[Temperature]:
+    query = select(Temperature)
     temperature_list = await db.execute(query)
     return [temp[0] for temp in temperature_list.fetchall()]
 
@@ -25,7 +43,8 @@ async def get_all_temperatures(db: AsyncSession) -> List[models.Temperature]:
 async def get_temperatures_for_city(
         db: AsyncSession,
         city_id: int
-) -> List[models.Temperature]:
-    query = select(models.Temperature, models.Temperature.city_id).where(models.Temperature.city_id == city_id)
+) -> Temperature:
+    query = select(Temperature).filter(Temperature.city_id == city_id)
     result = await db.execute(query)
-    return [temp[0] for temp in result.fetchall()]
+    temperature = result.scalar()
+    return temperature
