@@ -38,7 +38,9 @@ async def update_city(
         city_update: schemas.CityCreate,
         db: AsyncSession = Depends(get_db)
 ) -> schemas.City:
-    city = await crud.update_city(db=db, city_id=city_id, city_update=city_update)
+    city = await crud.update_city(
+        db=db, city_id=city_id, city_update=city_update
+    )
     if city is None:
         raise HTTPException(status_code=404, detail="City not found")
     return city

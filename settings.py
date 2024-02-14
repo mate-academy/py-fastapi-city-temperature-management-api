@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str | None = "sqlite+aiosqlite:///./city_temp.db"
 
     WEATHER_API_KEY: str = os.getenv("WEATHER_API_KEY")
+
     class Config:
         case_sensitive = True
         env_file = ".env"

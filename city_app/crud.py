@@ -27,7 +27,9 @@ async def get_city_by_id(
         db: AsyncSession,
         city_id: int
 ) -> models.City | None:
-    query = select(models.City, models.City.id).where(models.City.id == city_id)
+    query = select(models.City, models.City.id).where(
+        models.City.id == city_id
+    )
     result = await db.execute(query)
     city = result.scalars().first()
     return city if city else None
