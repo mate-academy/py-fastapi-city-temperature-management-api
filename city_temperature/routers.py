@@ -19,7 +19,7 @@ def get_db() -> Session:
 
 @router.post("/cities/", response_model=schemas.CityRead)
 def create_city(city: schemas.CityCreateUpdate, db: Session = Depends(get_db)):
-    db_city = crud.create_city(db, city=city)
+    db_city = crud.create_city(db=db, city=city)
     if db_city is None:
         raise HTTPException(status_code=400, detail="Values are invalid")
     return db_city
@@ -53,8 +53,8 @@ def delete_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/temperatures/update/")
-async def update_city(db: Session = Depends(get_db)):
-    return await crud.update_temperature(db=db)
+async def update_cities_temperature(db: Session = Depends(get_db)):
+    return await crud.update_temperatures(db=db)
 
 
 @router.get("/temperatures/", response_model=list[schemas.TemperatureRead])

@@ -3,7 +3,7 @@ import os
 import aiohttp
 from dotenv import load_dotenv
 from fastapi import HTTPException
-from typing import List, Type
+from typing import List
 
 from sqlalchemy.orm import Session
 
@@ -23,15 +23,15 @@ def create_city(db: Session, city: schemas.CityCreateUpdate) -> models.City:
     return db_city
 
 
-def get_cities(db: Session) -> List[Type[models.City]]:
+def get_cities(db: Session) -> List[models.City]:
     return db.query(models.City).all()
 
 
-def get_city(db: Session, city_id: int) -> Type[models.City]:
+def get_city(db: Session, city_id: int) -> models.City:
     return db.query(models.City).filter(models.City.id == city_id).first()
 
 
-def update_city(db: Session, city_id: int, updated_city: schemas.CityCreateUpdate) -> Type[models.City]:
+def update_city(db: Session, city_id: int, updated_city: schemas.CityCreateUpdate) -> models.City:
     db_city = db.query(models.City).filter(models.City.id == city_id).first()
 
     if db_city:
@@ -51,7 +51,7 @@ def delete_city(db: Session, city_id: int) -> None:
     db.commit()
 
 
-def get_temperatures(db: Session, city_id: int | None = None) -> List[Type[models.Temperature]]:
+def get_temperatures(db: Session, city_id: int | None = None) -> List[models.Temperature]:
     queryset = db.query(models.Temperature)
 
     if city_id is not None:
@@ -69,15 +69,15 @@ def create_temperature(db: Session, temperature: schemas.TemperatureCreateUpdate
         db_temperature = models.Temperature(
             temperature=temperature.temperature, city_id=temperature.city_id
         )
+        db.add(db_temperature)
     else:
         db_temperature.temperature = temperature.temperature
 
-    db.add(db_temperature)
     db.commit()
     db.refresh(db_temperature)
 
 
-async def update_temperature(db: Session) -> None:
+async def update_temperatures(db: Session) -> None:
     try:
         api_key = os.getenv("API_KEY")
 
