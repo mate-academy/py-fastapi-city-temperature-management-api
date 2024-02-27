@@ -17,12 +17,7 @@ def read_cities(db: Session = Depends(get_db)):
 
 @router.get("/{city_id}", response_model=schemas.City)
 def read_city(city_id: int, db: Session = Depends(get_db)):
-    db_city = service.get_city(db=db, city_id=city_id)
-
-    if db_city is None:
-        raise HTTPException(status_code=404, detail="City not found")
-
-    return db_city
+    return service.get_city(db=db, city_id=city_id)
 
 
 @router.post("/", response_model=schemas.City)

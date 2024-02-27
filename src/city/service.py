@@ -23,17 +23,19 @@ def create_city(db: Session, city: schemas.CityCreate):
 
 
 def get_city(db: Session, city_id: int):
-    return db.query(models.City).filter(models.City.id == city_id).first()
-
-
-def update_city(db: Session, city_id: int, city: schemas.CityCreate):
-    db_city = get_city(db=db, city_id=city_id)
+    db_city = db.query(models.City).filter(models.City.id == city_id).first()
 
     if db_city is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"There is not city with id: {city_id}"
+            detail=f"City with id '{city_id}' not found"
         )
+
+    return db_city
+
+
+def update_city(db: Session, city_id: int, city: schemas.CityCreate):
+    db_city = get_city(db=db, city_id=city_id)
 
     db_city.name = city.name
     db_city.additional_info = city.additional_info
