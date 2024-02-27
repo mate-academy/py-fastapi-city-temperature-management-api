@@ -9,5 +9,9 @@ app.include_router(city_router)
 
 @app.get("/")
 def read_root():
-    return {"message": "Hello Bigger App"}
+    return {
+        "message": "It isFastAPI application "
+                   "that manages city data and "
+                   "their corresponding temperature data",
+    }
 
