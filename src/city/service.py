@@ -1,54 +1,64 @@
 from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, insert, update
 
 from src.city import models
 from src.city import schemas
 
 
-def get_all_cities(db: Session):
-    return db.query(models.City).all()
+async def get_all_cities(db: AsyncSession):
+    query = select(models.City)
+    cities = await db.execute(query)
+
+    return [city[0] for city in cities.fetchall()]
 
 
-def create_city(db: Session, city: schemas.CityCreate):
-    db_city = models.City(
+async def create_city(db: AsyncSession, city: schemas.CityCreate):
+    query = insert(models.City).values(
         name=city.name,
         additional_info=city.additional_info
     )
 
-    db.add(db_city)
-    db.commit()
-    db.refresh(db_city)
+    result = await db.execute(query)
+    await db.commit()
+    resp = {**city.model_dump(), "id": result.lastrowid}
 
-    return db_city
+    return resp
 
 
-def get_city(db: Session, city_id: int):
-    db_city = db.query(models.City).filter(models.City.id == city_id).first()
+async def get_city(db: AsyncSession, city_id: int):
+    query = select(models.City).filter_by(id=city_id)
 
-    if db_city is None:
+    db_city = await db.execute(query)
+
+    city = db_city.scalar()
+
+    if city is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"City with id '{city_id}' not found"
         )
 
-    return db_city
+    return city
 
 
-def update_city(db: Session, city_id: int, city: schemas.CityCreate):
-    db_city = get_city(db=db, city_id=city_id)
+async def update_city(db: AsyncSession, city_id: int, city: schemas.CityCreate):
+    city_db = await get_city(db=db, city_id=city_id)
 
-    db_city.name = city.name
-    db_city.additional_info = city.additional_info
+    for field, value in city.dict(exclude_unset=True).items():
+        setattr(city_db, field, value)
 
-    db.commit()
+    await db.commit()
 
-    return db_city
+    await db.refresh(city_db)
+
+    return city_db
 
 
-def delete_city(db: Session, city_id: int):
-    db_city = get_city(db=db, city_id=city_id)
+async def delete_city(db: AsyncSession, city_id: int):
+    city_db = await get_city(db=db, city_id=city_id)
 
-    db.delete(db_city)
-    db.commit()
+    await db.delete(city_db)
+    await db.commit()
 
     return {"message": "City deleted successfully"}
