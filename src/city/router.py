@@ -18,7 +18,7 @@ async def read_cities(db: AsyncSession = DBDepend):
     return await service.get_all_cities(db=db)
 
 
-@router.get("/{city_id}", response_model=schemas.City)
+@router.get("/{city_id}/", response_model=schemas.City)
 async def read_city(city_id: int, db: AsyncSession = DBDepend):
     return await service.get_city(db=db, city_id=city_id)
 
@@ -31,7 +31,7 @@ async def create_city(
     return await service.create_city(db=db, city=city)
 
 
-@router.put("/{city_id}", response_model=schemas.City)
+@router.put("/{city_id}/", response_model=schemas.City)
 async def update_city(
     city_id: int,
     city: schemas.CityCreate,
@@ -40,7 +40,7 @@ async def update_city(
     return await service.update_city(db=db, city_id=city_id, city=city)
 
 
-@router.delete("/{city_id}")
+@router.delete("/{city_id}/")
 async def delete_city(
     city_id: int,
     db: AsyncSession = DBDepend,
