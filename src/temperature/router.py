@@ -13,7 +13,7 @@ router = APIRouter(
 DBDepend = Depends(get_db)
 
 
-@router.post("/update")
+@router.post("/update/")
 async def update_temperatures(db: AsyncSession = DBDepend):
     return await service.update_temperature_for_cities(db=db)
 
