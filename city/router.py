@@ -23,7 +23,7 @@ def create_city(city: schemas.CityCreate,
 @router.delete("/cities/{city_id}/")
 def delete_city(city_id: int,
                 db: Session = Depends(get_db),
-                ):
+                ) -> dict[str, str]:
     city = crud.get_city_by_id(db=db, city_id=city_id)
     if city:
         crud.delete_city(db=db, city_id=city_id)
@@ -34,7 +34,7 @@ def delete_city(city_id: int,
 @router.get("/cities/{city_id}/", response_model=schemas.City)
 def read_city(city_id: int,
               db: Session = Depends(get_db),
-              ):
+              ) -> schemas.City:
     city = crud.get_city_by_id(db=db, city_id=city_id)
     if city:
         return city

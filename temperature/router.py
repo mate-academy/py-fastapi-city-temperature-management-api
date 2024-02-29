@@ -15,7 +15,8 @@ api_key = os.getenv("WEATHER_API_KEY")
 router = APIRouter()
 
 
-async def fetch_temperature(city_name, api_key):
+async def fetch_temperature(city_name: str,
+                            ) -> float | None:
     url = f"https://api.weatherapi.com/v1/current.json?key={api_key}&q={city_name}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
@@ -28,12 +29,13 @@ async def fetch_temperature(city_name, api_key):
 
 
 @router.post("/update/")
-async def update_temperatures(db: Session = Depends(get_db)):
+async def update_temperatures(db: Session = Depends(get_db),
+                              ) -> dict[str, str]:
     cities = get_all_cities(db)
     tasks = []
 
     for city in cities:
-        tasks.append(fetch_temperature(city.name, api_key))
+        tasks.append(fetch_temperature(city.name))
 
     temperatures = await asyncio.gather(*tasks)
 
