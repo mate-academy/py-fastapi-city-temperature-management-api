@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dependencies import get_db
-from temperature import crud, schemas
-from temperature.fetching_temp_time import fetch_current_temperature_and_time_for_cities
+from dependenci import get_db
+from temperature import crud, schems
+from temperature.fetching_temp_timer import fetch_current_temperature_and_time_for_cities
 
 router = APIRouter()
 
 
-@router.get("/temperatures/list/", response_model=list[schemas.Temperature])
+@router.get("/temperatures/list/", response_model=list[schems.Temperature])
 async def get_all_temperatures(db: AsyncSession = Depends(get_db)):
     return await crud.get_all_temperatures(db=db)
 

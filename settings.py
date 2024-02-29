@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from pydantic.v1 import BaseSettings
 from dotenv import load_dotenv
