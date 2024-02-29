@@ -17,7 +17,7 @@ class TemperatureCreate(TemperatureBase):
 
 class Temperature(TemperatureBase):
     id: int
-    city = City
+    city: City
 
     class Config:
         orm_mode = True

@@ -5,7 +5,7 @@ from city.models import DBCity
 from database import Base
 
 
-class Temperature(Base):
+class DBTemperature(Base):
     __tablename__ = "temperatures"
 
     id = Column(Integer, primary_key=True, index=True)
