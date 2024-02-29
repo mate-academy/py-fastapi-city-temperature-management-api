@@ -15,22 +15,24 @@ api_key = os.getenv("WEATHER_API_KEY")
 router = APIRouter()
 
 
-async def fetch_temperature(city_name: str,
-                            ) -> float | None:
+async def fetch_temperature(
+    city_name: str,
+) -> float | None:
     url = f"https://api.weatherapi.com/v1/current.json?key={api_key}&q={city_name}"
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             if response.status == 200:
                 data = await response.json()
-                current = data.get('current')
+                current = data.get("current")
                 if current:
-                    return current.get('temp_c')
+                    return current.get("temp_c")
             return None
 
 
 @router.post("/update/")
-async def update_temperatures(db: Session = Depends(get_db),
-                              ) -> dict[str, str]:
+async def update_temperatures(
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
     cities = get_all_cities(db)
     tasks = []
 
@@ -42,9 +44,7 @@ async def update_temperatures(db: Session = Depends(get_db),
     for city, temperature in zip(cities, temperatures):
         if temperature:
             db_temperature = schemas.TemperatureCreate(
-                date_time=datetime.now(),
-                temperature=temperature,
-                city_id=city.id
+                date_time=datetime.now(), temperature=temperature, city_id=city.id
             )
             crud.create_temperature(db=db, temperature=db_temperature)
 
@@ -52,13 +52,15 @@ async def update_temperatures(db: Session = Depends(get_db),
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-def read_temperatures(db: Session = Depends(get_db),
-                      ) -> list[schemas.Temperature]:
+def read_temperatures(
+    db: Session = Depends(get_db),
+) -> list[schemas.Temperature]:
     return crud.get_all_temperatures(db=db)
 
 
 @router.get("/temperatures/{city_id}/", response_model=list[schemas.Temperature])
-def read_temperatures_by_city(city_id: int,
-                              db: Session = Depends(get_db),
-                              ) -> list[schemas.Temperature]:
+def read_temperatures_by_city(
+    city_id: int,
+    db: Session = Depends(get_db),
+) -> list[schemas.Temperature]:
     return crud.get_temperatures_by_city(db=db, city_id=city_id)
