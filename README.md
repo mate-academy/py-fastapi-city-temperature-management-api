@@ -1,7 +1,7 @@
 # Fast Api City Temperature
 
 Simple temperature api ,
-structured by city 
+structured by city
 
 ## installation
 
@@ -15,4 +15,3 @@ source venv/bin/activate
 pip install requirements.txt
 python uvicorn main:app --reload # starts fast api project
 ```
-

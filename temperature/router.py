@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 async def fetch_temperature(
-    city_name: str,
+        city_name: str,
 ) -> float | None:
     url = f"https://api.weatherapi.com/v1/current.json?key={api_key}&q={city_name}"
     async with aiohttp.ClientSession() as session:
@@ -31,7 +31,7 @@ async def fetch_temperature(
 
 @router.post("/update/")
 async def update_temperatures(
-    db: Session = Depends(get_db),
+        db: Session = Depends(get_db),
 ) -> dict[str, str]:
     cities = get_all_cities(db)
     tasks = []
@@ -53,14 +53,14 @@ async def update_temperatures(
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
 def read_temperatures(
-    db: Session = Depends(get_db),
+        db: Session = Depends(get_db),
 ) -> list[schemas.Temperature]:
     return crud.get_all_temperatures(db=db)
 
 
 @router.get("/temperatures/{city_id}/", response_model=list[schemas.Temperature])
 def read_temperatures_by_city(
-    city_id: int,
-    db: Session = Depends(get_db),
+        city_id: int,
+        db: Session = Depends(get_db),
 ) -> list[schemas.Temperature]:
     return crud.get_temperatures_by_city(db=db, city_id=city_id)
