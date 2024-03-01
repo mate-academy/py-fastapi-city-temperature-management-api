@@ -54,5 +54,5 @@ def delete_city(
     db: Session,
     city_id: int,
 ) -> None:
-    (db.query(models.DBCity).filter(models.DBCity.id == city_id).delete())
+    db.query(models.DBCity).filter(models.DBCity.id == city_id).delete()
     db.commit()
