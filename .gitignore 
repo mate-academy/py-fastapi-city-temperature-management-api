@@ -1,0 +1,4 @@
+venv
+.idea
+**__pycache__
+city_temperature.db
