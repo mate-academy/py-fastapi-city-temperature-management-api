@@ -2,14 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 
 from db.database import Base
-
-
-class DBCity(Base):
-    __tablename__ = "city"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False, unique=True)
-    additional_info = Column(String)
+from city.models import DBCity
 
 
 class DBTemperature(Base):
@@ -20,5 +13,3 @@ class DBTemperature(Base):
     date_time = Column(Date, nullable=False)
     temperature = Column(String(10))
     city = relationship(DBCity)
-
-
