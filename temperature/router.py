@@ -25,7 +25,7 @@ def get_temperatures_by_city_id(city_id: int, db: Session = Depends(get_db)):
         return crud.get_temperature_by_city_id(db, city_id)
 
 
-@router.post("/temperature/", response_model=schemas.TemperatureDefault,
+@router.post("/temperatures/update", response_model=schemas.TemperatureDefault,
              status_code=201,
              response_description="Successful Response. Record of temperature was created")
 def create_temperature(new_temperature_record: schemas.TemperatureCreate, db: Session = Depends(get_db)):
