@@ -5,19 +5,19 @@ from city import schemas
 
 
 def get_city_by_name(db: Session, name: str):
-    return db.query(models.DBCity).filter(models.DBCity.name == name).first()
+    return db.query(models.City).filter(models.City.name == name).first()
 
 
 def get_city_by_id(db: Session, input_id: int):
-    return db.query(models.DBCity).filter(models.DBCity.id == input_id).first()
+    return db.query(models.City).filter(models.City.id == input_id).first()
 
 
 def get_all_cities(db: Session):
-    return db.query(models.DBCity).all()
+    return db.query(models.City).all()
 
 
 def create_city(db: Session, new_city: schemas.CityCreate):
-    db_city = models.DBCity(
+    db_city = models.City(
         name=new_city.name,
         additional_info=new_city.additional_info
     )

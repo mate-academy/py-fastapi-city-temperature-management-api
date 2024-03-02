@@ -37,7 +37,7 @@ def create_city(new_city: schemas.CityCreate, db: Session = Depends(get_db)):
     return crud.create_city(db, new_city)
 
 
-@router.put("/city/{id}", response_model=schemas.CityDefault,
+@router.put("/city/{city_id}", response_model=schemas.CityDefault,
             response_description="Successful Response. City was updated")
 def update_city(input_id: int, updated_city: schemas.CityCreate, db: Session = Depends(get_db)):
     db_city = crud.get_city_by_id(db, input_id)
@@ -49,7 +49,7 @@ def update_city(input_id: int, updated_city: schemas.CityCreate, db: Session = D
     return crud.update_city(db, input_id, updated_city)
 
 
-@router.delete("/city/{id}", response_model=schemas.CityDefault,
+@router.delete("/city/{city_id}", response_model=schemas.CityDefault,
                response_description="Successful Response. City was deleted")
 def delete_city_by_id(input_id: int, db: Session = Depends(get_db)):
     db_city = crud.get_city_by_id(db, input_id)
