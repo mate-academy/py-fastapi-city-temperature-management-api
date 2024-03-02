@@ -25,7 +25,8 @@ def get_city_by_id(input_id: int, db: Session = Depends(get_db)):
         return db_city
 
 
-@router.post("/city", response_model=schemas.CityDefault,
+@router.post("/cities", response_model=schemas.CityDefault,
+
              status_code=201,
              response_description="Successful Response. City was created")
 def create_city(new_city: schemas.CityCreate, db: Session = Depends(get_db)):
