@@ -8,7 +8,7 @@ from dependencies import get_db
 router = APIRouter()
 
 
-@router.get("/temperature", response_model=list[schemas.TemperatureDefault])
+@router.get("/temperatures", response_model=list[schemas.TemperatureDefault])
 def get_all_temperatures(db: Session = Depends(get_db)):
     return crud.get_all_temperatures(db)
 
