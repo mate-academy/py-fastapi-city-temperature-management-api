@@ -7,12 +7,12 @@ from dependencies import get_db
 router = APIRouter()
 
 
-@router.get("/cities/all", response_model=list[schemas.CityDefault])
+@router.get("/cities", response_model=list[schemas.CityDefault])
 def get_all_cities(db: Session = Depends(get_db)):
     return crud.get_all_cities(db)
 
 
-@router.get("/cities", response_model=schemas.CityDefault)
+@router.get("/cities/{city_id}", response_model=schemas.CityDefault)
 def get_city_by_id(input_id: int, db: Session = Depends(get_db)):
     db_city = crud.get_city_by_id(db, input_id)
     if not db_city:
