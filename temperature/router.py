@@ -13,7 +13,7 @@ def get_all_temperatures(db: Session = Depends(get_db)):
     return crud.get_all_temperatures(db)
 
 
-@router.get("/city/temperatures", response_model=list[schemas.TemperatureDefault])
+@router.get("/temperatures/city", response_model=list[schemas.TemperatureDefault])
 def get_temperatures_by_city_id(city_id: int, db: Session = Depends(get_db)):
     db_city_id = crud.get_city_id(db, city_id)
     if not db_city_id:
