@@ -13,12 +13,12 @@ def get_all_cities(db: Session = Depends(get_db)):
 
 
 @router.get("/cities/{city_id}", response_model=schemas.CityDefault)
-def get_city_by_id(input_id: int, db: Session = Depends(get_db)):
-    db_city = crud.get_city_by_id(db, input_id)
+def get_city_by_id(city_id: int, db: Session = Depends(get_db)):
+    db_city = crud.get_city_by_id(db, city_id)
     if not db_city:
         raise HTTPException(
             status_code=400,
-            detail=f"City with id={input_id} was not found"
+            detail=f"City with id={city_id} was not found"
         )
     else:
         return db_city
