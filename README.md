@@ -5,14 +5,14 @@ You are required to create a FastAPI application that manages city data and thei
 1. A CRUD (Create, Read, Update, Delete) API for managing city data.
 2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
 
-### Part 1: City CRUD API
+### Part 1: Temperature CRUD API
 
 1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
+2. Define a Pydantic model `Temperature` with the following fields:
     - `id`: a unique identifier for the city.
     - `name`: the name of the city.
     - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
+3. Implement a SQLite database using SQLAlchemy and create a corresponding `Temperature` table.
 4. Implement the following endpoints:
     - `POST /cities`: Create a new city.
     - `GET /cities`: Get a list of all cities.
