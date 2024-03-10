@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dependenci import get_db
-from temperature import crud, schems
+from temperature import crud, schemas
 from temperature.fetching_temp_timer import fetch_current_temperature_and_time_for_cities
 
 router = APIRouter()

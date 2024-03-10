@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 from typing import List, Dict
 
-from city import models, schems
+from city import models, schemas
 from dependenci import CommonsDep
 
 
