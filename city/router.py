@@ -45,7 +45,7 @@ async def update_city(
 
 
 @router.delete("/cities/{city_id}/")
-async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
+async def delete_city(citcreated_cityy_id: int, db: AsyncSession = Depends(get_db)):
     result = await crud.delete_city(db=db, city_id=city_id)
     if result:
         return result
