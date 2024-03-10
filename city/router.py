@@ -9,7 +9,7 @@ from dependenci import get_db, CommonsDep
 router = APIRouter()
 
 
-@router.get("/cities/", response_model=list[schemas.City])
+@router.get("/city/", response_model=list[schemas.City])
 async def read_cities(
     commons: CommonsDep, db: AsyncSession = Depends(get_db)
 ) -> list[models.CityDB]:
@@ -17,7 +17,7 @@ async def read_cities(
     return query
 
 
-@router.post("/cities/", response_model=schemas.City)
+@router.post("/city/", response_model=schemas.City)
 async def create_city(
     city: schemas.CityCreate, db: AsyncSession = Depends(get_db)
 ) -> dict[str | None]:
@@ -25,7 +25,7 @@ async def create_city(
     return created_city
 
 
-@router.get("/cities/{city_id}/", response_model=schemas.City)
+@router.get("/city/{city_id}/", response_model=schemas.City)
 async def get_city_by_id(
     city_id: int, db: AsyncSession = Depends(get_db)
 ) -> models.CityDB:
@@ -36,7 +36,7 @@ async def get_city_by_id(
         raise HTTPException(status_code=404, detail="City not found")
 
 
-@router.put("/cities/{city_id}/", response_model=schemas.City)
+@router.put("/city/{city_id}/", response_model=schemas.City)
 async def update_city(
     city_id: int, updated_city: schemas.CityUpdate, db: AsyncSession = Depends(get_db)
 ):
@@ -44,7 +44,7 @@ async def update_city(
     return result
 
 
-@router.delete("/cities/{city_id}/")
+@router.delete("/city/{city_id}/")
 async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
     result = await crud.delete_city(db=db, city_id=city_id)
     if result:
