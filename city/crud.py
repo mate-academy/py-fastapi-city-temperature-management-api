@@ -21,7 +21,7 @@ async def get_all_cities(
     return [city for city in cities_list.scalars()]
 
 
-async def create_city(db: AsyncSession, city: schems.CityCreate) -> Dict[str, None]:
+async def create_city(db: AsyncSession, city: schemas.CityCreate) -> Dict[str, None]:
     query = insert(models.CityDB).values(
         name=city.name, additional_info=city.additional_info
     )
@@ -41,7 +41,7 @@ async def get_city_by_id(db: AsyncSession, city_id: int) -> models.CityDB | None
 
 
 async def update_city(
-    db: AsyncSession, city_id: int, updated_city: schems.CityUpdate
+    db: AsyncSession, city_id: int, updated_city: schemas.CityUpdate
 ) -> models.CityDB:
     query = select(models.CityDB).filter(models.CityDB.id == city_id)
     result = await db.execute(query)

@@ -8,7 +8,7 @@ from temperature.fetching_temp_timer import fetch_current_temperature_and_time_f
 router = APIRouter()
 
 
-@router.get("/temperatures/list/", response_model=list[schems.Temperature])
+@router.get("/temperatures/list/", response_model=list[schemas.Temperature])
 async def get_all_temperatures(db: AsyncSession = Depends(get_db)):
     return await crud.get_all_temperatures(db=db)
 
