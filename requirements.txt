@@ -24,3 +24,5 @@ uvicorn==0.27.1
 yarl==1.9.4
 httpx==0.27.0
 sqlite3==0.0.1
+SQLAlchemy==2.0.28
+sqlalchemy-stubs==0.4
