@@ -12,3 +12,6 @@ class CreateCity(CityBase):
 
 class City(BaseModel):
     id: int
+
+    class Config:
+        orm_mode = True
