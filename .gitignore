@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+city_tempr.db
 *.py[cod]
 *$py.class
 .idea
