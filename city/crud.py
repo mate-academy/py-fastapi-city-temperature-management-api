@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from typing import List
 
-import schemas
+from . import schemas
 from .models import DBCity
 
 
