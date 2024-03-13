@@ -6,7 +6,7 @@ from settings import settings
 
 
 engine = create_async_engine(
-    settings.DATABASE_URL, connect_args={"check_same_thread": True}
+    settings.DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
 SessionLocal = sessionmaker(
