@@ -51,7 +51,7 @@ def update_city_by_id(
         city: schemas.CityCreate,
         city_id: int,
         db: Session = Depends(get_db)
-) -> schemas.City:
+) -> dict[str, str]:
 
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 

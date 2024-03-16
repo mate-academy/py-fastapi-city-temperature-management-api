@@ -1,17 +1,18 @@
 from sqlalchemy.orm import Session
 
-from temperature import models, schemas
+from temperature import schemas
+from temperature.models import Temperature
 
 
-def get_all_temperatures(db: Session) -> list[models.Temperature]:
-    return db.query(models.Temperature).all()
+def get_all_temperatures(db: Session) -> list[Temperature]:
+    return db.query(Temperature).all()
 
 
 def create_temperature(
         db: Session,
         temperature: schemas.TemperatureCreate
-) -> models.Temperature:
-    db_temperature = models.Temperature(
+) -> Temperature:
+    db_temperature = Temperature(
         city_id=temperature.city_id,
         date_time=temperature.date_time,
         temperature=temperature.temperature
@@ -26,9 +27,9 @@ def create_temperature(
 def get_temperature_by_city_id(
         db: Session,
         city_id: int
-) -> models.Temperature:
-    return db.query(models.Temperature).filter(
-            models.Temperature.city_id == city_id
+) -> Temperature:
+    return db.query(Temperature).filter(
+            Temperature.city_id == city_id
         ).first()
 
 
@@ -37,8 +38,8 @@ def update_temperature_by_id(
         temperature: schemas.TemperatureCreate,
         temperature_id: int
 ) -> dict[str, str]:
-    db.query(models.Temperature).filter(
-        models.Temperature.id == temperature_id
+    db.query(Temperature).filter(
+        Temperature.id == temperature_id
     ).update(
         {
             "city_id": temperature.city_id,
