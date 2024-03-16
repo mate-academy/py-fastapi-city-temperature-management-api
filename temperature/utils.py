@@ -10,7 +10,7 @@ URL = "https://api.weatherapi.com/v1/current.json?"
 API_KEY = os.environ.get("API_KEY")
 
 
-async def fetch_temperature(city_name: str):
+async def fetch_temperature(city_name: str) -> float:
     async with httpx.AsyncClient() as client:
         response = await client.get(
             URL,

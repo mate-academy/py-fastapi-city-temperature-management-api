@@ -13,7 +13,9 @@ router = APIRouter()
 
 
 @router.post("/temperatures/", response_model=list[schemas.Temperature])
-def create_temperatures(db: Session = Depends(get_db)):
+def create_temperatures(
+        db: Session = Depends(get_db)
+) -> list[schemas.Temperature]:
     сities = db.query(City).all()
 
     for city in сities:
@@ -43,12 +45,17 @@ def create_temperatures(db: Session = Depends(get_db)):
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-def read_temperatures(db: Session = Depends(get_db)):
+def read_temperatures(
+        db: Session = Depends(get_db)
+) -> list[schemas.Temperature]:
     return crud.get_all_temperatures(db=db)
 
 
 @router.get("/temperatures/{city_id}/", response_model=schemas.Temperature)
-def read_temperature_by_city_id(city_id: int, db: Session = Depends(get_db)):
+def read_temperature_by_city_id(
+        city_id: int,
+        db: Session = Depends(get_db)
+) -> schemas.Temperature:
     db_temperature = crud.get_temperature_by_city_id(db=db, city_id=city_id)
 
     if db_temperature is None:

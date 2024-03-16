@@ -11,7 +11,7 @@ router = APIRouter()
 def create_city(
     city: schemas.CityCreate,
     db: Session = Depends(get_db),
-):
+) -> schemas.City:
 
     db_city = crud.get_city_by_name(db=db, city_name=city.name)
 
@@ -25,7 +25,7 @@ def create_city(
 
 
 @router.get("/cities/", response_model=list[schemas.City])
-def read_cities(db: Session = Depends(get_db)):
+def read_cities(db: Session = Depends(get_db)) -> list[schemas.City]:
 
     cities = crud.get_all_cities(db=db)
 
@@ -33,7 +33,10 @@ def read_cities(db: Session = Depends(get_db)):
 
 
 @router.get("/cities/{city_id}/", response_model=schemas.City)
-def read_city_by_id(city_id: int, db: Session = Depends(get_db)):
+def read_city_by_id(
+        city_id: int,
+        db: Session = Depends(get_db)
+) -> schemas.City:
 
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
@@ -48,7 +51,7 @@ def update_city_by_id(
         city: schemas.CityCreate,
         city_id: int,
         db: Session = Depends(get_db)
-):
+) -> schemas.City:
 
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
@@ -59,7 +62,10 @@ def update_city_by_id(
 
 
 @router.delete("/cities/{city_id}/")
-def delete_city_by_id(city_id: int, db: Session = Depends(get_db)):
+def delete_city_by_id(
+        city_id: int,
+        db: Session = Depends(get_db)
+) -> dict[str, str]:
 
     db_city = crud.get_city_by_id(db=db, city_id=city_id)
 
