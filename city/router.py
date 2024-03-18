@@ -1,13 +1,14 @@
 from fastapi import (
     APIRouter,
-    HTTPException,
     status,
     Depends
 )
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
+# from paginations import pagination
 from dependencies import get_db
+from .utils import ensure_city_exist
 from . import crud, schemas
 
 
@@ -26,35 +27,18 @@ async def create_city(city: schemas.CreateCity, db: async_session):
 
 
 @router.get("/cities/{city_id}/", response_model=schemas.City)
+@ensure_city_exist
 async def get_city(db: async_session, city_id: int):
-    city = await crud.get_city(db=db, city_id=city_id)
-
-    if city:
-        return city
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="There is no city like that"
-    )
+    return await crud.get_city(db=db, city_id=city_id)
 
 
 @router.patch("/cities/{city_id}/", response_model=schemas.City)
-async def update_city(db: async_session, city: schemas.UpdateCity):
-    city = await crud.update_city(db=db, city=city)
-
-    if city:
-        return city
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="There is no city like that"
-    )
+@ensure_city_exist
+async def update_city(city_id: int, db: async_session, city: schemas.UpdateCity):
+    return await crud.update_city(db=db, city=city, city_id=city_id)
 
 
 @router.delete("/cities/{city_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@ensure_city_exist
 async def delete_city(db: async_session, city_id: int):
-    city = await crud.delete_city(db=db, city_id=city_id)
-
-    if not city:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="There is no city like that"
-        )
+    return await crud.delete_city(db=db, city_id=city_id)
