@@ -1,16 +1,16 @@
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from typing import List
 
+from dependencies import update_db_object
 from . import schemas
 from .models import DBCity
 
 
-async def get_all_cities(db: AsyncSession) -> List[DBCity]:
+async def get_all_cities(db: AsyncSession):
     query = select(DBCity)
     cities = await db.execute(query)
-    return [city[0] for city in cities.fetchall()]
+    return [city[0] for city in cities]
 
 
 async def create_city(
@@ -33,15 +33,17 @@ async def get_city(db: AsyncSession, city_id: int) -> DBCity | None:
     return city.scalars().first()
 
 
-async def update_city(db: AsyncSession, city: schemas.UpdateCity) -> DBCity | None:
-    db_city = await get_city(db=db, city_id=city.id)
+async def update_city(
+        db: AsyncSession, city_id: int, city: schemas.UpdateCity
+) -> schemas.City | None:
+
+    db_city = await get_city(db=db, city_id=city_id)
 
     if db_city:
-        db_city.name = city.name
-        db_city.additional_info = city.aadditional_info
-
-        await db.commit()
-        return db_city
+        db_city = await update_db_object(
+            db=db, current_object=db_city, new_object=city
+        )
+        return schemas.City.from_orm(db_city)
 
 
 async def delete_city(db: AsyncSession, city_id: int) -> DBCity | None:
