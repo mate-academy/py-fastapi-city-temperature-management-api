@@ -4,7 +4,7 @@ from typing import Optional
 
 class CityBase(BaseModel):
     name: str
-    additional_info: Optional[str] | None
+    additional_info: Optional[str] = None
 
 
 class CreateCity(CityBase):
@@ -12,8 +12,8 @@ class CreateCity(CityBase):
 
 
 class UpdateCity(BaseModel):
-    name: Optional[str] | None = None
-    additional_info: Optional[str] | None = None
+    name: Optional[str] = None
+    additional_info: Optional[str] = None
 
     class Config:
         from_attributes = True

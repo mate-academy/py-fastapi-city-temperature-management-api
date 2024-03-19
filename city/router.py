@@ -6,7 +6,6 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-# from paginations import pagination
 from dependencies import get_db
 from .utils import ensure_city_exist
 from . import crud, schemas

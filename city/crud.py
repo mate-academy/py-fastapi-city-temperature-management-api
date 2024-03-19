@@ -2,12 +2,12 @@ from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from dependencies import update_db_object
+from helper import update_db_object
 from . import schemas
 from .models import DBCity
 
 
-async def get_all_cities(db: AsyncSession):
+async def get_all_cities(db: AsyncSession) -> list[DBCity]:
     query = select(DBCity)
     cities = await db.execute(query)
     return [city[0] for city in cities]
