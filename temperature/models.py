@@ -7,7 +7,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from database import Base
+from project_engine.database import Base
 
 
 class DBTemperature(Base):

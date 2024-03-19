@@ -5,7 +5,7 @@ from sqlalchemy import insert
 from pydantic import ValidationError
 
 from city.crud import get_all_cities
-from settings import settings
+from project_engine.settings import settings
 from city.models import DBCity
 from .models import DBTemperature
 from .schemas import CreateTemperature
