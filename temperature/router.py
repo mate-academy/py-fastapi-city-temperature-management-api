@@ -6,7 +6,7 @@ from fastapi import (
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from dependencies import get_db
+from project_engine.dependencies import get_db
 from . import crud, scraper, schemas
 
 
