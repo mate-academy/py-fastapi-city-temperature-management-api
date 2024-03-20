@@ -33,7 +33,9 @@ async def get_city(db: async_session, city_id: int):
 
 @router.patch("/cities/{city_id}/", response_model=schemas.City)
 @ensure_city_exist
-async def update_city(city_id: int, db: async_session, city: schemas.UpdateCity):
+async def update_city(
+        city_id: int, db: async_session, city: schemas.UpdateCity
+):
     return await crud.update_city(db=db, city=city, city_id=city_id)
 
 
