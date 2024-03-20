@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-alembic/versions/
+alembic/versions/*
 city_tempr.db
 *.py[cod]
 *$py.class
