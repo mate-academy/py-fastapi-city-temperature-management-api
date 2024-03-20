@@ -25,9 +25,8 @@ external weather API.
 ```
     cp .env-sample .env
 ```
-3. Run command to create and run migration file
+3. Run command to run migration file
 ```
-    alembic revision -m "create tables"
     alembic upgrade head
 ```
 4. Run application
