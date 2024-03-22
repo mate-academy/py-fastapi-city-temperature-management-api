@@ -16,7 +16,7 @@ async def update_temperature(city_id: int,
     if not city:
         raise HTTPException(status_code=404, detail='City not found')
 
-    api_url = (f"https://api.openweathermap.org/data/2.5/weather?q={city.name}&appid=bb5878760b3f454b2ceaea8ed25f5021")  # noqa:E501
+    api_url = f"http://api.openweathermap.org/data/2.5/weather?q={city.name}&appid=bb5878760b3f454b2ceaea8ed25f5021"  # noqa:E501, E231
 
     async with aiohttp.ClientSession() as session:
         async with session.get(api_url) as response:
