@@ -17,7 +17,7 @@ class City(CityBase):
     temperatures: List['Temperature'] = []
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TemperatureBase(BaseModel):
@@ -34,7 +34,7 @@ class Temperature(TemperatureBase):
     city_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 City.update_forward_refs()
