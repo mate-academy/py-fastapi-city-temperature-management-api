@@ -1,0 +1,11 @@
+fastapi==0.79.0
+uvicorn[standard]==0.18.2
+sqlalchemy==1.4.27
+alembic==1.7.5
+pydantic==1.9.0
+httpx==0.23.0
+python-dotenv==0.20.0
+pytest==7.1.1
+pytest-asyncio==0.18.3
+databases==0.5.5
+aiofiles==0.8.0
