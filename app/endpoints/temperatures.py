@@ -11,7 +11,9 @@ router = APIRouter()
 
 
 @router.post("/temperatures/", response_model=Temperature)
-async def create_temperature_record(temperature_data: TemperatureCreate, db: Session = Depends(get_db)):
+async def create_temperature_record(
+    temperature_data: TemperatureCreate, db: Session = Depends(get_db)
+):
     return create_temperature(db=db, temperature=temperature_data)
 
 
@@ -21,7 +23,9 @@ def read_temperatures(skip: int = 0, limit: int = 100, db: Session = Depends(get
 
 
 @router.post("/temperatures/update")
-async def update_temperatures(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+async def update_temperatures(
+    background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+):
     cities = get_cities(db)
     for city in cities:
         background_tasks.add_task(fetch_and_store_temperature, city.id, db)

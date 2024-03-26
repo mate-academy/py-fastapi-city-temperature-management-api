@@ -9,5 +9,5 @@ async def fetch_temperature(city_name: str):
         response = await client.get(url)
         if response.status_code == 200:
             data = response.json()
-            return data['current']['temp_c']
+            return data["current"]["temp_c"]
     return None
