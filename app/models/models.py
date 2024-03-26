@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 
 
 Base = declarative_base()
+
 
 class City(Base):
     __tablename__ = 'cities'
@@ -12,6 +12,7 @@ class City(Base):
     name = Column(String, index=True)
     additional_info = Column(String, index=True)
     temperatures = relationship('Temperature', back_populates='city')
+
 
 class Temperature(Base):
     __tablename__ = 'temperatures'

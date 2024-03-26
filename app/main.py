@@ -1,15 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from sqlalchemy.exc import SQLAlchemyError
-from app.database import Base, engine, SessionLocal
-from app.endpoints import cities, temperatures
+from database import Base, engine, SessionLocal
+from endpoints import cities, temperatures
 from core.config import settings
-from fastapi import JSONResponse
+from fastapi.responses import JSONResponse
+
 
 def create_tables():
     try:
         Base.metadata.create_all(bind=engine)
     except SQLAlchemyError as e:
         print(f"Error creating tables: {e}")
+
 
 def get_db():
     db = SessionLocal()
@@ -18,7 +20,9 @@ def get_db():
     finally:
         db.close()
 
+
 app = FastAPI()
+
 
 @app.on_event("startup")
 def startup_event():
@@ -26,10 +30,12 @@ def startup_event():
         create_tables()
     # Additional startup actions can be added here
 
+
 @app.on_event("shutdown")
 def shutdown_event():
     # Cleanup actions can be added here
     pass
+
 
 @app.exception_handler(SQLAlchemyError)
 async def sqlalchemy_exception_handler(request, exc):
