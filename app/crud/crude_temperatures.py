@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models.models import Temperature
-from schemas.schemas import TemperatureCreate
+from app.models.models import Temperature
+from app.schemas.schemas import TemperatureCreate
 
 
 def get_temperatures(db: Session, skip: int = 0, limit: int = 100):

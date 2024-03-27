@@ -1,8 +1,8 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
 
-from models.models import City
-from schemas.schemas import CityCreate
+from app.models.models import City
+from app.schemas.schemas import CityCreate
 
 
 def get_city(db: Session, city_id: int) -> Optional[City]:

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
-from dependencies import get_db
-from crud.crude_temperatures import create_temperature, get_temperatures
-from schemas.schemas import TemperatureCreate, Temperature
-from services.temperature_service import fetch_temperature
-from crud.crud_cities import get_cities
+from app.dependencies import get_db
+from app.crud.crude_temperatures import create_temperature, get_temperatures
+from app.schemas.schemas import TemperatureCreate, Temperature
+from app.services.temperature_service import fetch_temperature
+from app.crud.crud_cities import get_cities
 
 router = APIRouter()
 

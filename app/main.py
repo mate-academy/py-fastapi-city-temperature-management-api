@@ -3,9 +3,10 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from database import Base, engine, SessionLocal
-from endpoints import cities, temperatures
-from core.config import settings
+from app.database import Base, engine, SessionLocal
+from app.endpoints import cities, temperatures
+from app.core.config import settings
+from typing import Generator
 
 app = FastAPI()
 
@@ -17,7 +18,7 @@ def create_tables() -> None:
         print(f"Error creating tables: {e}")
 
 
-def get_db() -> Session:
+def get_db() -> Generator[Session, None, None]:
     db: Session = SessionLocal()
     try:
         yield db
