@@ -58,3 +58,19 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+#### How to run
+##### Deploy app on your machine
+- Clone repo
+- Install dependencies
+##### Endpoints
+###### City
+- POST /cities: Create a new city.
+- GET /cities: List all cities.
+- GET /cities/{city_id}: Get details of a specific city.
+- PUT /cities/{city_id}: Update a specific city.
+- DELETE /cities/{city_id}: Delete a specific city.
+###### Temperature API
+- POST /temperatures/update: Fetch and update temperature data for all cities.
+- GET /temperatures: List all temperature records.
+- GET /temperatures/{city_id}: Get temperature records for a specific city.
