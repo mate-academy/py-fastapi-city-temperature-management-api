@@ -1,60 +1,67 @@
-## Task Description
+# City Temperature API with FastAPI
+This project implements a FastAPI application to manage city data and their corresponding temperature information.
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Features:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+* CRUD API for managing cities (Create, Read, Update, Delete)
+* Fetches current temperature data for all cities and stores it in the database
+* Retrieves historical temperature data for a city or all cities
+
+## Project Structure:
+
+The project follows the recommended FastAPI application structure.
+
+## Dependencies:
+
+* FastAPI
+* Pydantic
+* SQLAlchemy
+
+## Database:
+
+* SQLite
+
+## Running the Application:
+
+1. Install dependencies:
+```Bash
+pip install -r requirements.txt
+```
+
+2. Apply migrations.
+```bash
+alembic upgrade head
+```
+
+3. Run the application:
+
+```Bash
+python.exe -m uvicorn main:app --reload 
+```
+
+## API Endpoints:
 
 ### Part 1: City CRUD API
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+* POST /cities - Creates a new city.
+* GET /cities - Retrieves a list of all cities.
+* GET /cities/{city_id} - Gets the details of a specific city by ID.
+* PUT /cities/{city_id} - Updates the details of a specific city.
+* DELETE /cities/{city_id} - Deletes a city by ID.
 
 ### Part 2: Temperature API
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+* POST /temperatures/update - Fetches current temperature data for all cities asynchronously and stores it in the database.
+* GET /temperatures - Retrieves a list of all temperature records.
+* GET /temperatures/?city_id={city_id} - Gets the temperature records for a specific city.
 
-### Additional Requirements
+## Design Choices:
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+* Pydantic models are used for data validation and serialization.
+* SQLAlchemy provides an object-relational mapper for interacting with the database.
+* Dependency injection is used to manage database connections.
+* Weather API is used to get data about the current weather for fetched cities.
 
-## Evaluation Criteria
+## Documentation:
 
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+This API is documented with Swagger API for better understanding and usability.
