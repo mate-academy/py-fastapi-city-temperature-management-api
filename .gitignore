@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+city_temperature.db
+.venv
+.idea
+
 
 # C extensions
 *.so
