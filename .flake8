@@ -1,0 +1,8 @@
+[flake8]
+inline-quotes = "
+exclude =
+    venv/*
+    ./temperature/models.py VNE003
+    ./temperature/schemas.py VNE003
+    ./city/models.py VNE003
+    ./city/schemas.py VNE003

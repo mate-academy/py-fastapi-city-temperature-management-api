@@ -1,3 +1,25 @@
+### using
+1. Clone code
+```sh
+git clone https://github.com/TarasSavchyn/py-fastapi-city-temperature-management-api.git
+```
+2. Create venv
+
+```sh
+python3 -m venv venv
+source venv/bin/activate
+```
+3. Install packages
+
+```sh
+pip install -r requirements.txt
+```
+4. Start app
+```sh
+uvicorn main:app --reload
+```
+
+
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
