@@ -1,60 +1,47 @@
-## Task Description
+** HOW to run **
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+For fastapi to work, you need to install and configure alembic, which performs data migrations for a database organized using sqlalchemy.
+Run next in terminal:
+- Installation of alembic:
+pip install alembic
+- Integration of alembic:
+alembic init alembic
+This will create a directory alembic with related data. Also file alembic.ini will be created in app folder. In this file you should find and modify next line:
+- sqlalchemy.url = sqlite:///./city-temperature.db
+Also file located at alembic\env.py have to be modified:
+- find and change next line: target_metadata = Base.metadata
+- in the top of the file, where import is spotted insert next line: from database import Base
+Next you should generate initial migrations for DB. For that run in terminal:
+- alembic revision --autogenerate -m "Initial migration"
+And finally apply migrations to DB, run:
+- alembic upgrade head 
+From here database file will be created and ready to work. DB file name: city-temperature.db
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+Finally, run main.py to start this fastapi.
+You can get endpoints at http://127.0.0.1:8000/docs
 
-### Part 1: City CRUD API
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+** HOW it is designed **
 
-### Part 2: Temperature API
+The working folder contains files common to the project, logically separated by content. 
+Also here we have two folders for data about cities and about temperatures, in each of which there are related files with the functionality of the corresponding objects, namely router, crud and schemas. 
+Work with an external data source is organized on the openweathermap.org resource, for which I passed free registration and received a free api key that can be replaced with your own, find it at app\degree\openweather.py
+Here httpx client is used.
+To asynchronously fetch temperature for a number of cities next loop construction was used
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+import asyncio   
 
-### Additional Requirements
+@router.post(path=...,
+               tags=...)
+async def func(
+          db: AsyncSession = Depends(db_manager)
+  	):
+  	tasks = []
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+      for object in objects:
+          tasks.append(func(db=db))
 
-## Evaluation Criteria
+      await asyncio.gather(*tasks)
 
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
 
 Good luck!
