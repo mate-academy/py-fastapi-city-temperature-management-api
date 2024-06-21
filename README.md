@@ -1,60 +1,60 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Description
+The City Temperature Management API provides functionality for managing city data and their temperatures. The application is implemented using FastAPI and SQLite with asynchronous request handling.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Installation and Running
+#### Install Dependencies:
 
-### Part 1: City CRUD API
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate  # Windows
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+pip install -r requirements.txt
+```
 
-### Part 2: Temperature API
+## Database Setup
+#### Initialize Alembic for managing database migrations:
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+```bash
+alembic init alembic
+```
 
-### Additional Requirements
+## Configure alembic.ini to specify your database URL. In our case, this is SQLite:
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+```ini
+sqlalchemy.url = sqlite+aiosqlite:///./test.db
+```
 
-## Evaluation Criteria
+## Create and apply the migration:
 
-Your task will be evaluated based on the following criteria:
+```bash
+alembic revision --autogenerate -m "initial"
+alembic upgrade head
+```
+## Running the Application
+#### Run the FastAPI server using Uvicorn:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```bash
+uvicorn main:app --reload
+```
+The server will now be available at http://127.0.0.1:8000
 
-## Deliverables
+## Available Endpoints
+### City CRUD API
+- POST /cities: Create a new city.
+- GET /cities: Get a list of all cities.
+- GET /cities/{city_id}: Get details of a specific city (optional).
+- PUT /cities/{city_id}: Update details of a specific city (optional).
+- DELETE /cities/{city_id}: Delete a specific city.
+### Temperature API
+- POST /temperatures/update: Update current temperature data for all cities in the database.
+- GET /temperatures: Get a list of all temperature records.
+- GET /temperatures/?city_id={city_id}: Get temperature records for a specific city.
+- Design and Architecture
+- FastAPI: Chosen for its high performance and support for asynchronous programming.
+- SQLAlchemy: Used for interacting with the SQLite database, simplifying data management and migrations.
+- Alembic: Manages database migrations, allowing easy changes to the database structure as the application evolves.
 
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+![fast_api_prew.png](fast_api_prew.png)
