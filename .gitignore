@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+.env
+temperature.db
+.idea/
+
 # Distribution / packaging
 .Python
 build/
