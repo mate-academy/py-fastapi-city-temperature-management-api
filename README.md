@@ -1,60 +1,99 @@
-## Task Description
+# City and Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This FastAPI application manages city data and their corresponding temperature data. It consists of two main components:
 
 1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+2. An API that fetches current temperature data for all cities in the database and stores this data. Additionally, it provides endpoints to retrieve the history of temperature data.
+
+## Features
 
 ### Part 1: City CRUD API
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- **Create a new city**
+  - **Endpoint:** `POST /cities`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "additional_info": "string"
+    }
+    ```
+
+- **Get a list of all cities**
+  - **Endpoint:** `GET /cities`
+
+- **Get details of a specific city (Optional)**
+  - **Endpoint:** `GET /cities/{city_id}`
+
+- **Update details of a specific city (Optional)**
+  - **Endpoint:** `PUT /cities/{city_id}`
+  - **Request Body:**
+    ```json
+    {
+      "name": "string",
+      "additional_info": "string"
+    }
+    ```
+
+- **Delete a specific city**
+  - **Endpoint:** `DELETE /cities/{city_id}`
 
 ### Part 2: Temperature API
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+- **Fetch current temperature data for all cities and store in database**
+  - **Endpoint:** `POST /temperatures/update`
 
-### Additional Requirements
+- **Get a list of all temperature records**
+  - **Endpoint:** `GET /temperatures`
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+- **Get temperature records for a specific city**
+  - **Endpoint:** `GET /temperatures/?city_id={city_id}`
 
-## Evaluation Criteria
+## Models
 
-Your task will be evaluated based on the following criteria:
+### City Model
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+- **id:** Unique identifier for the city (integer)
+- **name:** Name of the city (string)
+- **additional_info:** Additional information about the city (string)
 
-## Deliverables
+### Temperature Model
 
-Please submit the following:
+- **id:** Unique identifier for the temperature record (integer)
+- **city_id:** Reference to the city (integer)
+- **date_time:** Date and time when the temperature was recorded (datetime)
+- **temperature:** Recorded temperature (float)
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## Database
 
-Good luck!
+- Uses SQLite database.
+- City and Temperature tables are created using SQLAlchemy.
+
+## Setup
+
+1. **Clone the repository:**
+   ```
+   git clone git@github.com:CharmNiovi/py-fastapi-city-temperature-management-api.git
+   ```
+   ```
+   cd py-fastapi-city-temperature-management-api
+   ```
+2. **Create a virtual environment and activate it**
+3. **Install the dependencies from requirements.txt**
+4. **Create .env file and fill it like .env.example**
+5. **Run the application:**
+   ```shell
+    uvicorn main:app
+   ```
+
+## Usage
+
+    Access the API documentation at http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc.
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request or open an issue for any changes or suggestions.
+
+
+## Licensing
+"The code in this project is licensed under WTFPL license."
