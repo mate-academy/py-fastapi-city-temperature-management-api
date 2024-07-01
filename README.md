@@ -1,60 +1,64 @@
-## Task Description
+# FastAPI City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This project is a FastAPI-based application that handles city information
+and their associated temperature data. The application is divided into two main parts:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+1. A CRUD API for city data management.
+2. An API to fetch and store current temperature data for all cities in the database, along with endpoints to access the historical temperature records.
 
-### Part 1: City CRUD API
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### Installation
 
-### Part 2: Temperature API
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-repo/fastapi-city-temperature-management-api.git
+   cd fastapi-city-temperature-management-api
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+2. **Create and activate a virtual environment:**
+   ```bash
+   python -m venv venv
+   For macOS
+   source venv/bin/activate
+   For Windows
+   venv\Scripts\activate
+   
+3. **Install the necessary dependencies:**
+   ```bash
+   pip install -r requirements.txt
 
-### Additional Requirements
+4. **Initialize the database:**
+   ```bash
+   alembic upgrade head
+   
+5. **Configure environment variables:**
+   ```bash
+   WEATHER_API_KEY=your_weather_api_key
+   WEATHER_API=https://api.weatherapi.com/v1/current.json
+   DB_URL=db_url_from_settings
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### Running the Application
 
-## Evaluation Criteria
+- To run the application, use the following command:
+    ```bash
+    uvicorn main:app --reload --log-level debug
 
-Your task will be evaluated based on the following criteria:
+## API Endpoints
+### City API
+- GET /cities: Get a list of all cities.
+- GET /cities/{city_id}: Get the details of a specific city.
+- POST /cities: Create a new city.
+- PUT /cities/{city_id}: Update the details of a specific city.
+- DELETE /cities/{city_id}: Delete a specific city.
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+### Temperature API
 
-## Deliverables
+- GET /temperatures: Get a list of all temperature records.
+- GET /temperatures/?city_id={city_id}: Get temperature records for a specific city.
+- POST /temperatures/update: Fetch current temperature for all cities and store in the database.
 
-Please submit the following:
+### Design Choices
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+- **FastAPI**: Selected for its high performance and ease of use in developing APIs.
+- **SQLAlchemy with AsyncSession**: Implemented for efficient asynchronous database operations.
+- **Pydantic Models**: Applied for robust data validation and serialization.
+- **HTTPX**: Used for making asynchronous HTTP requests to obtain temperature data.
