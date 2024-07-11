@@ -1,0 +1,9 @@
+aiosqlite==0.20.0
+annotated-types==0.7.0
+greenlet==3.0.3
+pydantic==2.8.2
+pydantic_core==2.20.1
+SQLAlchemy==2.0.31
+typing_extensions==4.12.2
+fastapi~=0.111.0
+httpx~=0.27.0
