@@ -9,29 +9,29 @@ You are required to create a FastAPI application that manages city data and thei
 
 1. Create a new FastAPI application.
 2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
+   - `id`: a unique identifier for the city.
+   - `name`: the name of the city.
+   - `additional_info`: any additional information about the city.
 3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
 4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+   - `POST /cities`: Create a new city.
+   - `GET /cities`: Get a list of all cities.
+   - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
+   - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
+   - `DELETE /cities/{city_id}`: Delete a specific city.
 
 ### Part 2: Temperature API
 
 1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
+   - `id`: a unique identifier for the temperature record.
+   - `city_id`: a reference to the city.
+   - `date_time`: the date and time when the temperature was recorded.
+   - `temperature`: the recorded temperature.
 2. Create a corresponding `Temperature` table in the database.
 3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
 4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+   - `GET /temperatures`: Get a list of all temperature records.
+   - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
 
 ### Additional Requirements
 
@@ -53,8 +53,32 @@ Please submit the following:
 
 - The complete source code of your application.
 - A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+  - Instructions on how to run your application.
+  - A brief explanation of your design choices.
+  - Any assumptions or simplifications you made.
 
 Good luck!
+
+endpoints:
+Cities:
+Create a city: `POST /api/cities` {`name`: str, `additional_info`: str}. You will receive created city in response
+Get a list of all cities: `GET /api/cities`
+Get city by id: `PUT /api/cities/{city_id}`
+Update city by id: `PUT /api/cities/{city_id}` {`name`: str, `additional_info`: str} You will receive updated city in response
+Delete city by id: `DELETE /api/cities/{city_id}` You wiil receive city you have deleted in response
+Temperatures:
+Update tempretures for cities: `POST /temperatures/update`. This endpoint will create data for temperature for every city in the database. If city already has temperature saves in the db it will be updated, otherwise a new entry will be created. you can see in the output if there are any errors fetching the data.
+
+List of all temperatures: `GET /api/temperatures`
+Temperature for a specific city: `GET /api/temperatures/?city_id={city_id}`
+
+To start the application run the following commands:
+`python -m venv venv`
+`venv\scripts\activate`
+`pip install -r requirements.txt`
+`alembic revision --autogenerate -m "init" `
+`alembic upgrade head`
+then change the api key in the .env file
+`python -m uvicorn main:app --reload --port 80`
+
+For updating temperatures (https://www.weatherapi.com/) is used. Create accout there and get the api key.
