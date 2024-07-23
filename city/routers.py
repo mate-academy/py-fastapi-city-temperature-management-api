@@ -27,7 +27,7 @@ async def read_cities(
     return cities
 
 
-@router.get("/{city_id}", response_model=schemas.City)
+@router.get("/{city_id}/", response_model=schemas.City)
 async def read_city(
         city_id: int,
         db: AsyncSession = Depends(get_db)
@@ -38,7 +38,7 @@ async def read_city(
     return city
 
 
-@router.delete("/{city_id}")
+@router.delete("/{city_id}/")
 async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)) -> dict:
     await crud.delete_city(db, city_id)
     return {"ok": True}

@@ -51,7 +51,7 @@ async def process_city(
         print(f"An error occurred: {str(e)}")
 
 
-@router.post("/update")
+@router.post("/update/")
 async def update_temperatures(db: AsyncSession = Depends(get_db)) -> dict:
     cities = await crud.get_cities(db)
     limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
