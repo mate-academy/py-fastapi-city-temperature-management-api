@@ -74,7 +74,7 @@ async def read_temperatures(
     return temperatures
 
 
-@router.get("/{city_id}", response_model=list[schemas.Temperature])
+@router.get("/{city_id}/", response_model=list[schemas.Temperature])
 async def read_temperature_by_city_id(
         city_id: int,
         db: AsyncSession = Depends(get_db)
