@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from city.models import *
-# TODO i need import models for async
+from temperature.models import *
 
 from database import Base
 
