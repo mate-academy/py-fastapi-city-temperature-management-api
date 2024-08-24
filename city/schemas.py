@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 
 class CityBase(BaseModel):
-    city: str
-    additional_info = str
+    name: str
+    additional_info: str
 
 
 class City(CityBase):
