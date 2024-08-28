@@ -1,0 +1,5 @@
+staticfiles
+.git
+.gitlab-ci.yml
+Dockerfile
+city_temperature.db
