@@ -1,16 +1,35 @@
 from typing import (
     Sequence,
     Optional,
-    Callable
 )
 
 from fastapi import HTTPException
 from sqlalchemy import update, delete
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 import models
 from city import schemas
+
+
+async def execute_and_commit(db: AsyncSession, query) -> int:
+    try:
+        result = await db.execute(query)
+        await db.commit()
+        return result.rowcount
+    except SQLAlchemyError as e:
+        await db.rollback()
+        raise HTTPException(
+            status_code=400,
+            detail=f"Database error: {str(e)}",
+        )
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error: {str(e)}",
+        )
 
 
 async def get_list_city(
@@ -36,51 +55,25 @@ async def create_city(
         name=city.name,
         additional_info=city.additional_info,
     )
-    try:
-        db.add(db_city)
-        await db.commit()
-        await db.refresh(db_city)
-    except Exception as e:
-        raise HTTPException(
-            status_code=400,
-            detail=str(e),
-        )
-
+    db.add(db_city)
+    await execute_and_commit(db, db_city)
     return db_city
 
 
 async def update_city(
         db: AsyncSession, city_id: int, city: schemas.CityUpdate
-) -> Callable[[], int]:
-    result = await db.execute(
+) -> int:
+    query = (
         update(models.City)
         .where(models.City.id == city_id)
         .values(name=city.name, additional_info=city.additional_info)
         .execution_options(synchronize_session='fetch')
     )
-    try:
-        await db.commit()
-    except Exception as e:
-        await db.rollback()
-        raise HTTPException(
-            status_code=400,
-            detail=str(e),
-        )
-    return result.rowcount
+    return await execute_and_commit(db, query)
 
 
 async def delete_city(
         db: AsyncSession, city_id: int
-) -> Callable[[], int]:
-    result = await db.execute(
-        delete(models.City).where(models.City.id == city_id)
-    )
-    try:
-        await db.commit()
-    except Exception as e:
-        await db.rollback()
-        raise HTTPException(
-            status_code=400,
-            detail=str(e),
-        )
-    return result.rowcount
+) -> int:
+    query = delete(models.City).where(models.City.id == city_id)
+    return await execute_and_commit(db, query)
