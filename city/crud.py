@@ -13,7 +13,7 @@ import models
 from city import schemas
 
 
-async def execute_and_commit(db: AsyncSession, query) -> int:
+async def execute_and_commit(db: AsyncSession, query: any) -> int:
     try:
         result = await db.execute(query)
         await db.commit()
