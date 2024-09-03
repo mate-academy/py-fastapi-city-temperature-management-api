@@ -1,0 +1,20 @@
+City Temperature API
+
+Description
+This application provides an API to manage city and temperature data.
+It allows CRUD operations on city data and fetches temperature data for cities from an online source.
+
+Setup Instructions
+
+Requirements:
+- Python 3.11
+- SQLite
+
+Setup:
+
+
+1. Clone the repository.
+2. Create a virtual environment and activate it:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
