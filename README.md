@@ -1,3 +1,50 @@
+## City and Temperature API
+
+This is a FastAPI application that manages city data and their corresponding temperature data. It provides two main components:
+
+ **City CRUD API**: Manages city data with CRUD operations.
+ **Temperature API**: Fetches current temperature data for cities and stores it in the database, also provides a history of temperature records.
+
+
+## Setup and Installation
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone <repository-url>
+   cd city_temperature_api
+
+2. **Create and Activate a Virtual Environment**
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+
+3. **Install Dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   
+4. **Run the Application**
+
+   Note: Please pay attention to the .env.simple file and override it as needed for your environment configuration.
+
+      ```bash
+      uvicorn main:app --reload
+
+## Endpoints
+1. ### City CRUD API
+   - POST /cities/: Create a new city. 
+   - GET /cities/: List all cities. 
+   - GET /cities/{city_id}: Get details of a specific city. 
+   - DELETE /cities/{city_id}: Delete a specific city.
+2. ### Temperature API
+   - POST /temperatures/update: Fetch and store the current temperature data for all cities. 
+   - GET /temperatures/: List all temperature records. 
+   - GET /temperatures/{city_id}: Get temperature records for a specific city.
+
+=========================================================================
+
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
