@@ -1,0 +1,9 @@
+SQLAlchemy==2.0.32
+alembic==1.13.2
+pydantic==2.8.2
+fastapi==0.112.2
+uvicorn==0.30.6
+sqlalchemy-stubs==0.4
+python-dotenv==1.0.1
+aiohttp==3.10.5
+aiosqlite==0.20.0
