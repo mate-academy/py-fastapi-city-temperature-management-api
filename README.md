@@ -1,60 +1,65 @@
-## Task Description
+# City Temperature Management API
+## Prepare the project
+1. Fork the repo (GitHub repository)
+1. Clone the forked repo
+    ```
+    git clone the-link-from-your-forked-repo
+    ```
+    - You can get the link by clicking the `Clone or download` button in your repo
+1. Open the project folder in your IDE
+1. Open a terminal in the project folder
+1. Create a branch for the solution and switch on it
+    ```
+    git checkout -b develop
+    ```
+    - You can use any other name instead of `develop`
+1. If you are using PyCharm - it may propose you to automatically create venv for your project 
+    and install requirements in it, but if not:
+    ```
+    python -m venv venv
+    venv\Scripts\activate (on Windows)
+    source venv/bin/activate (on macOS)
+    pip install -r requirements.txt
+    ```
+## Setup the Database: 
+Ensure you have SQLite configured in your environment. The application will automatically create the database tables on startup.
+## Run the Application:
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+````
+uvicorn main:app --reload
+````
+The application will be available at http://127.0.0.1:8000.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+##Access the API Documentation:
 
-### Part 1: City CRUD API
+Swagger UI: http://127.0.0.1:8000/docs
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### City Model
 
-### Part 2: Temperature API
+The `City` model is defined with the following fields:
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+- `id`: A unique identifier for the city.
+- `name`: The name of the city.
+- `additional_info`: Any additional information about the city.
 
-### Additional Requirements
+### Temperature Model
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+The `Temperature` model is defined with the following fields:
 
-## Evaluation Criteria
+- `id`: A unique identifier for the temperature record.
+- `city_id`: A reference to the city.
+- `date_time`: The date and time when the temperature was recorded.
+- `temperature`: The recorded temperature.
 
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+### Endpoints
+(Visit detailed swagger documentation at /docs)
+I. Cities
+POST /cities: Create a new city.
+GET /cities: Get a list of all cities.
+GET /cities/{city_id}: Get the details of a specific city.
+PUT /cities/{city_id}: Update the details of a specific city.
+DELETE /cities/{city_id}: Delete a specific city.
+II. Temperatures
+POST /temperatures/update: Create new temperature records for all cities in the database.
+GET /temperatures: Get a list of all temperature records.
+GET /temperatures/?city_id={city_id}: Get the temperature records for a specific city.
