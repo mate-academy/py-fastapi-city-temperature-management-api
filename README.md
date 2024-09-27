@@ -1,3 +1,27 @@
+# Project description
+
+This is an api resource with temperature checking by presetted city.
+
+In general, user make simple moves:
+1. Set the city to check
+2. Update temperature for all setted cities
+3. Get all cities with temperature history or retrieve one city
+
+User have to create only IRL existing city names. Otherwise, the system will not register the new city.
+User can update city name and description as well as delete them.
+The city deletion triggers temperature cascade deletion as well.
+
+# How to run
+
+1. Install Docker to your machine
+2. Get from https://openweathermap.org API_KEY and set .env file using .env.sample
+3. run in console commands:
+   - `docker-compose build`
+   - `docker-compose run`
+4. For API server use http://0.0.0.0:8000 url. For api documentation go to http://0.0.0.0:8000/docs#/
+5. For database administration use http://127.0.0.1:5050 with PGAdmin resource.
+
+# This project was written according to the task below
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):

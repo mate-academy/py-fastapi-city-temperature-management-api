@@ -1,0 +1,48 @@
+services:
+  db:
+    container_name: postgresql_db
+    image: postgres:16.3-alpine3.20
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - my_db:${PGDATA}
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - 5050:80
+    depends_on:
+      - db
+
+  app:
+    container_name: app
+    build: .
+    command: sh -c "python project_settings/settings.py &&
+                    alembic revision --autogenerate -m 'Initial migration' &&
+                    alembic upgrade head &&
+                    uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+
+volumes:
+  my_db:
