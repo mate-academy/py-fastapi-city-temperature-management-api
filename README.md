@@ -58,3 +58,51 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+## Deliverables work
+
+Instructions for running your application
+
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+
+Access API: Open your browser and navigate to: http://127.0.0.1:8000/docs to access the automatically generated Swagger UI documentation
+
+## Brief explanation of the design
+
+FastAPI: Was chosen for the development of this application as it is a modern web framework that supports asynchronous operations and provides easy data validation through Pydantic.
+
+SQLAlchemy: Used for working with the database, as it is one of the most popular ORM frameworks for Python, providing convenient work with databases through Python objects.
+
+Pydantic: Used for data validation and serialization, as it integrates easily with FastAPI and supports strong data typing.
+
+SQLite: Used as a database, as it is a built-in solution that does not require complex configuration and is ideal for small projects.
+
+## Assumptions or simplifications
+
+Simplify the data structure: The city model uses a simple structure with minimal fields (name and additional_info). For a full-featured application, more fields could be added, such as country, region, etc.
+
+
+Temperature data: An asynchronous HTTP request is used to retrieve temperature data. In a real project, error handling and more complex logical checks would be worth implementing.
+
+
+Asynchronous Database Work: Although SQLite is not ideal for high-load systems, the project uses an asynchronous driver to demonstrate working with a database.
+
+
+Data Validation: Validation of input data is implemented through Pydantic models. However, more rules can be added to check the correctness of the input data.
+
+
+## API
+
+### Cities
+
+- **POST** `/cities/` - Create a new city
+- **GET** `/cities/` - Get a list of cities
+- **PUT** `/cities/{city_id}` - Update city information
+- **DELETE** `/cities/{city_id}` - Delete city
+
+### Temperatures
+
+- **POST** `/temperatures/` - Create a new temperature record
+- **GET** `/temperatures/{city_id}` - Get all temperature records for a specific city
