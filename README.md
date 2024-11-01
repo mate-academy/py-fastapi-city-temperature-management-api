@@ -1,60 +1,76 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This project is a web application developed using FastAPI that allows you to manage city data and their corresponding temperature data. The application provides APIs for creating, reading, updating, and deleting city information, as well as an API for fetching current temperatures for all cities in the database.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Project Description
 
 ### Part 1: City CRUD API
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- **City Model**:
+  - `id`: a unique identifier for the city.
+  - `name`: the name of the city.
+  - `additional_info`: any additional information about the city.
+
+- **Endpoints**:
+  - `POST /cities`: Create a new city.
+  - `GET /cities`: Get a list of all cities.
+  - `GET /cities/{city_id}`: (Optional) Get details of a specific city.
+  - `PUT /cities/{city_id}`: (Optional) Update details of a specific city.
+  - `DELETE /cities/{city_id}`: Delete a specific city.
 
 ### Part 2: Temperature API
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+- **Temperature Model**:
+  - `id`: a unique identifier for the temperature record.
+  - `city_id`: a reference to the city.
+  - `date_time`: the date and time when the temperature was recorded.
+  - `temperature`: the recorded temperature.
 
-### Additional Requirements
+- **Endpoints**:
+  - `POST /temperatures/update`: Fetch current temperatures for all cities in the database from an external resource (WeatherAPI) and store this data in the Temperature table.
+  - `GET /temperatures`: Get a list of all temperature records.
+  - `GET /temperatures/?city_id={city_id}`: Get temperature records for a specific city.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Technologies Used
 
-## Evaluation Criteria
+- **FastAPI**: A framework for building APIs with Python.
+- **SQLAlchemy**: ORM for database operations (SQLite).
+- **httpx**: Asynchronous HTTP client for making requests to external APIs (WeatherAPI).
+- **Pydantic**: For data validation and model definition.
 
-Your task will be evaluated based on the following criteria:
+## Installation
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+To run this application, follow these steps:
 
-## Deliverables
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd city-temperature-management-api
+   
+2. Create a virtual environment and activate it:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
-Please submit the following:
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+4. Run the application:
+   ```bash
+   uvicorn src.main:app --port 8001
+   
 
-Good luck!
+## Weather API Integration
+
+For fetching the current temperature data, you can choose any weather API of your preference. In this project, I have chosen to use [WeatherAPI](https://www.weatherapi.com/). To use this API, you need to sign up on their website and obtain an `API_KEY`.
+
+### Configuration
+
+1. **API Key**: After signing up at WeatherAPI, generate your API key.
+2. **Base URL**: The base URL for the API is also required for making requests. For WeatherAPI, it is typically `https://api.weatherapi.com/v1`.
+
+3. **Environment Variables**: Create a `.env` file in the root of your project directory and add the following lines to it:
+   ```plaintext
+   API_KEY=your_api_key_here
+   BASE_URL=https://api.weatherapi.com/v1
