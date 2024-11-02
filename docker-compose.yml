@@ -1,0 +1,53 @@
+services:
+  db:
+    image: "postgres:latest"
+    container_name: postgres_fastapi
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - mate_fastapi_data:/var/lib/postgresql/data/
+    networks:
+      - fastapi_network
+
+  web:
+    restart: always
+    build: .
+    container_name: backend_fastapi
+    command: ["/entrypoint.sh"]
+    environment:
+      - WATCHFILES_FORCE_POLLING=true
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/fastapi
+    links:
+      - db:db
+    depends_on:
+      - db
+    networks:
+      - fastapi_network
+
+  migrator:
+    build: .
+    container_name: alembic_migrator
+    command: /migration_script.sh
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/fastapi
+    env_file:
+      - .env
+    networks:
+      - fastapi_network
+
+volumes:
+  mate_fastapi_data:
+    driver: local
+
+networks:
+  fastapi_network:
+    driver: bridge
