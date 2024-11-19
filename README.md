@@ -1,60 +1,96 @@
-## Task Description
+# FastAPI City Temperature Management API
+With this tool, you can add any city to the database and retrieve temperature data for these cities,
+provided the Weather API has such data available.
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Terms of Use
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+This project uses the Visual Crossing Corporation (“Provider”) API to fetch data.
+By using this API, you agree to comply with the API Provider's
+Terms of Use, which you can review at https://www.visualcrossing.com/weather-services-terms.
+Please make sure to read and agree to these terms before using the application.
 
-### Part 1: City CRUD API
+## Description
+This project is a FastAPI application that manages city data and their corresponding temperature records. The project includes:
+- A CRUD API to manage city data.
+- An API to fetch current temperature data for all cities in the database, as well as historical temperature data.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Prerequisites
+- Python 3.10+
 
-### Part 2: Temperature API
+## Installation
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+1. Clone the repository:
+   ```sh
+   git clone <https://github.com/TarasFirst/py-fastapi-city-temperature-management-api.git>
+   cd py-fastapi-city-temperature-management-api
+   ```
 
-### Additional Requirements
+2. Create a virtual environment and activate it:
+   ```sh
+   python3 -m venv venv
+   source venv/bin/activate  # Linux/macOS
+   venv\Scripts\activate  # Windows
+   ```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+3. Install dependencies:
+   ```sh
+   pip install -r requirements.txt
+   ```
 
-## Evaluation Criteria
+4. Rename the `.env_sample` file to `.env` and add your own `SECRET_KEY` value:
+   ```env
+   SECRET_KEY=your_secret_key_here
+   ```
+   You can get a free SECRET_KEY after signing up at https://www.visualcrossing.com/
 
-Your task will be evaluated based on the following criteria:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+## Running the Project
 
-## Deliverables
+1. Run database migrations using Alembic:
+   ```sh
+   alembic upgrade head
+   ```
 
-Please submit the following:
+2. Start the FastAPI server:
+   ```sh
+   fastapi dev app/main.py
+   ```
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## API Documentation
 
-Good luck!
+After starting the server, you can interact with the API via:
+- Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+## Request Examples
+
+### Create a City
+`POST /cities`
+```json
+{
+  "name": "Kyiv",
+  "additional_info": "Capital of Ukraine"
+}
+```
+
+### Get All Cities
+`GET /cities`
+
+### Update a City
+`PUT /cities/{city_id}`
+```json
+{
+  "name": "Lviv",
+  "additional_info": "Historical city in Ukraine"
+}
+```
+
+### Delete a City
+`DELETE /cities/{city_id}`
+
+
+## Authors
+
+This project was created by Taras Goncharenko.
+If you have any questions, feel free to reach me at tarasgoncharenko.work@gmail.com
+or through any other preferred contact method.
