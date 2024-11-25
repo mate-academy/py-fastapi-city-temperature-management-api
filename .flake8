@@ -1,0 +1,10 @@
+[flake8]
+exclude =
+    .venv,
+    alembic/,
+    .env,
+    .gitignore,
+    alembic.ini,
+    city_temperature.db,
+    README.md,
+    requirements.txt
