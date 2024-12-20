@@ -1,4 +1,72 @@
-## Task Description
+# Project Description
+
+## How to Run the Project
+
+1. Clone the project
+``` bash
+git clone https://github.com/Meksim-fesh/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+```
+
+2. Pull the code from the `develop` branch
+``` bash
+git checkout -b develop
+git pull origin develop
+```
+
+3. Activate a virtual environment
+``` bash
+python -m venv .venv  # or python3 -m venv .venv
+source .venv/Scripts/activate  # or source .venv/bin/activate
+```
+
+4. Install the dependencies
+``` bash
+pip install -r requirements.txt
+```
+
+5. Apply migrations
+``` bash
+alembic upgrade head
+```
+
+6. Start a local FastAPI server
+``` bash
+fastapi dev main.py
+```
+
+
+## Created Models
+
+1. City
+    - `id`
+    - `name`
+    - `additional_info`
+
+2. Temperature
+    - `id`
+    - `city_id` 
+    - `date_time`
+    - `temperature`
+
+
+## Endpoints list
+
+1. City
+    - `GET /cities`: Gets a list of all cities
+    - `POST /cities`: Creates a new city
+    - `GET /cities/{city_id}`: Gets the details of a specific city
+    - `PUT /cities/{city_id}`: Updates the details of a specific city
+    - `DELETE /cities/{city_id}`: Deletes a specific city
+
+2. Temperature
+    - `POST /temperatures/update`: Updates the temperature for all cities (if a record is not found for a specific city, a new one will be created) in the database from the online resource `http://api.weatherapi.com`
+    - `GET /temperatures`: Gets a list of all temperature records
+    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city
+
+
+
+# Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
 
