@@ -1,0 +1,5 @@
+[flake8]
+inline-quotes = "
+ignore = VNE003
+max-line-length = 79
+exclude = .venv, alembic
