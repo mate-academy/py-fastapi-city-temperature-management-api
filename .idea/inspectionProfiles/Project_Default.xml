@@ -1,0 +1,44 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="6">
+            <item index="0" class="java.lang.String" itemvalue="taxi:index" />
+            <item index="1" class="java.lang.String" itemvalue="taxi:car-detail" />
+            <item index="2" class="java.lang.String" itemvalue="request.user" />
+            <item index="3" class="java.lang.String" itemvalue="car.drivers.all" />
+            <item index="4" class="java.lang.String" itemvalue="%}" />
+            <item index="5" class="java.lang.String" itemvalue="{%" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyMissingTypeHintsInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="INFORMATION" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="8">
+            <item index="0" class="java.lang.String" itemvalue="django" />
+            <item index="1" class="java.lang.String" itemvalue="flake8-quotes" />
+            <item index="2" class="java.lang.String" itemvalue="pytest" />
+            <item index="3" class="java.lang.String" itemvalue="pytest-django" />
+            <item index="4" class="java.lang.String" itemvalue="pep8-naming" />
+            <item index="5" class="java.lang.String" itemvalue="flake8-variables-names" />
+            <item index="6" class="java.lang.String" itemvalue="flake8" />
+            <item index="7" class="java.lang.String" itemvalue="flake8-annotations" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="django.db.models.fields.IntegerField.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
