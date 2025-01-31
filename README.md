@@ -1,60 +1,124 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+FastAPI application that manages city data and their corresponding temperature data.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Features
 
-### Part 1: City CRUD API
+- CRUD operations for managing cities
+- Temperature updates from WeatherAPI.com
+- Temperature history tracking
+- OpenAPI documentation
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Requirements
 
-### Part 2: Temperature API
+- Python 3.12+
+- Poetry for dependency management
+- WeatherAPI.com API key
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Installation
 
-### Additional Requirements
+1. Clone the repository
+```bash
+git clone https://github.com/vladyslav-tmf/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+```
+2. Install dependencies using Poetry:
+```bash
+poetry install
+```
+3. Create `.env` file with your WeatherAPI.com API key:
+```bash
+WEATHER_API_KEY=your_api_key_here
+WEATHER_API_BASE_URL=your_weather_api_base_url # Optional
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Running the Application
 
-## Evaluation Criteria
+1. Activate Poetry environment:
+```bash
+poetry shell
+```
 
-Your task will be evaluated based on the following criteria:
+2. Run the application:
+```bash
+uvicorn app.main:app --reload
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+The API will be available at `http://localhost:8000`
+OpenAPI documentation will be available at `http://localhost:8000/docs`
 
-## Deliverables
+## API Endpoints
 
-Please submit the following:
+### Cities
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+- `POST /cities/` - Create a new city
+  ```json
+  {
+    "name": "London",
+    "additional_info": "Capital of UK"
+  }
+  ```
 
-Good luck!
+- `GET /cities/` - Get list of cities
+- `GET /cities/{city_id}` - Get city details
+- `PUT /cities/{city_id}` - Update city
+- `DELETE /cities/{city_id}` - Delete city
+
+### Temperatures
+
+- `GET /temperatures/` - Get temperature history
+- `GET /temperatures/?city_id={city_id}` - Get temperature history for specific city
+- `POST /temperatures/update/` - Update temperatures for all cities
+
+## Project Structure
+
+```
+py-fastapi-city-temperature-management-api/
+│
+├── app/
+│   ├── __init__.py
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   ├── base.py
+│   │   │   ├── city.py
+│   │   │   └── temperature.py
+│   │   ├── session.py
+│   │   └── __init__.py
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── city.py
+│   │   └── temperature.py
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   ├── city.py
+│   │   └── temperature.py
+│   ├── services/
+│   │   ├── __init__.py
+│   │   └── weather.py
+│   └── main.py
+│
+├── .gitignore
+├── pyproject.toml
+└── README.md
+```
+
+## Design Choices
+
+1. **SQLite Database**: Simple and portable, perfect for demonstration
+2. **Modular Structure**: Separation of concerns between models, schemas, and business logic
+3. **Error Handling**: Comprehensive error handling for API requests and database operations
+4. **Type Safety**: Full type hints coverage for better code quality
+
+## Assumptions and Simplifications
+
+1. Using SQLite instead of a production-grade database
+2. No authentication/authorization implemented
+3. Simple error logging (print statements)
+4. All temperatures are in Celsius
+5. WeatherAPI.com as the only weather data provider
+6. The controller and CRUD logic are not separated intentionally for simplicity.
