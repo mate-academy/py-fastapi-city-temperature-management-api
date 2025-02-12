@@ -58,3 +58,116 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+# City Temperature Management API
+
+This is a FastAPI-based project for managing city temperature data and fetching weather information from an external weather service.
+
+## Requirements
+- Python 3.13
+- standart db SQLite, you can use PostgreSQL or another supported database (add environment to .env)
+- **Weather API Key**: Required to fetch real-time weather data. You need to set `API_WEATHER_KEY`. you can take key here [OpenWeather](https://home.openweathermap.org/api_keys)
+
+---
+
+## Installation and Setup
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd <project-folder>
+```
+
+### 2. Create and Activate a Virtual Environment
+```bash
+# Create the virtual environment
+python -m venv .venv
+
+# Activate the virtual environment
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+source .venv/bin/activate
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## Configuration
+
+### 4. Set the Required Environment Variables
+This project requires an API key for fetching weather data. Set your key in the environment variable `API_WEATHER_KEY`:
+
+#### **On Windows**:
+```bash
+set API_WEATHER_KEY=yourkey
+```
+
+#### **On Linux/macOS**:
+```bash
+export API_WEATHER_KEY=yourkey
+```
+
+> Replace `yourkey` with the actual API key you obtained from the weather service.[OpenWeather](https://home.openweathermap.org/api_keys)
+
+---
+
+## Database Setup
+
+### 5. Create Migrations
+If this is the first time running the project or the database structure has been updated, create migration files:
+```bash
+alembic revision --autogenerate -m "initial migration"
+```
+
+### 6. Apply Migrations
+Apply the migrations to create or update the database schema:
+```bash
+alembic upgrade head
+```
+
+---
+
+## Run the Project
+
+### 7. Start the Server
+Start the FastAPI application using `uvicorn`:
+```bash
+python -m uvicorn main:app --reload     
+```
+
+The API will be accessible at:  
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## Weather API Integration
+
+### How to Obtain the API Key
+To use the weather API, go to your chosen weather service provider (e.g., OpenWeather, WeatherAPI, etc.), sign up, and generate an API key.
+
+Set the `API_WEATHER_KEY` environment variable as described above before starting the project.
+
+---
+
+## Additional Information
+
+### Testing the API
+Visit the Swagger UI for API documentation and testing:  
+[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### Deactivating Virtual Environment
+When done, deactivate the virtual environment with:
+```bash
+deactivate
+```
+
+---
+
+Enjoy working with the City Temperature Management API!
+
