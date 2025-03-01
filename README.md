@@ -57,4 +57,14 @@ Please submit the following:
     - A brief explanation of your design choices.
     - Any assumptions or simplifications you made.
 
-Good luck!
+Good luck
+
+To run application:
+- alembic init alembic
+- alembic revision --autogenerate -m "Initial migration"
+- alembic upgrade head
+- uvicorn main:app --reload
+
+# This project architecture was chosen because the project applications are clearly visible, and each application is divided according to functionality.
+
+
