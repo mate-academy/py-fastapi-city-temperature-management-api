@@ -1,0 +1,14 @@
+from pydantic import BaseModel
+
+
+class CityBase(BaseModel):
+    name: str
+    additional_info: str | None
+
+
+class CityCreateUpdate(CityBase):
+    pass
+
+
+class City(CityBase):
+    id: int
