@@ -13,5 +13,8 @@ def temperatures_update(db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[schemas.Temperature])
-def get_temperature_list(city_id: int | None = None, db: Session = Depends(get_db)):
+def get_temperature_list(
+        city_id: int | None = None,
+        db: Session = Depends(get_db)
+):
     return crud.get_temperatures(db=db, city_id=city_id)

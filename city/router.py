@@ -19,13 +19,26 @@ def create_city(city_data: schemas.CityCreate, db: Session = Depends(get_db)):
 
 
 @router.put("/{city_id}", response_model=schemas.City)
-def update_city(city_id: int, updated_city: schemas.CityCreate, db: Session = Depends(get_db)):
+def update_city(
+        city_id: int,
+        updated_city:
+        schemas.CityCreate,
+        db: Session = Depends(get_db)
+):
     return crud.update_city(db=db, updated_city=updated_city, city_id=city_id)
 
 
 @router.patch("/{city_id}", response_model=schemas.City)
-def partial_update_city(city_id: int, updated_city: schemas.CityUpdate,  db: Session = Depends(get_db)):
-    return crud.partial_update_city(db=db, city_id=city_id, updated_city=updated_city)
+def partial_update_city(
+        city_id: int,
+        updated_city: schemas.CityUpdate,
+        db: Session = Depends(get_db)
+):
+    return crud.partial_update_city(
+        db=db,
+        city_id=city_id,
+        updated_city=updated_city
+    )
 
 
 @router.delete("/{city_id}")

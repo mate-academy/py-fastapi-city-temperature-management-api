@@ -8,6 +8,7 @@ from city import schemas, models
 def get_city_by_id(city_id: int, db: Session):
     return db.query(models.CityDB).filter(models.CityDB.id == city_id).first()
 
+
 def check_city(city):
     if city is None:
         raise HTTPException(status_code=404, detail="doesn't exist")
@@ -40,6 +41,7 @@ def update_city(city_id: int, db: Session, updated_city):
     db.refresh(city)
 
     return city
+
 
 def partial_update_city(city_id: int, db: Session, updated_city):
     city = get_city_by_id(city_id=city_id, db=db)

@@ -12,6 +12,7 @@ class Temperature(BaseModel):
     class Config:
         from_attributes = True
 
+
 class TemperatureUpdate(BaseModel):
     city_id: int
     temperature: str

@@ -17,6 +17,7 @@ async def get_temperature_by_city(city: str):
         temp = response.json()["main"]["temp"]
     return temp
 
+
 def get_temperature_sync(city: str):
     return asyncio.run(get_temperature_by_city(city))
 
