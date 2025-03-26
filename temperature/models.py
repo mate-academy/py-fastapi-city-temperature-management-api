@@ -11,3 +11,5 @@ class TemperatureDB(Base):
     city_id = Column(Integer, ForeignKey("city.id"))
     date_time = Column(DateTime, default=func.now(), onupdate=func.now())
     temperature = Column(String(255), nullable=False)
+
+    city = relationship("CityDB", back_populates="temperatures")
