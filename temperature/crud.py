@@ -32,6 +32,8 @@ def temperature_update(db: Session):
         )
         db.add(db_temp)
         db.commit()
+        db.refresh(db_temp)
+
     return "{New weather has been created for cities that are in the database}"
 
 
