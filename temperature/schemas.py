@@ -9,6 +9,9 @@ class Temperature(BaseModel):
     date_time: datetime
     temperature: str
 
+    class Config:
+        from_attributes = True
+
 class TemperatureUpdate(BaseModel):
     city_id: int
     temperature: str
