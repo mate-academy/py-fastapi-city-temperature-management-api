@@ -19,7 +19,7 @@ async def get_db() -> AsyncSession:
 async def common_limits(
         limit: Query(
             settings.DEFAULT_LIMIT,
-            ge=20,
+            ge=0,
             description="items per frame"
         ),
         offset: Query(

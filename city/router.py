@@ -12,13 +12,13 @@ router = APIRouter()
 
 
 @router.post("cities/", response_model=schemas.City)
-async def create_city(db: CommonDB, city: schemas.CityIn) -> CityIn:
+async def create_city(db: CommonDB, city: schemas.CityIn) -> schemas.City:
     return await crud.add_city(db=db, city=city)
 
 
 @router.get("/cities/", response_model=List[CityIn])
 async def get_cities(db: CommonDB, limits: CommonLimits) -> List[CityIn]:
-    return await crud.get_list_of_cities(db=db, limit=limits)
+    return await crud.get_list_of_cities(db=db, **limits)
 
 
 @router.get("/cities/{city_id}", response_model=CityIn)
@@ -28,7 +28,7 @@ async def get_the_city(db: CommonDB, city_id: int) -> CityIn:
 
 @router.put("/cities/{city_id}", response_model=CityIn)
 async def update_the_city(
-        db: AsyncSession,
+        db: CommonDB,
         city_id: int,
         city: schemas.CityIn
 ) -> CityIn:
@@ -37,7 +37,7 @@ async def update_the_city(
 
 @router.patch("/cities/{city_id}", response_model=CityIn)
 async def partial_update_the_city(
-        db: AsyncSession,
+        db: CommonDB,
         city_id: int,
         city: schemas.CityPatch
 ) -> CityIn:
@@ -45,5 +45,5 @@ async def partial_update_the_city(
 
 
 @router.delete("/cities/{city_id}", response_model=schemas.CityIn)
-async def delete_city(db: AsyncSession, city_id: int) -> schemas.CityIn:
+async def delete_city(db: CommonDB, city_id: int) -> schemas.CityIn:
     return await crud.delete_city(db=db, city_id=city_id)

@@ -8,7 +8,7 @@ class Temperature(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     city_id = Column(Integer, ForeignKey("city.id"))
-    date_time = Column(DateTime, nullable=True)
-    temperature = Column(Float, nullable=False, default=date_time.now())
+    date_time = Column(DateTime)
+    temperature = Column(Float, nullable=False)
 
     city = relationship("City", back_populates="temperature")

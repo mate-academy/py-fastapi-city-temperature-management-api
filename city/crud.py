@@ -37,7 +37,7 @@ async def get_city(db: AsyncSession, city_id: int) -> Type[models.City]:
 
 async def update_city(
         db: AsyncSession,
-        city_id: id,
+        city_id: int,
         payload_city: schemas.CityIn
 ) -> models.City:
     stored_city = await get_object_or_404(db, obj_id=city_id, model=City)
@@ -52,7 +52,7 @@ async def update_city(
 
 async def partial_update_city(
         db: AsyncSession,
-        city_id: id,
+        city_id: int,
         payload_city: schemas.CityIn
 ) -> models.City:
     stored_city = await get_object_or_404(db, obj_id=city_id, model=City)
