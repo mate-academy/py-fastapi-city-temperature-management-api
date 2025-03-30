@@ -58,3 +58,30 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+# Solution
+## Installation guide
+### 1.Clone the repository
+```bash
+git clone https://github.com/DanilTrukhanov/py-fastapi-city-temperature-management-api#
+cd py-fastapi-city-temperature-management-api
+```
+### 2.Install poetry(If not installed)
+```bash
+curl -sSL https://install.python-poetry.org | python3 -
+poetry --version
+```
+### 3.Install all the dependencies
+```bash
+poetry install
+```
+### 4.Make migrations
+```bash
+poetry run alembic revision --autogenerate -m "Commit"
+poetry run alembic upgrade head
+```
+### 5.Run the server
+```bash
+poetry run uvicorn main:app --host 0.0.0.0 --port 80 --reload
+```
