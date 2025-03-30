@@ -2,7 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, DateTime, ForeignKey, func
 from datetime import datetime
 
-from database.models.base import Base
+from src.database.models.base import Base
 
 
 class TemperatureModel(Base):
