@@ -1,8 +1,14 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, DateTime, ForeignKey, func
 from datetime import datetime
 
-from src.database.models.base import Base
+from src.database.models import Base
+
+
+if TYPE_CHECKING:
+    from src.database.models import CityModel
 
 
 class TemperatureModel(Base):
