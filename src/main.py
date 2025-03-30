@@ -7,4 +7,8 @@ from routes.temperature import router as temperature_router
 app = FastAPI()
 
 app.include_router(city_router, prefix="/cities", tags=["city"])
-app.include_router(temperature_router, prefix="/temperatures", tags=["temperature"])
+app.include_router(
+    temperature_router,
+    prefix="/temperatures",
+    tags=["temperature"]
+)

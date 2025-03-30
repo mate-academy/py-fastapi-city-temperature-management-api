@@ -1,4 +1,8 @@
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    create_async_engine,
+    AsyncSession
+)
 
 
 DATABASE_URL = "sqlite+aiosqlite:///src/database/source/city_temp.db"
@@ -9,6 +13,7 @@ SQLiteSession = async_sessionmaker(
     class_=AsyncSession,
     expire_on_commit=False,
 )
+
 
 async def get_db():
     async with SQLiteSession() as session:

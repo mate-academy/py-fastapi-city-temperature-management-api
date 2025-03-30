@@ -27,7 +27,9 @@ DB = Annotated[AsyncSession, Depends(get_db)]
 
 async def get_temperature(city: str) -> dict:
     async with httpx.AsyncClient() as client:
-        response = await client.get(WEATHER_API_URL + f"?q={city}&key={WEATHER_API_KEY}")
+        response = await client.get(
+            WEATHER_API_URL + f"?q={city}&key={WEATHER_API_KEY}"
+        )
         if response.status_code != 200:
             raise HTTPException(
                 status_code=response.status_code,
@@ -45,7 +47,9 @@ async def get_list_of_temperature(
         db: DB,
         city_id: Annotated[int, Query(ge=0)] = None,
 ):
-    temps_stmt = select(TemperatureModel).options(selectinload(TemperatureModel.city))
+    temps_stmt = select(TemperatureModel).options(
+        selectinload(TemperatureModel.city)
+    )
 
     if city_id:
         temps_stmt = temps_stmt.where(TemperatureModel.city_id == city_id)

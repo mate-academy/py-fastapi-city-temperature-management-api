@@ -7,7 +7,10 @@ from sqlalchemy import select, func
 from database.sqlite_session import get_db
 from schemes.city import (
     CreateCityRequestSchema,
-    CreateCityResponseSchema, ListCitiesResponseSchema, CityDetailResponseSchema, CityChangeRequestSchema
+    CreateCityResponseSchema,
+    ListCitiesResponseSchema,
+    CityDetailResponseSchema,
+    CityChangeRequestSchema,
 )
 from database.models import CityModel
 
@@ -16,6 +19,7 @@ BASE_URL = "/cities/"
 router = APIRouter()
 
 DB = Annotated[AsyncSession, Depends(get_db)]
+
 
 @router.post(
     "/",
@@ -74,8 +78,10 @@ async def get_cities(
     cities_result = await db.execute(cities_stmt)
     cities = cities_result.scalars().all()
 
-    prev_page = f"{BASE_URL}?page={page - 1}&per_page={per_page}" if page > 1 else None
-    next_page = f"{BASE_URL}?page{page + 1}&per_page={per_page}" if page < total_pages else None
+    prev_page = (f"{BASE_URL}?page={page - 1}&"
+                 f"per_page={per_page}") if page > 1 else None
+    next_page = (f"{BASE_URL}?page{page + 1}&"
+                 f"per_page={per_page}") if page < total_pages else None
 
     return {
         "cities": cities,

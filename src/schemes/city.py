@@ -10,7 +10,7 @@ class CreateCityRequestSchema(BaseModel):
 class CreateCityResponseSchema(BaseModel):
     id: int
     name: str
-    additional_info:str
+    additional_info: str
 
 
 class ListCitiesResponseSchema(BaseModel):
