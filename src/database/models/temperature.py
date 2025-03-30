@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, DateTime, ForeignKey, func
+from sqlalchemy import Integer, DateTime, ForeignKey, func, Float
 from datetime import datetime
 
 from src.database.models import Base
@@ -21,4 +21,5 @@ class TemperatureModel(Base):
         default=func.now(),
         nullable=False
     )
+    temperature: Mapped[float] = mapped_column(Float, nullable=False)
     city: Mapped["CityModel"] = relationship("CityModel", back_populates="temperatures")

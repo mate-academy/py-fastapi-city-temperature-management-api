@@ -1,8 +1,8 @@
-"""First
+"""Change temp to float
 
-Revision ID: 613210c6a2a4
+Revision ID: de2cc38d1a9a
 Revises: 
-Create Date: 2025-03-30 14:16:48.908556
+Create Date: 2025-03-30 16:13:53.672816
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '613210c6a2a4'
+revision: str = 'de2cc38d1a9a'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,6 +32,7 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('city_id', sa.Integer(), nullable=False),
     sa.Column('date_time', sa.DateTime(timezone=True), nullable=False),
+    sa.Column('temperature', sa.Float(), nullable=False),
     sa.ForeignKeyConstraint(['city_id'], ['cities.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )

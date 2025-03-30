@@ -28,3 +28,7 @@ class CityDetailResponseSchema(CreateCityResponseSchema):
 class CityChangeRequestSchema(BaseModel):
     name: Optional[str] = None
     additional_info: Optional[str] = None
+
+
+class CityNameSchema(BaseModel):
+    name: str
