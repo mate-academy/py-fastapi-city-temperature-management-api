@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from database import get_db
 from temperature import schemas, crud
-from city import models
+import models
 from datetime import datetime
 import os
 import httpx
@@ -17,16 +18,18 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=list[schemas.Temperature])
-def read_all_temperatures(db: Session = Depends(get_db)):
-    return crud.get_all_temperatures(db)
+async def read_all_temperatures(db: AsyncSession = Depends(get_db)):
+    return await crud.get_all_temperatures(db)
 
 @router.get("/by_city/", response_model=list[schemas.Temperature])
-def read_temperatures_by_city(city_id: int, db: Session = Depends(get_db)):
-    return crud.get_temperatures_by_city(db, city_id)
+async def read_temperatures_by_city(city_id: int, db: AsyncSession = Depends(get_db)):
+    return await crud.get_temperatures_by_city(db, city_id)
 
 @router.post("/update")
-async def update_temperatures(db: Session = Depends(get_db)):
-    cities = db.query(models.City).all()
+async def update_temperatures(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(models.City))
+    cities = result.scalars().all()
+
     if not cities:
         raise HTTPException(status_code=404, detail="No cities in database")
 
@@ -52,6 +55,8 @@ async def update_temperatures(db: Session = Depends(get_db)):
                 date_time=datetime.utcnow(),
                 temperature=temp_celsius
             )
-            crud.create_temperature(db, temp)
+
+            await crud.create_temperature(db, temp)
+            await db.commit()
 
     return {"message": "Temperature data updated from OpenWeatherMap"}

@@ -1,16 +1,19 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 from temperature import schemas
-from city import models
+import models
 
-def create_temperature(db: Session, temp: schemas.TemperatureCreate):
+async def create_temperature(db: AsyncSession, temp: schemas.TemperatureCreate):
     db_temp = models.Temperature(**temp.dict())
     db.add(db_temp)
-    db.commit()
-    db.refresh(db_temp)
+    await db.commit()
+    await db.refresh(db_temp)
     return db_temp
 
-def get_all_temperatures(db: Session):
-    return db.query(models.Temperature).all()
+async def get_all_temperatures(db: AsyncSession):
+    result = await db.execute(select(models.Temperature))
+    return result.scalars().all()
 
-def get_temperatures_by_city(db: Session, city_id: int):
-    return db.query(models.Temperature).filter(models.Temperature.city_id == city_id).all()
+async def get_temperatures_by_city(db: AsyncSession, city_id: int):
+    result = await db.execute(select(models.Temperature).where(models.Temperature.city_id == city_id))
+    return result.scalars().all()

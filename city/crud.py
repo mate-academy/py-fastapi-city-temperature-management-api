@@ -1,31 +1,39 @@
-from sqlalchemy.orm import Session
-import city.models, city.schemas
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+import models
+from city import schemas
 
-def create_city(db: Session, city_data: city.schemas.CityCreate):
-    db_city = city.models.City(**city_data.dict())
+async def create_city(db: AsyncSession, city: schemas.CityCreate):
+    db_city = models.City(**city.dict())
     db.add(db_city)
-    db.commit()
-    db.refresh(db_city)
+    await db.commit()
+    await db.refresh(db_city)
     return db_city
 
-def get_cities(db: Session):
-    return db.query(city.models.City).all()
+async def get_cities(db: AsyncSession):
+    result = await db.execute(select(models.City))
+    return result.scalars().all()
 
-def get_city(db: Session, city_id: int):
-    return db.query(city.models.City).filter(city.models.City.id == city_id).first()
+async def get_city(db: AsyncSession, city_id: int):
+    result = await db.execute(select(models.City).where(models.City.id == city_id))
+    return result.scalars().first()
 
-def update_city(db: Session, city_id: int, city_data: city.schemas.CityUpdate):
-    db_city = get_city(db, city_id)
-    if db_city:
-        for key, value in city_data.dict().items():
-            setattr(db_city, key, value)
-        db.commit()
-        db.refresh(db_city)
+async def update_city(db: AsyncSession, city_id: int, city: schemas.CityUpdate):
+    result = await db.execute(select(models.City).where(models.City.id == city_id))
+    db_city = result.scalars().first()
+    if not db_city:
+        return None
+    for var, value in city.dict(exclude_unset=True).items():
+        setattr(db_city, var, value)
+    await db.commit()
+    await db.refresh(db_city)
     return db_city
 
-def delete_city(db: Session, city_id: int):
-    db_city = get_city(db, city_id)
-    if db_city:
-        db.delete(db_city)
-        db.commit()
+async def delete_city(db: AsyncSession, city_id: int):
+    result = await db.execute(select(models.City).where(models.City.id == city_id))
+    db_city = result.scalars().first()
+    if not db_city:
+        return None
+    await db.delete(db_city)
+    await db.commit()
     return db_city
