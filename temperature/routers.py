@@ -57,6 +57,5 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
             )
 
             await crud.create_temperature(db, temp)
-            await db.commit()
 
     return {"message": "Temperature data updated from OpenWeatherMap"}
