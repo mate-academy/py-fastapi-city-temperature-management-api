@@ -1,0 +1,10 @@
+fastapi==0.115.12
+sqlalchemy==2.0.41
+sqlalchemy-stubs==0.4
+alembic==1.16.1
+aiosqlite==0.21.0
+greenlet==3.2.3
+pydantic==2.11.7
+uvicorn==0.34.3
+dotenv==0.9.9
+httpx==0.28.1
