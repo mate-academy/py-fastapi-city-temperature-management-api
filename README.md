@@ -1,60 +1,47 @@
-## Task Description
+**FastAPI City Temperature Management API**
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+REST API for managing cities and getting current temperature data from OpenWeatherMap.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+Requirements:
+- Python 3.10+.
+- Libraries: `fastapi`, `qlalchemy`, `aiosqlite`, `httpx`.
+- OpenWeatherMap API key
 
-### Part 1: City CRUD API
+**Startup instructions**
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+Add your OpenWeatherMap API key to the .env:
+- OPENWEATHER_API_KEY=_________________
 
-### Part 2: Temperature API
+To run the app, use
+- bash:
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+python -m app.main
 
-### Additional Requirements
+The application will be available at: http://127.0.0.1:8080
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+API documentation:
+- Swagger UI: http://127.0.0.1:8080/docs
+- ReDoc: http://127.0.0.1:8080/redoc
 
-## Evaluation Criteria
+***Design Decisions*** 
+1. Architecture 
+- Modular Structure:
+  - Separation of concerns (routers, models, services). 
+  - Async SQLAlchemy for database operations.
+- Layered Design:
+  - `routers/` (API endpoints) -> `crud.py` (business logic) -> `models.py` (database models)
+2. Key Technologies
+- FastAPI: For high-performance API with automatic docs (Swagger/ReDoc).
+- SQLite + AsyncSQLAlchemy: Lightweight async database interactions. 
+- Pydantic V2: Data validation and serialization.
+- HTTPX: Async HTTP requests to OpenWeatherMap API.
+3. API Features
+- Cities CRUD: RESTful endpoints for city management.
+- Temperature Sync:
+  - Async background task to fetch/update temperatures.
+  - Historical data storage in SQLite.
 
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+***Why This Works***
+- Clear separation of concerns. 
+- Async-first for performance.
+- Minimal dependencies for easy maintenance.
