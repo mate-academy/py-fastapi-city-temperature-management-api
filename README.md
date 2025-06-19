@@ -1,60 +1,99 @@
-## Task Description
+# py-fastapi-city-temperature-management-api
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+FastAPI застосунок для керування температурою міст із використанням SQLAlchemy, Alembic та SQLite з підтримкою async/await.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Особливості
 
-### Part 1: City CRUD API
+- Async/await підтримка з SQLAlchemy 2.0 та aiosqlite
+- Модульна архітектура з розділенням на `city` та `temperature` модулі
+- Автоматичні міграції з Alembic
+- RESTful API з повним CRUD функціоналом
+- Автоматична документація з FastAPI
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Встановлення
 
-### Part 2: Temperature API
+1. Встановіть залежності:
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+   ```
+   pip install -r requirements.txt
+   ```
 
-### Additional Requirements
+2. Ініціалізуйте базу даних та застосуйте міграції:
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+   ```
+   alembic upgrade head
+   ```
 
-## Evaluation Criteria
+3. Запустіть сервер:
+   ```
+   uvicorn main:app --reload
+   ```
 
-Your task will be evaluated based on the following criteria:
+## Структура проекту
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```
+├── main.py                 # FastAPI застосунок
+├── database.py             # Налаштування async SQLAlchemy
+├── dependencies.py         # FastAPI залежності
+├── settings.py             # Налаштування проекту
+├── temp_aquirer.py         # Заглушка для отримання температури
+├── city/                   # Модуль міст
+│   ├── models.py           # SQLAlchemy моделі
+│   ├── schemas.py          # Pydantic схеми
+│   ├── crud.py             # CRUD операції
+│   └── router.py           # API endpoints
+├── temperature/            # Модуль температури
+│   ├── models.py           # SQLAlchemy моделі
+│   ├── schemas.py          # Pydantic схеми
+│   ├── crud.py             # CRUD операції
+│   └── router.py           # API endpoints
+├── migrations/             # Міграції Alembic
+└── city_temp.db           # SQLite база даних
+```
 
-## Deliverables
+## API Endpoints
 
-Please submit the following:
+### Міста
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+- `POST /cities/` — створити місто
+- `GET /cities/` — отримати список міст
+- `GET /cities/{city_id}` — отримати місто за ID
+- `PUT /cities/{city_id}` — оновити місто
+- `DELETE /cities/{city_id}` — видалити місто
 
-Good luck!
+### Температура
+
+- `POST /temperatures/` — додати запис температури
+- `GET /temperatures/` — отримати всі записи температури
+- `GET /temperatures/{temperature_id}` — отримати запис за ID
+- `GET /temperatures/city/{city_id}` — отримати температуру для міста
+- `GET /temperatures/city/{city_id}/latest` — остання температура для міста
+
+## Документація API
+
+Після запуску сервера, документація буде доступна за адресами:
+
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
+
+## Приклад використання
+
+```python
+import requests
+
+# Створити місто
+city_data = {"name": "Київ", "additional_info": "Столиця України"}
+city = requests.post("http://localhost:8000/cities/", json=city_data).json()
+
+# Додати температуру
+temp_data = {"city_id": city["id"], "temperature": 25.5}
+requests.post("http://localhost:8000/temperatures/", json=temp_data)
+
+# Отримати останню температуру
+latest_temp = requests.get(f"http://localhost:8000/temperatures/city/{city['id']}/latest").json()
+print(f"Температура в {city['name']}: {latest_temp['temperature']}°C")
+```
+
+## Ліцензія
+
+MIT
