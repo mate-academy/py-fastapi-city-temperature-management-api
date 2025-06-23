@@ -1,60 +1,126 @@
-## Task Description
+# 🌍 City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## 📌 Description
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+City Temperature API is a FastAPI application designed to manage a list of cities and store historical temperature data for each city.
 
-### Part 1: City CRUD API
+The application consists of:
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- A full CRUD API for managing city records.
+- An API for fetching and saving current temperature data for each city.
+- Endpoints to retrieve historical temperature records with optional filtering.
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## 🚀 Getting Started
 
-### Additional Requirements
+### ✅ Requirements
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+- Python 3.8+
+- pip
 
-## Evaluation Criteria
+### 📦 Installation
 
-Your task will be evaluated based on the following criteria:
+1. Clone the repository or copy the project files:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```bash
+git clone <your-repo-url>
+cd city_temperature_api
+```
 
-## Deliverables
+2. (Optional but recommended) Create a virtual environment:
 
-Please submit the following:
+```bash
+python -m venv venv
+source venv/bin/activate       # On Linux/macOS
+venv\Scripts\activate        # On Windows
+```
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+3. Install dependencies:
 
-Good luck!
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## ▶️ Running the Server
+
+Start the development server using Uvicorn:
+
+```bash
+uvicorn main:app --reload
+```
+
+- Access the interactive API docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Alternative documentation: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+---
+
+## 📐 Project Structure
+
+```
+city_temperature_api/
+├── main.py           # Main FastAPI app and endpoints
+├── database.py       # Database connection and session management
+├── models.py         # SQLAlchemy models for City and Temperature
+├── schemas.py        # Pydantic schemas for validation and response
+├── crud.py           # CRUD operations for City and Temperature
+├── services.py       # Async temperature fetcher (stub or real)
+├── requirements.txt  # Python dependencies
+├── README.md         # Documentation
+```
+
+---
+
+## 🔌 API Endpoints
+
+### 🌆 City Endpoints
+
+| Method | Endpoint             | Description             |
+|--------|----------------------|-------------------------|
+| POST   | `/cities/`           | Create a new city       |
+| GET    | `/cities/`           | List all cities         |
+| GET    | `/cities/{id}`       | Get details of a city   |
+| PUT    | `/cities/{id}`       | Update city information |
+| DELETE | `/cities/{id}`       | Delete a city           |
+
+### 🌡 Temperature Endpoints
+
+| Method | Endpoint                     | Description                              |
+|--------|------------------------------|------------------------------------------|
+| POST   | `/temperatures/update`       | Fetch and store current temperature for all cities |
+| GET    | `/temperatures/`             | List all temperature records             |
+| GET    | `/temperatures/?city_id=1`   | Filter temperature records by city       |
+
+---
+
+## 💡 Design Decisions
+
+- **SQLite** was chosen for simplicity and zero-configuration.
+- **AIOHTTP** is used for async temperature fetching (can be replaced with real APIs like OpenWeatherMap).
+- CRUD logic is separated into a `crud.py` module for maintainability.
+- Pydantic models ensure validation and automatic OpenAPI documentation.
+
+---
+
+## 📝 Assumptions & Simplifications
+
+- Temperature is fetched using a mocked async service (can be replaced with a real weather API).
+- No authentication or user management.
+- No background jobs (e.g., Celery) for periodic temperature updates — this is handled manually via endpoint.
+
+---
+
+## 📮 Future Improvements
+
+- Integrate with OpenWeather or Open-Meteo API for real temperature data.
+- Add authentication and rate limiting.
+- Add periodic background jobs for automatic updates.
+- Add unit tests and test coverage reports.
+
+---
+
+## 📫 Contact
+
+For any questions or suggestions, feel free to open an issue or contact the maintainer.
