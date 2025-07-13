@@ -1,0 +1,9 @@
+uvicorn==0.34.3
+fastapi==0.115.12
+SQLAlchemy==2.0.41
+sqlalchemy-stubs==0.4
+sqlmodel==0.0.24
+aiosqlite
+dotenv
+pydantic
+httpx
