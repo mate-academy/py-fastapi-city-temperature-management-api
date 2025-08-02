@@ -1,29 +1,26 @@
-from typing import List
+from typing import List, Optional
 import random
+from datetime import datetime
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from datetime import datetime
-
 
 from dependencies import get_db
-from . import models
-from . import schemas
-from . import crud
+from . import schemas, crud
 from city import models as city_models
 
 
 router = APIRouter()
 
-@router.get("/temperatures", response_model=List[schemas.TemperatureBase])
-async def read_all_temperatures(db: AsyncSession = Depends(get_db)):
+@router.get("/temperatures", response_model=List[schemas.TemperatureInDB])
+async def read_temperatures(
+    city_id: Optional[int] = None,
+    db: AsyncSession = Depends(get_db)
+):
+    if city_id is not None:
+        return await crud.get_temperatures_by_city(db, city_id)
     return await crud.get_all_temperatures(db)
-
-
-@router.get("/temperatures/", response_model=List[schemas.TemperatureBase])
-async def read_temperatures_by_city(city_id: int, db: AsyncSession = Depends(get_db)):
-    return await crud.get_temperatures_by_city(db, city_id)
 
 
 @router.post("/temperatures/update")
