@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from database import Base
 
+
 class Temperature(Base):
     __tablename__ = "temperature"
 

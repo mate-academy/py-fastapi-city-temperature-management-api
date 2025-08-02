@@ -14,7 +14,10 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=schemas.CityInDB, status_code=status.HTTP_201_CREATED)
-async def create_city(db: AsyncSession, city_data: schemas.CityCreate) -> models.City:
+async def create_city(
+    city_data: schemas.CityCreate,
+    db: AsyncSession = Depends(get_db)
+) -> models.City:
     query = insert(models.City).values(
         name=city_data.name,
         additional_info=city_data.additional_info
@@ -24,7 +27,6 @@ async def create_city(db: AsyncSession, city_data: schemas.CityCreate) -> models
     city_id = result.scalar_one()
     await db.commit()
 
-    # Окремий SELECT для отримання повноцінного об'єкта
     return await crud.get_city(db, city_id)
 
 
