@@ -1,5 +1,7 @@
+# app/models.py
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from database import Base
+from datetime import datetime
 
 class DBCity(Base):
     __tablename__ = "cities"
@@ -11,5 +13,5 @@ class DBTemperature(Base):
     __tablename__ = "temperatures"
     id = Column(Integer, primary_key=True, index=True)
     city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
-    date_time = Column(DateTime, nullable=False)
+    date_time = Column(DateTime, default=datetime.utcnow, nullable=False)  # Fixed default
     temperature = Column(Float, nullable=False)

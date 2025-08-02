@@ -1,5 +1,6 @@
+# app/crud.py
 from sqlalchemy.orm import Session
-import models
+from . import models, schemas  # Added missing schemas import
 
 def create_city(db: Session, city: schemas.CityCreate):
     db_city = models.DBCity(**city.dict())
@@ -13,6 +14,10 @@ def get_cities(db: Session, skip: int = 0, limit: int = 100):
 
 def get_city(db: Session, city_id: int):
     return db.query(models.DBCity).filter(models.DBCity.id == city_id).first()
+
+# Added missing get_city_by_name function
+def get_city_by_name(db: Session, name: str):
+    return db.query(models.DBCity).filter(models.DBCity.name == name).first()
 
 def delete_city(db: Session, city_id: int):
     db_city = get_city(db, city_id)

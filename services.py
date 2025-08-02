@@ -1,8 +1,9 @@
 import os
 import aiohttp
 from datetime import datetime
+from sqlalchemy.orm import Session  # Added missing Session import
+import schemas  # Added missing schemas import
 from crud import get_cities, create_temperature
-from database import get_db
 from fastapi import HTTPException
 
 
@@ -25,6 +26,7 @@ async def fetch_weather_data(city_name: str):
             return data.get("main", {}).get("temp")
 
 
+# Fixed async mismatch
 async def update_all_temperatures(db: Session):
     cities = get_cities(db)
     results = []
@@ -35,8 +37,7 @@ async def update_all_temperatures(db: Session):
             if temp is not None:
                 temp_record = schemas.TemperatureCreate(
                     city_id=city.id,
-                    temperature=temp,
-                    date_time=datetime.utcnow()
+                    temperature=temp
                 )
                 create_temperature(db, temp_record)
                 results.append({"city": city.name, "status": "success"})

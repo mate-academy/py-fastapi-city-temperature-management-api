@@ -1,3 +1,4 @@
+# app/routers/cities.py
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from .. import schemas, crud
@@ -7,6 +8,7 @@ router = APIRouter(prefix="/cities", tags=["cities"])
 
 @router.post("/", response_model=schemas.City)
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
+    # Using the fixed get_city_by_name function
     db_city = crud.get_city_by_name(db, name=city.name)
     if db_city:
         raise HTTPException(status_code=400, detail="City already exists")
