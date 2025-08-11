@@ -56,6 +56,8 @@ async def create_city(
         if isinstance(result, Exception):
             print(F"Error fetching temperature for {city.name}: {result}")
 
+            continue
+
         temperatures_to_create.append(schemas.TemperatureCreate(
             date_time=datetime.now(),
             temperature=int(result),
