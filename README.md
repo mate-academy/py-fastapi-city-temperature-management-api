@@ -1,3 +1,6 @@
+## FastAPI City & Temperature Management API
+
+
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
@@ -47,14 +50,70 @@ Your task will be evaluated based on the following criteria:
 - Error Handling: Your application should handle potential errors gracefully.
 - Documentation: Your code should be well-documented (README.md).
 
-## Deliverables
+## Additional Requirements
+- SQLite database with SQLAlchemy ORM.
 
-Please submit the following:
+- Dependency injection for database sessions.
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+- Async function for fetching temperature data from an online source.
 
-Good luck!
+- Project structure follows FastAPI best practices.
+
+## How to Run
+
+1. Clone the repository:
+
+```bash
+
+git clone <your_repo_url>
+cd <project_folder>
+
+```
+
+2. Create and activate virtual environment:
+```bash
+
+python -m venv .venv
+source .venv/bin/activate   # On Windows: .venv\Scripts\activate
+```
+3. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+4. Run migrations (if using Alembic):
+```bash
+alembic upgrade head
+```
+(If migrations are not used, ensure tables are created at startup with Base.metadata.create_all(bind=engine).)
+
+5. Start the server:
+```bash
+uvicorn main:app --reload
+```
+
+## API Documentation
+Once the server is running, visit:
+
+- Swagger UI: http://localhost:8000/docs
+
+- ReDoc: http://localhost:8000/redoc
+
+## Design Choices
+
+- FastAPI was chosen for speed, simplicity, and automatic docs generation.
+
+- SQLAlchemy ORM provides a clean and Pythonic way to handle database models.
+
+- Alembic (optional) is used for database migrations.
+
+- Async temperature fetch to avoid blocking the main thread when calling external APIs.
+
+## Assumptions & Simplifications
+
+- Temperature data is fetched from a free public API (e.g., OpenWeatherMap).
+
+- No authentication or authorization is implemented.
+
+- All cities are assumed to be unique by name.
+
+- Error handling is implemented for common cases (e.g., duplicate cities, missing records).
