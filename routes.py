@@ -2,19 +2,33 @@ import asyncio
 from datetime import datetime
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from crud import get_cities, create_city, get_city_by_id, update_city, delete_city, get_temperatures, \
-    get_temperatures_by_city_id, fetch_city_temperature
+from crud import (
+    get_cities,
+    create_city,
+    get_city_by_id,
+    update_city,
+    delete_city,
+    get_temperatures,
+    get_temperatures_by_city_id,
+    fetch_city_temperature,
+)
 from database import get_db
 from models import Temperature, City
-from schemas import CityListSchema, CityCreateSchema, CityUpdateSchema, TemperatureListSchema
-from fastapi import Query
+from schemas import (
+    CityListSchema,
+    CityCreateSchema,
+    CityUpdateSchema,
+    TemperatureListSchema,
+)
 
 router = APIRouter()
 
-@router.get("/temperatures")
+
+# ✅ Оставляем только один /temperatures с фильтрацией по query параметру
+@router.get("/temperatures", response_model=List[TemperatureListSchema])
 def list_temperatures(city_id: int | None = Query(None), db: Session = Depends(get_db)):
     return get_temperatures(db=db, city_id=city_id)
 
@@ -34,17 +48,14 @@ def put_city(city_id: int, city: CityUpdateSchema, db: Session = Depends(get_db)
     return update_city(city_id=city_id, city=city, db=db)
 
 
-@router.delete("/cities/{city_id}", response_model=CityListSchema)
+# ✅ response_model исправлен на dict
+@router.delete("/cities/{city_id}", response_model=dict)
 def destroy_city(city_id: int, db: Session = Depends(get_db)):
     return delete_city(city_id=city_id, db=db)
 
 
-@router.get("/temperatures", response_model=List[TemperatureListSchema])
-def list_temperatures(db: Session = Depends(get_db)):
-    return get_temperatures(db=db)
-
-
-@router.get("/temperatures/{city_id}", response_model=TemperatureListSchema)
+# ✅ response_model исправлен на список
+@router.get("/temperatures/{city_id}", response_model=List[TemperatureListSchema])
 def detail_city_temperatures(city_id: int, db: Session = Depends(get_db)):
     return get_temperatures_by_city_id(city_id=city_id, db=db)
 
@@ -65,7 +76,7 @@ async def update_all_temperatures(db: Session = Depends(get_db)):
         temperature = Temperature(
             city_id=city.id,
             date_time=now,
-            temperature=temp
+            temperature=temp,
         )
         db.add(temperature)
         temperature_objs.append(temperature)
