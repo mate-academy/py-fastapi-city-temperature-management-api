@@ -10,14 +10,13 @@ from crud import get_cities, create_city, get_city_by_id, update_city, delete_ci
 from database import get_db
 from models import Temperature, City
 from schemas import CityListSchema, CityCreateSchema, CityUpdateSchema, TemperatureListSchema
-
+from fastapi import Query
 
 router = APIRouter()
 
-
-@router.get("/cities", response_model=List[CityListSchema])
-def list_cities(db: Session = Depends(get_db)):
-    return get_cities(db=db)
+@router.get("/temperatures")
+def list_temperatures(city_id: int | None = Query(None), db: Session = Depends(get_db)):
+    return get_temperatures(db=db, city_id=city_id)
 
 
 @router.post("/cities", response_model=CityListSchema)

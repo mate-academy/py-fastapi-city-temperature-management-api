@@ -2,6 +2,7 @@ from fastapi import Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from models import City, Temperature
+from schemas import CityCreate, CityUpdate
 
 
 def get_cities(db: Session):
