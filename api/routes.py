@@ -20,42 +20,42 @@ from api.schemas import CityListSchema, CityCreateSchema, CityUpdateSchema, Temp
 router = APIRouter()
 
 
-@router.get("/cities", response_model=List[CityListSchema])
+@router.get("/cities/", response_model=List[CityListSchema])
 def list_cities(db: Session = Depends(get_db)):
     return get_cities(db=db)
 
 
-@router.post("/cities", response_model=CityListSchema)
+@router.post("/cities/", response_model=CityListSchema)
 def post_city(city: CityCreateSchema, db: Session = Depends(get_db)):
     return create_city(city, db=db)
 
 
-@router.get("/cities/{city_id}", response_model=CityListSchema)
+@router.get("/cities/{city_id}/", response_model=CityListSchema)
 def detail_city(city_id: int, db: Session = Depends(get_db)):
     return get_city_by_id(city_id=city_id, db=db)
 
 
-@router.put("/cities/{city_id}", response_model=CityListSchema)
+@router.put("/cities/{city_id}/", response_model=CityListSchema)
 def put_city(city_id: int, city: CityUpdateSchema, db: Session = Depends(get_db)):
     return update_city(city_id=city_id, city=city, db=db)
 
 
-@router.delete("/cities/{city_id}", response_model=CityListSchema)
+@router.delete("/cities/{city_id}/", response_model=CityListSchema)
 def destroy_city(city_id: int, db: Session = Depends(get_db)):
     return delete_city(city_id=city_id, db=db)
 
 
-@router.get("/temperatures", response_model=List[TemperatureListSchema])
+@router.get("/temperatures/", response_model=List[TemperatureListSchema])
 def list_temperatures(db: Session = Depends(get_db)):
     return get_temperatures(db=db)
 
 
-@router.get("/temperatures/{city_id}", response_model=TemperatureListSchema)
+@router.get("/temperatures/{city_id}/", response_model=TemperatureListSchema)
 def detail_city_temperatures(city_id: int, db: Session = Depends(get_db)):
     return get_temperatures_by_city_id(city_id=city_id, db=db)
 
 
-@router.post("/temperatures/update", response_model=List[TemperatureListSchema])
+@router.post("/temperatures/update/", response_model=List[TemperatureListSchema])
 async def update_all_temperatures(db: Session = Depends(get_db)):
     cities = db.query(City).all()
     if not cities:
