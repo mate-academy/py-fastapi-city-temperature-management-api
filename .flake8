@@ -1,0 +1,8 @@
+[flake8]
+inline-quotes = "
+ignore = E203, E266, W503, ANN002, ANN003, ANN101, ANN102, ANN401, N807, N818, VNE001, F401, ANN201, VNE003
+max-line-length = 119
+max-complexity = 18
+select = B,C,E,F,W,T4,B9,ANN,Q0,N8,VNE
+exclude = .venv, venv, alembic
+extend-exclude = src/tests/*

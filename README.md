@@ -1,60 +1,111 @@
-## Task Description
+## City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application for managing city data and their corresponding temperature records using a weather API (OpenWeatherMap).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+### Features
 
-### Part 1: City CRUD API
+- ✅ **CRUD API for Cities** — Add, view, update, and delete cities.
+- 🌡️ **Temperature History API** — Fetch and store current temperatures for all cities.
+- 🔍 **Filtering** — Get temperature history per city.
+- ⚡ **Async Data Fetching** — Non-blocking temperature updates using `httpx`.
+- 🧩 **Modular Structure** — Clear separation of routers, schemas, models, CRUD logic, and dependencies.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### 🏗️ Project Structure
+```
+├── main.py # FastAPI app entry point
+├── models.py # SQLAlchemy models
+├── schemas.py # Pydantic schemas
+├── crud/
+│ ├── city.py # City database logic
+│ └── temperature.py # Temperature database logic
+├── routers/
+│ ├── cities.py # /cities endpoints
+│ └── temperatures.py # /temperatures endpoints
+├── database.py # DB engine and session config
+├── dependencies.py # DB dependency for injection
+├── .env # API key configuration
+└── README.md # Documentation
+```
 
-### Part 2: Temperature API
+## 🚀 Getting Started
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+### ✅ Prerequisites
 
-### Additional Requirements
+- Python 3.10+
+- OpenWeatherMap API key — [Get your key here](https://openweathermap.org/api)
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### 📥 Installation
 
-## Evaluation Criteria
+1. **Clone the repo**
 
-Your task will be evaluated based on the following criteria:
+```bash
+  git clone https://github.com/VladimirDolhyi/py-fastapi-city-temperature-management-api.git
+  cd py-fastapi-city-temperature-management-api
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+2. **Create a virtual environment and activate it**
 
-## Deliverables
+```bash
+  python -m venv venv
+  source venv/bin/activate      On Windows: venv\Scripts\activate
+```
 
-Please submit the following:
+3. **Install dependencies**
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+```bash
+  pip install -r requirements.txt
+```
 
-Good luck!
+4. **Set up your .env file**
+
+```bash
+  WEATHER_API_KEY=your_openweathermap_api_key_here
+```
+
+5. **Run the application**
+
+```bash
+  uvicorn main:app --reload
+```
+
+6. **Open API Docs**
+
+```bash
+  Visit: http://localhost:8000/docs
+```
+### 🔧 API Endpoints
+```
+🏙️ Cities
+Method	Endpoint	Description
+POST	/cities/	Create a new city
+GET	/cities/	Get all cities
+GET	/cities/{city_id}	Get a specific city (optional)
+PUT	/cities/{city_id}	Update a city (optional)
+DELETE	/cities/{city_id}	Delete a city
+🌡️ Temperatures
+Method	Endpoint	Description
+POST	/temperatures/update	Fetch and store current temps for cities
+GET	/temperatures/	Get all temperature records
+GET	/temperatures/?city_id={id}	Filter temperature records by city
+```
+
+### 🧪 Example Usage
+
+#### Create a city
+```
+POST /cities/
+{
+  "name": "Kyiv",
+  "additional_info": "Hero city"
+}
+```
+
+#### Update temperatures
+```
+POST /temperatures/update
+```
+
+#### Get temperature history for a city
+```
+GET /temperatures/?city_id=1
+```
