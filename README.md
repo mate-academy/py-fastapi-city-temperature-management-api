@@ -1,60 +1,115 @@
-## Task Description
+# 🌆 FastAPI City Temperature Management API  
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A **FastAPI-based REST API** for managing cities and their temperature records.  
+The project demonstrates modern Python backend practices using **FastAPI**, **SQLAlchemy (async)**, and **Pydantic v2** for data validation.  
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## 🚀 Features  
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- **City Management**  
+  - Create, update, and list cities  
+  - Store additional information about each city  
 
-### Part 2: Temperature API
+- **Temperature Management**  
+  - Record current temperature data for all cities in db
+  - Query temperatures with filtering by city_id
+  - sorting support by date
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+- **External Weather Integration**  
+  - Fetch temperature data using [WeatherAPI](https://www.weatherapi.com/)  
+  - Ready to support [OpenWeatherMap](https://openweathermap.org/api) as an alternative  
 
-### Additional Requirements
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+- **Data Validation**  
+  - Input schemas powered by Pydantic v2  
+  - Conflict checks (e.g., prevent duplicate city names)  
 
-## Evaluation Criteria
+- **Database**  
+  - Async SQLAlchemy ORM  
+  - Alembic migrations  
+  - SQLite
 
-Your task will be evaluated based on the following criteria:
+---
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+## 🛠️ Tech Stack  
 
-## Deliverables
+- [FastAPI](https://fastapi.tiangolo.com/) — modern, fast Python web framework  
+- [SQLAlchemy (async)](https://docs.sqlalchemy.org/) — ORM with async support  
+- [Alembic](https://alembic.sqlalchemy.org/) — database migrations  
+- [Pydantic v2](https://docs.pydantic.dev/) — data validation  
+- [Uvicorn](https://www.uvicorn.org/) — ASGI server  
+- [WeatherAPI](https://www.weatherapi.com/) / [OpenWeatherMap](https://openweathermap.org/) — weather data providers  
 
-Please submit the following:
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+---
 
-Good luck!
+## 📦 Installation  
+
+Clone the repository:  
+
+```bash
+
+git clone https://github.com/Roman-Sokolov-V/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+```
+
+Create a virtual environment and install dependencies:
+```bash
+
+python -m venv venv
+source venv/bin/activate   # Linux/Mac
+venv\Scripts\activate      # Windows
+
+pip install -r requirements.txt
+```
+Apply migrations:
+
+```bash
+
+alembic upgrade head
+```
+🔑 API Keys Configuration
+
+This project requires an API key from a weather provider. You can use either:
+
+[WeatherAPI](https://www.weatherapi.com/) 
+ (default)
+
+[OpenWeatherMap](https://openweathermap.org/) 
+ (alternative)
+
+1. Register and get your API key
+
+WeatherAPI: sign up and obtain a key from your dashboard
+
+OpenWeatherMap: create an account and generate an API key
+
+2. Environment variables
+
+Copy the provided sample.env file and rename it to .env
+
+Add your API keys inside .env:  
+WEATHER_API_KEY=your_weatherapi_key_here (recomended)  
+or  
+Open_Weather_Map_API_KEY=your_openweathermap_key_here  
+⚠️ Only one provider is required. The application is configured to work with WeatherAPI by default but can be easily switched to OpenWeatherMap.
+
+
+▶️ Running the Project
+Start the development server:
+```bash
+
+uvicorn src.main:app --reload
+```
+
+API docs available at:
+
+Swagger UI → http://127.0.0.1:8000/docs
+
+ReDoc → http://127.0.0.1:8000/redoc
+
+
+📄 License
+
+This project is licensed under the MIT License.
