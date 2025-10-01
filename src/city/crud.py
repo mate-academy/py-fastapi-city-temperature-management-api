@@ -20,13 +20,13 @@ def filter_by_city_name(selection: Select, city_name: str) -> Select:
 
 async def read_city_by_city_name(db: AsyncSession, city_name: str) -> DbCity:
     selection = get_all_city_selection()
-    selection = filter_by_city_id(selection, city_name)
+    selection = filter_by_city_name(selection, city_name)
     result = await db.execute(selection)
     return result.scalar_one_or_none()
 
 async def create_city(db: AsyncSession, city_data: CityCreate) -> DbCity:
     city_in_db = await read_city_by_city_name(db=db, city_name=city_data.name)
-    if city_in_db is not None:
+    if city_in_db is None:
         city = DbCity(**city_data.model_dump())
         db.add(city)
         await db.commit()
@@ -60,3 +60,13 @@ async def put_city_by_id(
     await db.commit()
     await db.refresh(city)
     return city
+
+async def delete_city_by_id(db: AsyncSession, city_id: int) -> None:
+    selection = get_all_city_selection()
+    selection = filter_by_city_id(selection, city_id)
+    result = await db.execute(selection)
+    city = result.scalar_one_or_none()
+    if city is None:
+        raise HTTPException(status_code=404, detail="City not found")
+    await db.delete(city)
+    await db.commit()

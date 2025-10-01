@@ -1,6 +1,6 @@
 from typing import Protocol
 
-from src.temperature.schemas import WeatherData
+from src.services.weather.schemas import WeatherData
 
 
 class WeatherClient(Protocol):

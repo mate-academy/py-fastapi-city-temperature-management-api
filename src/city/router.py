@@ -1,11 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
+from starlette import status
 
 from src.city.schemas import CityRead, CityCreate, CityUpdate
 from src.city.crud import create_city, read_all_cities, read_city_by_id, \
-    put_city_by_id
+    put_city_by_id, delete_city_by_id
 from src.database.dependencies import get_db
 
 router = APIRouter()
@@ -40,3 +41,8 @@ async def update_city(
 ) -> CityRead:
     city = await put_city_by_id(db=db, city_id=city_id, data=city_data)
     return CityRead.model_validate(city)
+
+@router.delete("/cities/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_city(city_id: int, db: AsyncSession=Depends(get_db)):
+    await delete_city_by_id(db=db, city_id=city_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

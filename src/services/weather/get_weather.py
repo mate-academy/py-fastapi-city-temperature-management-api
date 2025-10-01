@@ -1,6 +1,7 @@
 import httpx
+
+from src.services.weather.schemas import WeatherData
 from src.settings import settings
-from src.temperature.schemas import WeatherData
 
 # client for WeatherApi https://www.weatherapi.com/
 
@@ -13,10 +14,9 @@ class WeatherApiClient:
             )
             response.raise_for_status()
             data = response.json()
-            print(data)
             return WeatherData(
-                temp_c=data["current"]["temp_c"],
-                last_updated=data["current"]["last_updated"]
+                temperature=data["current"]["temp_c"],
+                date_time=data["current"]["last_updated"]
             )
 
 # client for Open Weather Map https://openweathermap.org/
@@ -34,6 +34,6 @@ class WeatherApiClient:
 #             response.raise_for_status()
 #             data = response.json()
 #             return WeatherData(
-#                 temp_c=data["main"]["temp"],
-#                 last_updated=data["dt"]
+#                 temperature=data["main"]["temp"],
+#                 date_time=data["dt"]
 #             )

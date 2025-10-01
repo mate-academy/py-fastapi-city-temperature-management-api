@@ -1,8 +1,9 @@
 from sqlalchemy import select, Select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.services.weather.schemas import WeatherData
 from src.temperature.models import DbTemperature
-from src.temperature.schemas import TemperatureData
+
 
 
 def get_all_selection() -> Select:
@@ -16,12 +17,12 @@ def filter_by_city_id(selection: Select, city_id: int | None) -> Select:
 async def create_temperature(
         db: AsyncSession,
         city_id,
-        temperature_data: TemperatureData
+        temperature_data: WeatherData
 ) -> DbTemperature:
     new_temp = DbTemperature(
         city_id=city_id,
-        temperature=temperature_data.temp_c,
-        date_time=temperature_data.last_updated,
+        temperature=temperature_data.temperature,
+        date_time=temperature_data.date_time,
     )
     db.add(new_temp)
     await db.commit()
