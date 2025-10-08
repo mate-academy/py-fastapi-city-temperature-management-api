@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -24,6 +25,8 @@ async def create_temperature(
     db: AsyncSession, temperature: schemas.TemperatureCreate
 ) -> tuple[float, datetime]:
     city = await get_city_by_id(db, temperature.city_id)
+    if not city:
+        raise HTTPException(status_code=404, detail="City not found")
     created = models.Temperature(
         city_id=city.id,
         temperature=temperature.temperature,
@@ -32,4 +35,4 @@ async def create_temperature(
     db.add(created)
     await db.commit()
     await db.refresh(created)
-    return (created.temperature, created.date_time)
+    return created.temperature, created.date_time

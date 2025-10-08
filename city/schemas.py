@@ -12,3 +12,6 @@ class CityCreate(CityBase):
 
 class CityRead(CityBase):
     id: int
+
+    class Config:
+        orm_mode = True

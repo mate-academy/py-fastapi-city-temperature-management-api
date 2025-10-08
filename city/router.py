@@ -38,7 +38,7 @@ async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
     return None
 
 
-@router.put("/cities/{city_id}", response_model=schemas.CityCreate)
+@router.put("/cities/{city_id}", response_model=schemas.CityRead)
 async def update_city(
     city_id: int, city_data: schemas.CityCreate, db: AsyncSession = Depends(get_db)
 ):
