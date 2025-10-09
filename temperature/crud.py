@@ -9,14 +9,15 @@ from city.crud import get_city_by_id
 from temperature import models, schemas
 
 
-async def get_all_temperatures(db: AsyncSession, city_id: int = None):
+async def get_all_temperatures(db: AsyncSession, city_id: int | None = None):
     selection = select(models.Temperature).options(
         selectinload(models.Temperature.city)
     )
     if city_id:
         city = await get_city_by_id(db, city_id)
-        if city:
-            selection = selection.where(models.Temperature.city_id == city.id)
+        if not city:
+            raise HTTPException(status_code=404, detail="City not found")
+        selection = selection.where(models.Temperature.city_id == city.id)
     result = await db.execute(selection)
     return result.scalars().all()
 

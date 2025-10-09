@@ -21,7 +21,7 @@ async def get_city(city_id: int, db: AsyncSession = Depends(get_db)):
     return city
 
 
-@router.post("/cities/", response_model=schemas.CityCreate)
+@router.post("/cities/", response_model=schemas.CityRead, status_code=201)
 async def create_city(city: schemas.CityCreate, db: AsyncSession = Depends(get_db)):
     exists = await crud.get_city_by_name(db=db, city_name=city.name)
     if exists:

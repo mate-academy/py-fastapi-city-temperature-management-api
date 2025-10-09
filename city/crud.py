@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from city import models, schemas
 
@@ -10,7 +11,7 @@ async def get_city_by_name(db: AsyncSession, city_name: str):
     return result.scalars().first()
 
 
-async def get_city_by_id(db: AsyncSession, cid: int) -> models.City:
+async def get_city_by_id(db: AsyncSession, cid: int) -> models.City | None:
     selection = select(models.City).where(models.City.id == cid)
     res = await db.execute(selection)
     return res.scalars().first()
@@ -33,7 +34,13 @@ async def create_city(db: AsyncSession, city: schemas.CityCreate) -> models.City
         additional_info=city.additional_info,
     )
     db.add(created)
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=400, detail=f"City with name: {city.name} already exists"
+        )
     await db.refresh(created)
     return created
 
