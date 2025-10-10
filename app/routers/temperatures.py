@@ -11,15 +11,18 @@ from ..deps import get_db
 router = APIRouter(prefix="/temperatures", tags=["temperatures"])
 
 GEOCODING_URL = "https://geocoding-api.open-meteo.com/v1/search"
-WEATHER_URL = "https://api.open-meteo.com/v1/forecast"  # current=temp_2m
+WEATHER_URL = "https://api.open-meteo.com/v1/forecast"  # using
+
+
+# current_weather=true
 
 
 async def _fetch_city_temperature(
         client: httpx.AsyncClient,
         city: models.City
 ) -> Optional[float]:
-    """Resolve city name to lat/lon, then fetch current temperature in °C.
-    Returns None if the city can't be resolved.
+    """Resolve city name to lat/lon, then fetch current temperature in В°C.
+    Returns None if the city can't be resolved or the API returns no value.
     """
     try:
         # 1) geocode
@@ -33,26 +36,18 @@ async def _fetch_city_temperature(
             return None
         lat = data["results"][0]["latitude"]
         lon = data["results"][0]["longitude"]
-        # 2) weather
+        # 2) weather (classic param)
         w = await client.get(WEATHER_URL, params={
             "latitude": lat,
             "longitude": lon,
-            "current": "temperature_2m",
+            "current_weather": True,
             "timezone": "UTC",
         })
         w.raise_for_status()
         wd = w.json()
-        # Open-Meteo 'current' block (new API)
-        # OR 'current_weather' (older) support
-        temp = None
-        if "current" in wd and wd["current"].get("temperature_2m") is not None:
-            temp = wd["current"]["temperature_2m"]
-        elif wd.get(
-                "current_weather"
-        ) and wd[
-            "current_weather"
-        ].get("temperature") is not None:
-            temp = wd["current_weather"]["temperature"]
+        # Parse classic current_weather.temperature (in В°C)
+        cw = wd.get("current_weather") or {}
+        temp = cw.get("temperature")
         return float(temp) if temp is not None else None
     except Exception:
         return None
@@ -91,5 +86,6 @@ def list_temperatures(
     if city_id is not None:
         q = q.filter(models.Temperature.city_id == city_id)
     return q.order_by(
-        models.Temperature.date_time.desc(), models.Temperature.id.desc()
+        models.Temperature.date_time.desc(),
+        models.Temperature.id.desc()
     ).all()

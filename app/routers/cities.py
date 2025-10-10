@@ -39,7 +39,7 @@ def list_cities(db: Session = Depends(get_db)):
 
 @router.get("/{city_id}", response_model=schemas.CityOut)
 def get_city(city_id: int, db: Session = Depends(get_db)):
-    city = db.query(models.City).get(city_id)
+    city = db.get(models.City, city_id)
     if not city:
         raise HTTPException(status_code=404, detail="City not found")
     return city
@@ -51,7 +51,7 @@ def update_city(
         payload: schemas.CityUpdate,
         db: Session = Depends(get_db)
 ):
-    city = db.query(models.City).get(city_id)
+    city = db.get(models.City, city_id)
     if not city:
         raise HTTPException(status_code=404, detail="City not found")
     if payload.name is not None:
@@ -70,9 +70,12 @@ def update_city(
     return city
 
 
-@router.delete("/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{city_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
 def delete_city(city_id: int, db: Session = Depends(get_db)):
-    city = db.query(models.City).get(city_id)
+    city = db.get(models.City, city_id)
     if not city:
         raise HTTPException(status_code=404, detail="City not found")
     db.delete(city)
