@@ -22,7 +22,7 @@ class CityOut(CityBase):
     id: int
 
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
 # ----- Temperature Schemas -----
@@ -42,4 +42,4 @@ class TemperatureOut(BaseModel):
     temperature: float
 
     class Config:
-        from_attributes = True
+        orm_mode = True
