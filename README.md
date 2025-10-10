@@ -1,60 +1,89 @@
-## Task Description
+# City & Temperature FastAPI
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A small FastAPI service that manages cities (CRUD) and stores temperature history fetched from a public online resource (Open‑Meteo, no API key required).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Features
 
-### Part 1: City CRUD API
+- **Cities CRUD**: `POST /cities`, `GET /cities`, `GET /cities/{id}`, `PUT /cities/{id}`, `DELETE /cities/{id}`
+- **Temperatures**
+  - `POST /temperatures/update` fetches the current temperature for **all** cities and stores a record per city.
+  - `GET /temperatures` lists all temperature records (newest first).
+  - `GET /temperatures?city_id={id}` filters by a specific city.
+- Uses SQLite via SQLAlchemy; tables are auto-created at startup for convenience.
+- Async temperature fetching using `httpx` and Open‑Meteo APIs:
+  - Geocoding: `https://geocoding-api.open-meteo.com/v1/search?name={city}`
+  - Weather: `https://api.open-meteo.com/v1/forecast?latitude=..&longitude=..&current=temperature_2m`
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Quickstart
 
-### Part 2: Temperature API
+1. **Create & activate a virtual environment (recommended)**
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
+```
 
-### Additional Requirements
+2. **Install dependencies**
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+```bash
+pip install -r requirements.txt
+```
 
-## Evaluation Criteria
+3. **Run the API**
 
-Your task will be evaluated based on the following criteria:
+```bash
+uvicorn app.main:app --reload
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+Open: <http://127.0.0.1:8000/docs>
 
-## Deliverables
+## Example workflow
 
-Please submit the following:
+```bash
+# Create two cities
+curl -X POST http://127.0.0.1:8000/cities -H "Content-Type: application/json" -d '{"name":"Kyiv"}'
+curl -X POST http://127.0.0.1:8000/cities -H "Content-Type: application/json" -d '{"name":"Berlin","additional_info":"capital of Germany"}'
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+# Update temperatures (fetches for all cities)
+curl -X POST http://127.0.0.1:8000/temperatures/update
 
-Good luck!
+# List temperatures
+curl http://127.0.0.1:8000/temperatures
+
+# Filter by city
+curl "http://127.0.0.1:8000/temperatures?city_id=1"
+```
+
+## Design Choices & Notes
+
+- **Open‑Meteo** is used because it's free and keyless. We first geocode the city name to `(lat, lon)`, then request `current=temperature_2m` to read the current temperature in °C. The code also accepts the legacy `current_weather.temperature` in case of API differences.
+- **Dependency Injection**: DB session provided via a `get_db` dependency so handlers stay clean and testable.
+- **Error Handling**: You get `400` if you try to add a duplicate city name, `404` for missing entities, and `400` when updating temperatures with no cities present.
+- **Persistence**: SQLite file `app.db` is created in the project root. Delete it to start fresh.
+- **Migrations**: For a small assignment, `Base.metadata.create_all` is used. In production, you should add Alembic migrations.
+
+## Project Structure
+
+```
+fastapi_city_temps/
+├─ app/
+│  ├─ routers/
+│  │  ├─ cities.py
+│  │  └─ temperatures.py
+│  ├─ __init__.py
+│  ├─ database.py
+│  ├─ main.py
+│  ├─ models.py
+│  └─ schemas.py
+├─ requirements.txt
+└─ README.md
+```
+
+## Assumptions & Simplifications
+
+- City **name is unique** to avoid duplicates; in real apps consider (name, country) uniqueness.
+- Temperature unit is °C from Open‑Meteo. Time is stored as UTC.
+- For clarity, `POST /temperatures/update` performs lookups sequentially; for many cities, consider parallelism (e.g., `asyncio.gather`) and backoff/retry.
+- No authentication; add it if deploying externally.
