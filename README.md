@@ -58,3 +58,9 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+uses:
+openweathermap api to get current temperature results
+set up:
+provide proper API_KEY for openweatherapi in service.py 
+run "uvicorn main:app"
