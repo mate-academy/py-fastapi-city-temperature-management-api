@@ -1,5 +1,6 @@
 from typing import Any
 from fastapi import APIRouter, Depends
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 from datetime import datetime
 import httpx
@@ -29,8 +30,8 @@ def temperatures_get(
 
 @router.post("/temperatures/update", response_model=list[Temperature])
 async def temperatures_update(db: Session = Depends(get_db)):
+    cities = await run_in_threadpool(get_cities, db)
 
-    cities = get_cities(db)
     created = []
 
     async with httpx.AsyncClient() as client:
@@ -45,7 +46,7 @@ async def temperatures_update(db: Session = Depends(get_db)):
                 temperature=temp_c,
             )
 
-            db_temp = create_temperature(db, temp_create)
-            created.append(db_temp)
+            temp_db = await run_in_threadpool(create_temperature, db, temp_create)
+            created.append(temp_db)
 
     return created
