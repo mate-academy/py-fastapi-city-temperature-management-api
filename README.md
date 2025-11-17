@@ -1,60 +1,186 @@
-## Task Description
+# FastAPI City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This project consists of two main parts:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+* A CRUD API for managing cities
+* A system for fetching and storing temperature data for each city
 
-### Part 1: City CRUD API
+The application uses FastAPI, SQLAlchemy, SQLite, and asynchronous HTTP requests to retrieve real-time temperature data from an online source.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+___
 
-### Part 2: Temperature API
+## 🚀 Functionality
+### **_1) City API_**
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+A city consists of:
 
-### Additional Requirements
+* id — a unique identifier
+* name — the name of the city
+* additional_info — additional information about the city
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+Available endpoints:
 
-## Evaluation Criteria
+`POST /cities` – Create a city
 
-Your task will be evaluated based on the following criteria:
+`GET /cities ` – Get a list of all cities
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+`GET /cities/{city_id}` – Get a specific city
 
-## Deliverables
+`PUT /cities/{city_id}` – Update a city
 
-Please submit the following:
+`DELETE /cities/{city_id}` – Delete a city
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+### **_2) Temperature API_**
 
-Good luck!
+A temperature record contains:
+
+* id — unique ID
+* city_id — ID of the city (ForeignKey)
+* date_time — date and time of the measurement
+* temperature — recorded temperature
+
+Endpoints:
+
+`POST /temperatures/update` – Fetch the current temperature for all cities from an online source and store it in the database
+
+`GET /temperatures` – Get all temperature records or filter by city_id
+
+_**Parameters:**_
+
+* `GET /temperatures?city_id=2` – Returns temperature records for the city with ID 2
+* Supports skip and limit for pagination
+
+___
+
+## 🌐 Temperature Source
+
+Temperature data is retrieved from the online service: https://wttr.in/{city}?format=j1
+
+This service returns weather information in JSON format.
+
+___
+
+## 📦 Technologies
+
+* FastAPI
+* SQLAlchemy
+* SQLite
+* Pydantic v2
+* httpx (async)
+* Uvicorn
+
+___
+
+## 📁 Project Structure
+
+app/
+
+    crud/
+        city.py
+        temperature.py
+    models/
+        city.py
+        temperature.py
+    routers/
+        city.py
+        temperature.py
+    schemas/
+        city.py
+        temperature.py
+    database.py
+    dependencies.py
+    main.py
+
+___
+
+## ▶️ How to Run the Project
+
+1. Clone the repository:
+
+    `git clone <repo-url>`
+    
+    `cd py-fastapi-city-temperature-management-api`
+
+
+2. Create a virtual environment:
+
+    `python -m venv .venv`
+
+
+3. Activate the environment:
+
+    **Windows:** `.venv\Scripts\activate`
+    
+    **Linux / Mac:** `source .venv/bin/activate`
+
+
+4. Install dependencies:
+
+    `pip install -r requirements.txt`
+
+    Or manually:
+
+    `pip install fastapi uvicorn sqlalchemy pydantic httpx`
+
+
+5. Start the server:
+
+    `uvicorn app.main:app --reload`
+
+___
+
+## 📘 API Documentation
+
+_After launching:_
+
+Swagger UI: http://127.0.0.1:8000/docs
+
+ReDoc: http://127.0.0.1:8000/redoc
+
+
+#### Example Response (GET /temperatures)
+
+```json
+{
+  "id": 5,
+  "date_time": "2025-11-17T18:29:32.912753",
+  "temperature": 6,
+  "city": {
+    "id": 2,
+    "name": "London",
+    "additional_info": "Foggy and rainy city"
+  }
+}
+```
+
+___
+
+## 🧠 Design Decisions
+
+The wttr.in service was chosen for weather data because it is:
+
+* free
+* does not require an API key
+* fast
+* supports JSON output
+
+Temperature data is stored as history to:
+
+* track changes
+* allow analysis
+* match the task requirements
+
+The Pydantic models use `from_attributes = True`, enabling serialization of SQLAlchemy ORM objects.
+
+The temperature update feature uses asynchronous HTTP calls via `httpx.AsyncClient.`
+This ensures that the application remains fast and responsive even when fetching temperature data for multiple cities at once.
+
+___
+
+## 📝 Limitations & Assumptions
+
+The online source returns temperatures in Celsius, which is sufficient for this task.
+
+The city is considered unique by name, so `DBCity.name` has `unique=True`.
+
+Additional validation (e.g., checking if the city name is valid) was not required by the task.
