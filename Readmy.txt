@@ -1,0 +1,81 @@
+# City Temperature Management API
+
+This project is a FastAPI application designed to manage city data and their corresponding temperature records using a SQLite database. It consists of two main components: a **City CRUD API** for managing city information and a **Temperature API** for fetching and storing current temperature data for those cities.
+
+---
+
+## 🚀 How to Run the Application
+
+Follow these steps to set up and run the application locally.
+
+### Prerequisites
+
+You need the following installed on your system:
+
+* **Python 3.8+**
+* **pip** (Python package installer)
+
+2. Set Up the Virtual Environment (Recommended):
+
+python -m venv venv
+source venv/bin/activate
+
+That's great! Using a specific library like python_weather and a dedicated module like session_db.py for dependency injection are important details.
+
+I will now revise the relevant sections of your README.md to accurately reflect these choices.
+
+I've updated the Dependencies, Asynchronous Operations, and Dependency Injection sections below.
+
+3. Install Dependencies 📦
+The application relies on:
+
+fastapi, uvicorn, sqlalchemy, and pydantic for the core API and database functionality.
+
+python-weather to asynchronously fetch current temperature data from the external weather service.
+
+pip install -r requirements.txt
+# If you don't have a requirements.txt, install them manually:
+pip install fastapi uvicorn sqlalchemy pydantic python-weather
+
+4. Run the Application:
+fastapi dev main.py
+The application will now be running at http://127.0.0.1:8000.
+
+5. Access Documentation
+You can access the auto-generated interactive API documentation (Swagger UI) at:
+
+http://127.0.0.1:8000/docs
+
+Design Choices
+The architecture and implementation adhere to standard FastAPI and Python best practices.
+
+Project Structure
+The project is organized into a modular structure to ensure separation of concerns and maintainability:
+
+main.py: The main entry point, where the FastAPI application instance is created and routers are included.
+
+database.py: Handles database connection setup (create_engine, SessionLocal) and the base class for models.
+
+models/: Contains SQLAlchemy ORM models (City, Temperature) defining the database tables.
+
+schemas/: Contains Pydantic models (BaseCity, CreateCity, BaseTemperature.) for data validation, serialization, and deserialization (defining the API request/response shape).
+
+crud/ (or services/): Contains the core logic for database operations (Create, Read, Update, Delete) for both Cities and Temperatures. This keeps the database logic separate from the API routing.
+
+routers/: Contains the FastAPI APIRouter instances, defining the endpoints for /cities and /temperature.
+
+Dependency Injection (Updated)
+Custom Dependency Module: The database session management is centralized in a custom module, session_db.py.
+
+Database Session Lifecycle: The db_session() function in this module uses the standard try...yield...finally pattern to manage the SQLAlchemy session.
+
+yield db: Provides the database session (db) to the route handler when requested via db: Session = Depends(db_session).
+
+db.close(): Ensures the session is properly closed after the request is processed, regardless of success or failure, which is crucial for efficient resource management.
+
+Decoupling: By injecting the database session, the router functions (API endpoints) only focus on receiving data and returning responses, while the crud layer handles the actual data persistence.
+
+Asynchronous Operations (Updated)
+The POST /temperatures/update endpoint is implemented as an async function. This is necessary to perform non-blocking I/O operations (like fetching external temperature data) without freezing the entire application, which is essential for high-performance web APIs.
+
+External Data Source: The python-weather library is used to asynchronously query a publicly available weather API for the current temperature of each city in the database. The library handles the external request logic asynchronously.
