@@ -12,7 +12,7 @@ from temperature import models
 async def get_temperatures(db: AsyncSession, city_id: int | None = None):
     query = (select(models.DBTemperature)
              .options(selectinload(models.DBTemperature.city)))
-    if city_id:
+    if not city_id:
         query = query.where(models.DBTemperature.city_id == city_id)
     temperatures_list = await db.execute(query)
     return temperatures_list.scalars().all()
@@ -42,7 +42,7 @@ async def fetch_temperatures(db: AsyncSession, api_key: str):
 
     for city in cities:
         temp = await weather.get_temperature(city=city.name)
-        if not temp:
+        if temp is None:
             continue
 
         record = await create_temperature(

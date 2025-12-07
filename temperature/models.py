@@ -15,7 +15,7 @@ class DBTemperature(Base):
     city: Mapped["DBCity"] = relationship(
         "DBCity",
         back_populates="temperatures",
-        lazy="joined",
+        lazy="selectin",
     )
     date_time: Mapped[datetime] = mapped_column(DateTime(), nullable=False)
     temperature: Mapped[float] = mapped_column(Float(), nullable=False)

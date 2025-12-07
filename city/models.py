@@ -14,6 +14,7 @@ class DBCity(Base):
         "DBTemperature",
         back_populates="city",
         cascade="all, delete, delete-orphan",
+        lazy="selectin",
     )
 
     def __repr__(self) -> str:

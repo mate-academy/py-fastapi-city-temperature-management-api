@@ -2,8 +2,6 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
-from city.schemas import City
-
 
 class TemperatureBase(BaseModel):
     date_time: datetime
@@ -12,7 +10,7 @@ class TemperatureBase(BaseModel):
 
 class Temperature(TemperatureBase):
     id: int
-    city: City
+    city_id: int
     model_config = ConfigDict(from_attributes=True)
 
 
