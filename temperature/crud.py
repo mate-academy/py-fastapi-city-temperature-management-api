@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from city.models import DBCity
 from .services.weather_api import WeatherAPI
@@ -9,8 +10,10 @@ from temperature import models
 
 
 async def get_temperatures(db: AsyncSession, city_id: int | None = None):
-    query = select(models.DBTemperature)
-    query = query.where(models.DBTemperature.city_id == city_id)
+    query = (select(models.DBTemperature)
+             .options(selectinload(models.DBTemperature.city)))
+    if city_id:
+        query = query.where(models.DBTemperature.city_id == city_id)
     temperatures_list = await db.execute(query)
     return temperatures_list.scalars().all()
 

@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "mate-fastapi-city-temperature-management-api"
-    DATABASE_URL: str | None
+    DATABASE_URL: str
     WEATHER_API_KEY: str
 
     class Config:
