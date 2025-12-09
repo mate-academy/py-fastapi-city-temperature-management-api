@@ -10,7 +10,7 @@ class TemperatureModel(Base):
     __tablename__ = "temperature"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    city_id: Mapped[int] = mapped_column(ForeignKey("cites.id", ondelete="CASCADE"), nullable=False)
+    city_id: Mapped[int] = mapped_column(ForeignKey("cities.id", ondelete="CASCADE"), nullable=False)
     date_time: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

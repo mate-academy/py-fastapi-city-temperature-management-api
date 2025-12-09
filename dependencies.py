@@ -6,6 +6,6 @@ def get_db():
         yield session
 
 
-async def get_Async_db():
+async def get_async_db():
     async with AsyncSessionLocal() as session:
         yield session
