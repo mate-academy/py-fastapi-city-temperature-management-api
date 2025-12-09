@@ -9,12 +9,13 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 
+
 async def fetch_temperature_by_city_name(city: CityModel) -> float:
     url = "https://api.openweathermap.org/data/2.5/weather"
     params = {
         "q": city.name,
-        "units": "metric",  # ✅ Celsius
-        "appid": settings.weather_api_key,
+        "units": "metric",
+        "appid": API_KEY,
     }
 
     async with httpx.AsyncClient() as client:

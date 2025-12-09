@@ -1,3 +1,4 @@
+from datetime import datetime, UTC
 from typing import List
 
 from fastapi import HTTPException
@@ -8,6 +9,34 @@ from city.models import CityModel
 from city.schemas import CityDetailSchema
 from temperature.models import TemperatureModel
 from temperature.schemas import TemperatureDetailSchema
+from temperature.services import fetch_temperature_by_city_name
+
+
+async def fetch_and_create_temperature_for_city(
+    city_id: int,
+    db: AsyncSession,
+) -> TemperatureDetailSchema:
+
+    stmt = select(CityModel).where(CityModel.id == city_id)
+    result = await db.execute(stmt)
+    city = result.scalar_one_or_none()
+
+    if city is None:
+        raise HTTPException(status_code=404, detail="City not found")
+
+    temperature_c = await fetch_temperature_by_city_name(city)
+
+    record = TemperatureModel(
+        city_id=city.id,
+        temperature=temperature_c,
+        date_time=datetime.now(UTC),
+    )
+
+    db.add(record)
+    await db.commit()
+    await db.refresh(record)
+
+    return TemperatureDetailSchema.model_validate(record)
 
 
 async def get_temperatures(db: AsyncSession) -> List[TemperatureDetailSchema]:
@@ -17,7 +46,7 @@ async def get_temperatures(db: AsyncSession) -> List[TemperatureDetailSchema]:
     return [
         TemperatureDetailSchema.model_validate(t)
         for t in temperatures
-        ]
+    ]
 
 
 async def get_temperatures_by_city_id(
