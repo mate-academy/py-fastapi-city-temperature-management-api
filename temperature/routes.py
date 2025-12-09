@@ -25,7 +25,7 @@ async def list_temperatures(db: AsyncSession = Depends(get_async_db)):
     return result
 
 
-@router.get("/temperatures/{city_id}", response_model=CityDetailSchema)
-async def get_city_temperature(city_id: int, db: AsyncSession = Depends(get_async_db)):
+@router.get("/{city_id}", response_model=CityDetailSchema)
+async def get_city_temperature(city_id: int | None = None, db: AsyncSession = Depends(get_async_db)):
     result = await get_temperatures_by_city_id(city_id=city_id, db=db)
     return result

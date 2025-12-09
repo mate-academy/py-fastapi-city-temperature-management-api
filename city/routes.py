@@ -26,7 +26,7 @@ def get_city(city_id: int, db: Session = Depends(get_db)):
     return result
 
 
-@router.put("/", response_model=CitySchema)
+@router.put("/{city_id}", response_model=CitySchema)
 def edit_city(data: CityUpdateSchema, db: Session = Depends(get_db)):
     result = update_city(data, db)
     return result
