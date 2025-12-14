@@ -106,9 +106,12 @@ async def create_temperature_for_all_cities(
             detail="No cities found in database"
         )
     task = [get_temperature_from_api(city.name) for city in cities]
-    temperatures = await asyncio.gather(*task)
+    temperatures = await asyncio.gather(*task, return_exceptions=True)
     new_records = []
     for city, temp in zip(cities, temperatures):
+        if isinstance(temp, Exception):
+            print(f"Unable to obtain temperature for {city.name}: {temp}")
+            continue
         db_temperatures = models.DBTemperature(
             city_id=city.id,
             temperature=temp,

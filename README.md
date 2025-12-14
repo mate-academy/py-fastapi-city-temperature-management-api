@@ -87,6 +87,7 @@ uvicorn main:app --reload
 - To avoid the N+1 problem, selectinload was used to load related objects.
 - Pydantic schemas were used to validate data and return a structured API response.
 - The project architecture is organised according to a modular principle (app, city, temperature, dependencies).
+- I implemented PATCH for partial updates to the City resource instead of the optional PUT described in the task, as this allows only the fields that need to be changed to be updated without sending the entire object.
 
 ## Assumptions and simplifications
 
