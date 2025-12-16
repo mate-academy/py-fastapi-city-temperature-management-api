@@ -50,8 +50,6 @@ async def create_temperature(db: AsyncSession, temperature: schemas.TemperatureC
         temperature=temperature.temperature,
     )
     db.add(db_temperature)
-    await db.commit()
-    await db.refresh(db_temperature)
 
     return db_temperature
 
@@ -66,7 +64,5 @@ async def update_temperature(
         raise HTTPException(status_code=404, detail="Temperature not found")
 
     db_temperature.temperature = temperature.temperature
-
-    await db.commit()
 
     return  db_temperature
