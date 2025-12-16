@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import Annotated
+from typing import Annotated, Optional
 
 from dotenv import load_dotenv
 from fastapi import APIRouter, Depends, HTTPException
@@ -43,20 +43,15 @@ async def delete_cities(
     return await crud.delete_city(db=db, city_id=city_id)
 
 
-@router.get("/temperatures", response_model=list[TemperatureListSchema])
-async def get_temperature(db: Annotated[AsyncSession, Depends(get_db)]):
-    return await crud.get_all_temperatures(db=db)
-
-
 @router.get("/temperatures/", response_model=list[TemperatureListSchema])
-async def get_temperature_with_param(
-        city_id: int,
-        db: Annotated[AsyncSession, Depends(get_db)]
+async def get_temperature(
+        db: Annotated[AsyncSession, Depends(get_db)],
+        city_id: Optional[int] = None,
 ):
     return await crud.get_all_temperatures(db=db, city_id=city_id)
 
 
-@router.put("/temperatures/update")
+@router.post("/temperatures/update")
 async def update_temperature(db: Annotated[AsyncSession, Depends(get_db)]):
     async with db.begin():
         cities = await crud.get_all_cities(db=db)
@@ -72,19 +67,14 @@ async def update_temperature(db: Annotated[AsyncSession, Depends(get_db)]):
 
                     response = response.json()
 
-                    temperature = await db.scalar(select(Temperature).where(Temperature.city_id == city.id))
-
                     schema = TemperatureCreateSchema(
                         date_time=response["current"]["last_updated"],
                         temperature=response["current"]["temp_c"],
                         city_id=city.id
                     )
 
-                    if not temperature:
-                        await crud.create_temperature(db=db, temperature=schema)
+                    await crud.create_temperature(db=db, temperature=schema)
 
-                    else:
-                        await crud.update_temperature(db=db, temperature=schema, temperature_id=temperature.id)
                 except Exception as e:
                     print(f"problem with parsing temperature for {city.name}: {e}")
 
