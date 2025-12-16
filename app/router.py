@@ -1,3 +1,4 @@
+import asyncio
 import os
 from typing import Annotated
 
@@ -47,7 +48,7 @@ async def get_temperature(db: Annotated[AsyncSession, Depends(get_db)]):
     return await crud.get_all_temperatures(db=db)
 
 
-@router.get("/temperatures/?city_id={city_id}", response_model=list[TemperatureListSchema])
+@router.get("/temperatures/", response_model=list[TemperatureListSchema])
 async def get_temperature_with_param(
         city_id: int,
         db: Annotated[AsyncSession, Depends(get_db)]
@@ -60,23 +61,31 @@ async def update_temperature(db: Annotated[AsyncSession, Depends(get_db)]):
     async with db.begin():
         cities = await crud.get_all_cities(db=db)
         async with httpx.AsyncClient() as client:
-            for city in cities:
-                url = f"http://api.weatherapi.com/v1/current.json?key={API_KEY}&q={city.name}&aqi=no"
-                response = await client.get(url)
-                response = response.json()
+            tasks = [client.get(f"http://api.weatherapi.com/v1/current.json?key={API_KEY}&q={city.name}&aqi=no") for city in cities]
+            results = await asyncio.gather(*tasks)
 
-                temperature = await db.scalar(select(Temperature).where(Temperature.city_id == city.id))
+            for city, response in zip(cities, results):
+                try:
+                    if response.is_error:
+                        print(f"Problem with updating temperature for {city.name}")
+                        continue
 
-                schema = TemperatureCreateSchema(
-                    date_time=response["current"]["last_updated"],
-                    temperature=response["current"]["temp_c"],
-                    city_id=city.id
-                )
+                    response = response.json()
 
-                if not temperature:
-                    await crud.create_temperature(db=db, temperature=schema)
+                    temperature = await db.scalar(select(Temperature).where(Temperature.city_id == city.id))
 
-                else:
-                    await crud.update_temperature(db=db, temperature=schema)
+                    schema = TemperatureCreateSchema(
+                        date_time=response["current"]["last_updated"],
+                        temperature=response["current"]["temp_c"],
+                        city_id=city.id
+                    )
+
+                    if not temperature:
+                        await crud.create_temperature(db=db, temperature=schema)
+
+                    else:
+                        await crud.update_temperature(db=db, temperature=schema, temperature_id=temperature.id)
+                except Exception as e:
+                    print(f"problem with parsing temperature for {city.name}: {e}")
 
     return {"message": "Temperature successfully updated"}
