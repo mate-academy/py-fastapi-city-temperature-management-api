@@ -20,7 +20,6 @@ def get_db():
 
 @app.post("/cities", response_model=schemas.City, status_code=status.HTTP_201_CREATED)
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
-    # FIX: Check for duplicates before attempting to save
     existing_city = crud.get_city_by_name(db, name=city.name)
     if existing_city:
         raise HTTPException(
