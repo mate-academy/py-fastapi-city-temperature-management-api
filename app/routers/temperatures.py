@@ -11,12 +11,15 @@ from app.database import get_db
 from app.models.city import City
 from app.models.temperature import Temperature as TemperatureModel
 from app.schemas.temperature import Temperature
-from app.services.weather_service import get_temperature_for_city as fetch_temperature
+from app.services.weather import get_temperature_for_city as fetch_temperature
 from app.exceptions import not_found_error, bad_request_error
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/temperatures",
+    tags=["temperatures"]
+)
 
 
 @router.post("/update")

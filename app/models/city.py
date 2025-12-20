@@ -7,7 +7,7 @@ class  City(Base):
     __tablename__ = "cities"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True, nyllable=False)
+    name = Column(String, unique=True, index=True, nullable=False)
     additional_info = Column(String, nullable=True)
 
 
