@@ -1,20 +1,30 @@
 import httpx
+import logging
 
 
-async def get_current_temp(city_name: str) -> float:
-    # 1. Get Lat/Lon for the city name (Geocoding)
-    geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}&count=1&language=en&format=json"
+async def get_current_temp(city_name: str) -> float | None:
     async with httpx.AsyncClient() as client:
-        geo_resp = await client.get(geo_url)
-        geo_data = geo_resp.json()
+        try:
+            geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}&count=1"
+            geo_resp = await client.get(geo_url)
+            geo_data = geo_resp.json()
 
-        if not geo_data.get("results"):
-            return 0.0  # Or raise an error
+            results = geo_data.get("results")
+            if not results:
+                return None
 
-        lat = geo_data["results"][0]["latitude"]
-        lon = geo_data["results"][0]["longitude"]
+            lat = results[0].get("latitude")
+            lon = results[0].get("longitude")
 
-        # 2. Get Weather
-        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
-        weather_resp = await client.get(weather_url)
-        return weather_resp.json()["current_weather"]["temperature"]
+            weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
+            weather_resp = await client.get(weather_url)
+            weather_data = weather_resp.json()
+
+            current_weather = weather_data.get("current_weather")
+            if current_weather:
+                return current_weather.get("temperature")
+
+            return None
+        except (httpx.HTTPError, KeyError, IndexError) as e:
+            logging.error(f"Error fetching weather for {city_name}: {e}")
+            return None
