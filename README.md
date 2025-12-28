@@ -57,4 +57,52 @@ Please submit the following:
     - A brief explanation of your design choices.
     - Any assumptions or simplifications you made.
 
-Good luck!
+# Features
+
+Asynchronous database operations using SQLAlchemy AsyncSession
+
+Temperature fetching endpoint uses asynchronous HTTP requests
+
+Dependency Injection in FastAPI for database session management
+
+All tables are created automatically on startup using FastAPI lifespan events
+
+# Create a virtual environment
+python -m venv venv
+source venv/bin/activate  
+venv\Scripts\activate     
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configurate database
+DATABASE_URL = "sqlite+aiosqlite:///./app.db"
+
+# Alembic Migrations
+alembic init alembic
+alembic revision --autogenerate -m "Initial migration"
+alembic upgrade head
+
+# Running Server
+uvicorn main:app --reload
+
+## API Endpoints
+Cities 
+
+POST /cities – Create a new city
+
+GET /cities – List all cities
+
+GET /cities/{id} – Get details of a specific city
+
+PUT /cities/{id} – Update a city
+
+DELETE /cities/{id} – Delete a city
+
+Temperatures
+
+POST /temperatures/update – Fetch current temperature for all cities and store in DB
+
+GET /temperatures – List all temperature records
+
+GET /temperatures/?city_id={city_id} – Get temperature records for a specific city
