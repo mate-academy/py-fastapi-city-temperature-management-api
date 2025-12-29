@@ -58,3 +58,98 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Weather Cities API
+
+A backend service for managing cities and logging their temperature in real time.
+Temperatures are automatically fetched from OpenStreetMap (Nominatim) and Open-Meteo APIs.
+
+
+### Features
+
+- Cities create, read, delete
+- Automatic current temperature fetching
+- Temperature history logging
+- Get latest temperature for a city
+- Temperature history per city
+- Async integration with external APIs
+- Clean Architecture (routers / crud / services / models / schemas)
+
+
+### Tech Stack
+- Python 3.11+
+- FastAPI
+- SQLAlchemy 2.0
+- SQLite (easily replaceable with PostgresSQL)
+- OpenStreetMap (Nominatim)
+- Open-Meteo API
+- httpx
+
+###  Installation
+
+```bash
+git clone https://github.com/yourname/weather-cities-api.git
+cd weather-cities-api
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Run
+
+```bash
+uvicorn app:app --reload
+```
+
+#### Swagger UI:
+
+http://127.0.0.1:8000/docs
+
+
+### Cities
+
+```code
+POST /cities
+```
+```json
+{
+  "name": "Kyiv",
+  "additional_info": "Capital of Ukraine"
+}
+```
+
+### Temperatures
+#### Update temperatures for all cities
+
+```code
+POST /temperatures/update
+```
+
+#### Automatically:
+- gets coordinates via Nominatim
+- fetches current temperature via Open-Meteo
+- stores data in DB
+
+### City temperature history
+
+```code
+GET /temperatures/{city_id}
+```
+
+### Live city temperature
+```code
+GET /cities/{city_id}/temperature/current
+```
+
+###  Project Structure
+
+```code
+.
+├── app.py
+├── database.py
+├── models.py
+├── schemas.py
+├── crud.py
+├── services/
+│   └── weather.py
+```
