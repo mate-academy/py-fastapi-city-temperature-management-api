@@ -58,3 +58,101 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Weather Cities API
+
+A backend service for managing cities and logging their temperature in real time.
+Temperatures are automatically fetched from OpenStreetMap (Nominatim) and Open-Meteo APIs.
+
+
+### Features
+
+- Cities create, read, delete
+- Automatic current temperature fetching
+- Temperature history logging
+- Get latest temperature for a city
+- Temperature history per city
+- Async integration with external APIs
+- Clean Architecture (routers / crud / services / models / schemas)
+
+
+### Tech Stack
+- Python 3.13+
+- FastAPI
+- SQLAlchemy 2.0
+- SQLite (easily replaceable with PostgresSQL)
+- Open-Weather API
+- httpx
+
+###  Installation
+
+```bash
+git clone https://github.com/bashyrov/py-fastapi-city-temperature-management-api.git
+cd py-fastapi-city-temperature-management-api
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Run
+
+```bash
+python -m uvicorn main:app --reload
+```
+
+#### Swagger UI:
+
+http://127.0.0.1:8000/docs
+
+
+### Cities
+
+#### Create a new city
+```code
+POST /cities/
+```
+```json
+{
+  "name": "Tokyo",
+  "additional_info": ""
+}
+```
+
+#### Delete a city
+```code
+DELETE /cities/{city_id}
+```
+
+#### Get all cities
+```code
+GET /cities/
+```
+```json
+[
+  {
+    "id": 1,
+    "name": "Tokyo",
+    "additional_info": ""
+  }
+]
+```
+
+### Temperatures
+#### Update temperatures for all cities
+
+```code
+POST /temperatures/update
+```
+
+#### Get temperature for all cities
+
+```code
+GET /temperatures/
+```
+
+#### Get temperature for a specific city
+
+```code
+GET /temperatures/{city_id}
+```
+
