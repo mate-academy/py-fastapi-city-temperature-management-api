@@ -1,60 +1,72 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A learning-oriented FastAPI project for managing cities and storing their current temperatures.
+The project demonstrates **FastAPI**, **async SQLAlchemy (2.0)**, **Pydantic v2**, external API integration, and basic backend architecture.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## ✨ Features
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- CRUD operations for cities
+- Fetching current temperature for all cities from an external weather API
+- Storing temperature history in the database with timestamps
+- Retrieving:
+  - all temperature records
+  - the latest temperature for a specific city
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## 🧱 Tech Stack
 
-### Additional Requirements
+- Python 3.10+
+- FastAPI
+- SQLAlchemy 2.0 (async)
+- Pydantic v2
+- Alembic
+- httpx
+- OpenWeather API
+- PostgreSQL (or any SQL database supported by SQLAlchemy)
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## how to run
+1. Clone & enter the project folder: 
+- git clone <your-repo-url>
+- cd py-fastapi-city-temperature-management-api
+2. Create & activate a virtual environment
+python -m venv .venv
+.venv\Scripts\Activate.ps1       # Windows PowerShell
+3. Install dependencies
+pip install -r requirements.txt
+4. Configure environment variables
+5. Run database migrations
+6. Start the API server
+uvicorn app.main:app --reload
 
-## Evaluation Criteria
 
-Your task will be evaluated based on the following criteria:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
 
-## Deliverables
 
-Please submit the following:
+---
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## 📁 Project Structure
 
-Good luck!
+```text
+app/
+├── main.py
+├── api/
+│   ├── dependencies.py
+│   └── routers/
+│       ├── city.py
+│       └── temperature.py
+├── crud/
+│   ├── city.py
+│   └── temperature.py
+├── models/
+│   ├── city.py
+│   └── temperature.py
+├── schemas/
+│   ├── city.py
+│   └── temperature.py
+├── services/
+│   └── weather.py
+├── database.py
+└── migrations/
