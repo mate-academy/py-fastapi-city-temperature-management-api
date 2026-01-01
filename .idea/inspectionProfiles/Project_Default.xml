@@ -1,0 +1,92 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="uliweb-alembic" />
+          <option value="aiosmtplib" />
+          <option value="aiosqlite" />
+          <option value="alembic" />
+          <option value="amqp" />
+          <option value="annotated-doc" />
+          <option value="annotated-types" />
+          <option value="anyio" />
+          <option value="bcrypt" />
+          <option value="billiard" />
+          <option value="black" />
+          <option value="blinker" />
+          <option value="celery" />
+          <option value="celery-types" />
+          <option value="certifi" />
+          <option value="cffi" />
+          <option value="charset-normalizer" />
+          <option value="click" />
+          <option value="click-didyoumean" />
+          <option value="click-plugins" />
+          <option value="click-repl" />
+          <option value="colorama" />
+          <option value="cryptography" />
+          <option value="dnspython" />
+          <option value="ecdsa" />
+          <option value="email-validator" />
+          <option value="eventlet" />
+          <option value="fastapi" />
+          <option value="fastapi-mail" />
+          <option value="flake8" />
+          <option value="greenlet" />
+          <option value="h11" />
+          <option value="httpcore" />
+          <option value="httpx" />
+          <option value="idna" />
+          <option value="iniconfig" />
+          <option value="Jinja2" />
+          <option value="kombu" />
+          <option value="Mako" />
+          <option value="MarkupSafe" />
+          <option value="mccabe" />
+          <option value="mypy" />
+          <option value="mypy_extensions" />
+          <option value="packaging" />
+          <option value="passlib" />
+          <option value="pathspec" />
+          <option value="platformdirs" />
+          <option value="pluggy" />
+          <option value="prompt_toolkit" />
+          <option value="pyasn1" />
+          <option value="pycodestyle" />
+          <option value="pycparser" />
+          <option value="pydantic" />
+          <option value="pydantic-settings" />
+          <option value="pydantic_core" />
+          <option value="pyflakes" />
+          <option value="Pygments" />
+          <option value="pytest" />
+          <option value="pytest-asyncio" />
+          <option value="python-dateutil" />
+          <option value="python-dotenv" />
+          <option value="python-jose" />
+          <option value="python-multipart" />
+          <option value="pytokens" />
+          <option value="redis" />
+          <option value="regex" />
+          <option value="requests" />
+          <option value="rsa" />
+          <option value="six" />
+          <option value="sniffio" />
+          <option value="SQLAlchemy" />
+          <option value="starlette" />
+          <option value="stripe" />
+          <option value="typing-inspection" />
+          <option value="typing_extensions" />
+          <option value="tzdata" />
+          <option value="urllib3" />
+          <option value="uvicorn" />
+          <option value="vine" />
+          <option value="wcwidth" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
