@@ -1,6 +1,7 @@
+import os
 import httpx
 
-API_KEY = "d5c4b933697b73d190f0fdb42c3a5652"
+API_KEY = os.getenv("WEATHER_API_KEY")
 BASE_URL = "https://api.openweathermap.org/data/2.5/weather"
 
 async def fetch_temperature(city_name: str) -> float | None:

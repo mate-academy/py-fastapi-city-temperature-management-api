@@ -1,6 +1,7 @@
 import asyncio
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.concurrency import run_in_threadpool
 from sqlalchemy.orm import Session
 
@@ -36,18 +37,13 @@ async def update_temperatures(db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=list[schemas.Temperature])
-def read_all_temperatures(db: Session = Depends(get_db)):
-    return crud.get_temperatures(db=db)
-
-
-@router.get("/city/{city_id}", response_model=list[schemas.Temperature])
-def read_city_temperatures(
-    city_id: int,
+def read_temperatures(
+    city_id: Optional[int] = Query(None),
     db: Session = Depends(get_db)
 ):
     temperatures = crud.get_temperatures(db=db, city_id=city_id)
 
-    if not temperatures:
+    if city_id is not None and not temperatures:
         raise HTTPException(
             status_code=404,
             detail="No temperature records found for this city"
