@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 import models, schemas, crud
 import httpx
+from httpx import RequestError, HTTPStatusError
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -70,16 +71,18 @@ async def update_temperatures(db: Session = Depends(get_db)):
 
     async with httpx.AsyncClient() as client:
         for city in cities:
+            url = (
+                f"https://api.open-meteo.com/v1/forecast"
+                f"?latitude={city.latitude}&longitude={city.longitude}&current_weather=true"
+            )
             try:
-                url = (
-                    f"https://api.open-meteo.com/v1/forecast"
-                    f"?latitude={city.latitude}&longitude={city.longitude}&current_weather=true"
-                )
                 resp = await client.get(url)
+                resp.raise_for_status()
                 data = resp.json()
                 temperature = data.get("current_weather", {}).get("temperature", 20.0)
                 crud.create_temperature(db, city_id=city.id, temperature=temperature)
-            except Exception:
-                crud.create_temperature(db, city_id=city.id, temperature=20.0)
+            except (RequestError, HTTPStatusError) as e:
+                print(f"Failed to fetch temperature for {city.name}: {e}")
+                continue
 
     return {"message": "Temperatures updated successfully"}

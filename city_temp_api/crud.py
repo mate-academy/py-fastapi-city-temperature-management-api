@@ -1,12 +1,16 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from datetime import datetime
 import models, schemas
 
 
 # --- City CRUD ---
 def create_city(db: Session, city: schemas.CityCreate):
-    db_city = models.City(name=city.name, additional_info=city.additional_info)
+    db_city = models.City(
+        name=city.name,
+        additional_info=city.additional_info,
+        latitude=city.latitude,
+        longitude=city.longitude
+    )
     db.add(db_city)
     try:
         db.commit()
@@ -31,9 +35,12 @@ def update_city(db: Session, city_id: int, city_data: schemas.CityCreate):
         return None
     db_city.name = city_data.name
     db_city.additional_info = city_data.additional_info
+    db_city.latitude = city_data.latitude
+    db_city.longitude = city_data.longitude
     db.commit()
     db.refresh(db_city)
     return db_city
+
 
 
 def delete_city(db: Session, city_id: int):
@@ -48,7 +55,7 @@ def delete_city(db: Session, city_id: int):
 # --- Temperature CRUD ---
 def create_temperature(db: Session, city_id: int, temperature: float):
     temp = models.Temperature(
-        city_id=city_id, temperature=temperature, date_time=datetime.utcnow
+        city_id=city_id, temperature=temperature
     )
     db.add(temp)
     db.commit()
