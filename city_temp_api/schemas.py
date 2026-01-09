@@ -7,6 +7,8 @@ from typing import Optional
 class CityBase(BaseModel):
     name: str
     additional_info: Optional[str] = None
+    latitude: float
+    longitude: float
 
 
 class CityCreate(CityBase):

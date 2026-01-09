@@ -71,12 +71,15 @@ async def update_temperatures(db: Session = Depends(get_db)):
     async with httpx.AsyncClient() as client:
         for city in cities:
             try:
-                url = f"https://api.open-meteo.com/v1/forecast?latitude=50&longitude=30&current_weather=true"
+                url = (
+                    f"https://api.open-meteo.com/v1/forecast"
+                    f"?latitude={city.latitude}&longitude={city.longitude}&current_weather=true"
+                )
                 resp = await client.get(url)
                 data = resp.json()
                 temperature = data.get("current_weather", {}).get("temperature", 20.0)
                 crud.create_temperature(db, city_id=city.id, temperature=temperature)
             except Exception:
-                crud.create_temperature(db, city_id=city.id, temperature=20.0)  # fallback
+                crud.create_temperature(db, city_id=city.id, temperature=20.0)
 
     return {"message": "Temperatures updated successfully"}

@@ -48,7 +48,7 @@ def delete_city(db: Session, city_id: int):
 # --- Temperature CRUD ---
 def create_temperature(db: Session, city_id: int, temperature: float):
     temp = models.Temperature(
-        city_id=city_id, temperature=temperature, date_time=datetime.utcnow()
+        city_id=city_id, temperature=temperature, date_time=datetime.utcnow
     )
     db.add(temp)
     db.commit()
