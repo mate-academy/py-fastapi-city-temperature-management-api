@@ -44,6 +44,7 @@ async def update_city_by_id(
     if not db_city:
         return None
 
+    db_city.name=city_update.name
     db_city.additional_info=city_update.additional_info
 
     await db.commit()
@@ -60,7 +61,7 @@ async def create_city(
     if existing_city:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Город с именем '{city.name}' уже существует"
+            detail=f"City with the name '{city.name}' already exists"
         )
         
     db_city = models.DBCity(

@@ -16,7 +16,7 @@ router = APIRouter()
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     cities = await get_all_cities(db)
     if not cities:
-        return {"status": "no_cities", "message": "В базе данных нет городов для обновления"}
+        return {"status": "no_cities", "message": "There are no cities in the database to update"}
     
     results = []
     errors = []
@@ -33,15 +33,15 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
             results.append({"city_id": city.id, "city_name": city.name, "temperature": temp_value})
 
         except Exception as e:
-            error_msg = f"Ошибка сервиса погоды для города {city.name}: {str(e)}"
+            error_msg = f"Weather service error for the city {city.name}: {str(e)}"
             logger.error(error_msg)
             errors.append({"city_id": city.id, "city_name": city.name, "error": str(e)})
 
     if len(errors) == len(cities) and len(cities) > 0:
-        if any(isinstance(e.get('error'), str and 'API ключ' in e.get('error', '')) for e in errors):
+        if any(isinstance(e.get('error'), str) and 'API_KEY environment variable is not set' in e.get('error', '') for e in errors):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Ошибка API ключа сервиса погоды. Пожалуйста, проверьте настройки."
+                detail="Weather service API key is not configured. Please check the API_KEY environment variable."
             )
 
     

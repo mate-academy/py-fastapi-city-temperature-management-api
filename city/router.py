@@ -7,7 +7,7 @@ from . import crud, schemas
 router = APIRouter()
 
 
-@router.post("/create_city", response_model=schemas.City)
+@router.post("/cities", response_model=schemas.City)
 async def create_city(
         city: schemas.CityCreate,
         db: AsyncSession = Depends(get_db)

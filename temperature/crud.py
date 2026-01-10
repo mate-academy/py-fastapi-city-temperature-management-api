@@ -9,7 +9,7 @@ from . import models, schemas
 
 async def get_all_temperatures(
         db: AsyncSession
-) -> Sequence[Any]:
+) -> Sequence[models.DBTemperature]:
     result = await db.scalars(
         select(models.DBTemperature).options(joinedload(models.DBTemperature.city))
     )
@@ -19,7 +19,7 @@ async def get_all_temperatures(
 async def get_temperatures_by_city(
         db: AsyncSession,
         city_id: int
-) -> Sequence[Any]:
+) -> Sequence[models.DBTemperature]:
     result = await db.scalars(
         select(models.DBTemperature)
         .where(models.DBTemperature.city_id == city_id)
