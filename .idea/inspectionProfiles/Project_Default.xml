@@ -1,0 +1,46 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="django" />
+          <option value="flake8" />
+          <option value="flake8-quotes" />
+          <option value="flake8-variables-names" />
+          <option value="pep8-naming" />
+          <option value="django-debug-toolbar" />
+          <option value="django-crispy-forms" />
+          <option value="gunicorn" />
+          <option value="psycopg2-binary" />
+          <option value="python-decouple" />
+          <option value="whitenoise" />
+          <option value="local_settings.py" />
+          <option value="db.sqlite3" />
+          <option value="db.sqlite3-journal" />
+          <option value="media" />
+          <option value="MANIFEST" />
+          <option value="pip-log.txt" />
+          <option value="pip-delete-this-directory.txt" />
+          <option value="nosetests.xml" />
+          <option value="coverage.xml" />
+          <option value="ipython_config.py" />
+          <option value="celerybeat-schedule" />
+          <option value="celerybeat.pid" />
+          <option value="dmypy.json" />
+          <option value="atlassian-ide-plugin.xml" />
+          <option value="com_crashlytics_export_strings.xml" />
+          <option value="crashlytics.properties" />
+          <option value="crashlytics-build.properties" />
+          <option value="fabric.properties" />
+          <option value="poetry.toml" />
+          <option value="pyrightconfig.json" />
+          <option value="flake8-bugbear" />
+          <option value="flake8-comprehensions" />
+          <option value="flake8-django" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
