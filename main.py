@@ -4,5 +4,5 @@ from temperature.router import router as temperature_router
 
 app = FastAPI()
 
-app.include_router(city_router, prefix="/api")
-app.include_router(temperature_router, prefix="/api")
+app.include_router(city_router)
+app.include_router(temperature_router)
