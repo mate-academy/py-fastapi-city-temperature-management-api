@@ -41,7 +41,7 @@ def get_cities(db: Session = Depends(get_db)):
     return crud.get_all_cities(db=db)
 
 
-@app.post("/cities/", response_model=schemas.CityCreate)
+@app.post("/cities/", response_model=schemas.City)
 def create_city_one(
         city: schemas.CityCreate,
         db: Session = Depends(get_db)
@@ -61,7 +61,7 @@ def get_city_by_id_from_db(city_id: int, db: Session = Depends(get_db)):
 
     return crud.get_city_by_id(db=db, city_id=city_id)
 
-@app.put("/cities/{city_id}/", response_model=schemas.CityUpdate)
+@app.put("/cities/{city_id}/", response_model=schemas.City)
 def update_city_endpoint(
         city_id: int,
         city_data: schemas.CityUpdate,
@@ -134,7 +134,7 @@ def get_temperatures(db: Session = Depends(get_db)):
     return temperatures
 
 
-@app.get("/temperatures/{city_id}/", response_model=Union[schemas.Temperature, list[schemas.Temperature]])
+@app.get("/temperatures/", response_model=Union[schemas.Temperature, list[schemas.Temperature]])
 def get_temperature_by_city_id(city_id: int, db: Session = Depends(get_db)):
 
     db_city = crud.get_city_by_id(db, city_id)
