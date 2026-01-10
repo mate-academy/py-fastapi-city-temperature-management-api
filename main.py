@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Generator, Union
+from typing import Any, Generator, Union, Optional
 
 import httpx
 from fastapi import FastAPI, Depends, HTTPException
@@ -127,20 +127,20 @@ async def update_all_temperatures(db: Session = Depends(get_db)):
 
 
 @app.get("/temperatures/", response_model=list[schemas.Temperature])
-def get_temperatures(db: Session = Depends(get_db)):
-    temperatures = db.query(models.DBTemperature).all()
-    if not temperatures:
-        raise HTTPException(status_code=404, detail="No temperatures found")
-    return temperatures
+def get_temperatures(city_id: Optional[int] = None,
+                     db: Session = Depends(get_db)
+):
+    if city_id:
+        db_city = crud.get_city_by_id(db, city_id)
+        if not db_city:
+            raise HTTPException(status_code=404, detail="City not found")
+        temperatures = crud.get_temperatures_for_special_city(db=db, city_id=city_id)
+        if not temperatures:
+            raise HTTPException(status_code=404, detail="Temperatures not found")
+        return temperatures
 
-
-@app.get("/temperatures/", response_model=Union[schemas.Temperature, list[schemas.Temperature]])
-def get_temperature_by_city_id(city_id: int, db: Session = Depends(get_db)):
-
-    db_city = crud.get_city_by_id(db, city_id)
-    if not db_city:
-        raise HTTPException(status_code=404, detail="City not found")
-    temperatures = crud.get_temperatures_for_special_city(db=db, city_id=city_id)
-    if not temperatures:
-        raise HTTPException(status_code=404, detail="Temperatures not found")
-    return temperatures
+    else:
+        temperatures = db.query(models.DBTemperature).all()
+        if not temperatures:
+            raise HTTPException(status_code=404, detail="No temperatures found")
+        return temperatures
