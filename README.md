@@ -58,3 +58,75 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+# City & Temperature Management API
+
+## Description
+A **FastAPI** application for managing city data and their corresponding temperature records.
+The project has two main components:
+- **City CRUD API** — create, read, update, and delete city records.
+- **Temperature API** — fetch and store temperature data for cities from an online resource (OpenWeather API).
+
+---
+
+## Installation & Running
+
+### 1. Clone the project
+```bash
+git clone <repo-url>
+cd project
+
+### 2. Install dependencies
+pip install -r requirements.txt
+
+### 3. Database setup
+SQLite is used by default. The database file is created automatically:
+sqlite:///./city_temperature.db
+
+### 4. Configure OpenWeather API
+Register at OpenWeather and obtain your API key.
+⚠️ Important: Do not hardcode the API key in the source code.
+Instead, create a .env file in the project root:
+OPENWEATHER_API_KEY=your_api_key_here
+and load it in temperature/router.py using python-dotenv.
+
+### 5. Run the server
+uvicorn main:app --reload
+
+### 6. Access the API
+Swagger UI: http://127.0.0.1:8000/docs
+Root endpoint: http://127.0.0.1:8000/
+
+### Endpoints
+City API
+POST /cities/ — create a new city
+GET /cities/ — list all cities
+GET /cities/{city_id} — get city details by ID
+PUT /cities/{city_id} — update city details
+DELETE /cities/{city_id} — delete a city
+Duplicate handling: If a city with the same name already exists, the API returns 409 Conflict instead of a server error.
+
+### Temperature API
+POST /temperatures/ — manually create a temperature record
+GET /temperatures/ — list all temperature records
+supports filtering: GET /temperatures?city_id={id}
+POST /temperatures/update — fetch and store current temperatures for all cities (async call to OpenWeather API)
+
+### Design Choices
+Modern SQLAlchemy 2.0 syntax (Mapped, mapped_column, relationship) for type safety and clarity.
+Clear separation into city and temperature packages for modularity.
+Asynchronous requests to OpenWeather API implemented with httpx.
+Dependency Injection (Depends(get_db)) for database sessions.
+SQLite chosen as a lightweight and simple database for this project.
+
+### Assumptions & Simplifications
+OpenWeather API (free tier, up to 1000 requests/day) is used as the temperature source.
+additional_info field in City is optional and not unique.
+Temperature history is stored in the database and accessible via endpoints.
+Error handling is basic (e.g., 404 when city is missing; empty list [] when no temperature records exist).
+No authentication or advanced business logic implemented, as this is a learning assignment.
+
+### Known limitations
+- Database operations are synchronous. FastAPI runs them in a thread pool, but for full non-blocking behavior you should use AsyncSession with an async driver (e.g., aiosqlite).
+- Duplicate city names are handled gracefully with 409 Conflict.
+- Redundant endpoint /temperatures/by_city/{city_id} removed in favor of query parameter filtering.
