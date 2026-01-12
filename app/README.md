@@ -14,6 +14,8 @@ Table of Contents
 * Running the Application
 * API Endpoints
 * Design Choices
+* Description
+* Assumptions / Simplifications
 
 
 ## Installation

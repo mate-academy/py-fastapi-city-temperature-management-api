@@ -46,17 +46,7 @@ def get_temperatures(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return crud.get_temperature_list(db=db, skip=skip, limit=limit)
 
 
-@router.get(
-    "/temperatures/",
-    response_model=list[schemas.Temperature],
-)
-def get_temperatures(skip: int = 0,
-                     limit: int = 100,
-                     db: Session = Depends(get_db)):
-    return crud.get_temperature_list(skip=skip, limit=limit, db=db)
-
-
-@router.get("/temperatures/{city_id}",
+@router.get("/temperatures/?city_id=1",
             response_model=list[schemas.Temperature])
 def get_temperatures(city_id: Optional[int] = None,
                      skip: int = 0,

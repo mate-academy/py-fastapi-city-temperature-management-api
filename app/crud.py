@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -48,8 +49,18 @@ def get_temperature_list(db: Session, skip: int = 0, limit: int = 100):
     return db.execute(stmt).scalars().all()
 
 
-def get_temperature(db: Session, city_id: int):
+def get_temperature(db: Session,
+                    city_id: int,
+                    skip: int = 0,
+                    limit: int = 100):
     city_db = get_city(db=db, city_id=city_id)
     if not city_db:
-        return None
-    return city_db.temperatures
+        raise HTTPException(status_code=404, detail="City not found")
+    return db.scalars(select(DBTemperature).where(
+        DBTemperature.city_id == city_id).offset(skip).limit(limit)).all()
+
+def get_temperature_by_city(db: Session, city_id: int, skip: int = 0, limit: int = 100):
+
+    return db.scalars(select(DBTemperature)
+                      .where(DBTemperature.city_id == city_id)
+                      .offset(skip).limit(limit)).all()
