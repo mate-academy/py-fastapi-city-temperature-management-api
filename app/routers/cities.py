@@ -37,7 +37,7 @@ def read_single_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/cities/", response_model=City)
-def create_author(city: CityCreate, db: Session = Depends(get_db)):
+def create_city(city: CityCreate, db: Session = Depends(get_db)):
 
     return crud.create_city(db=db, city=city)
 

@@ -26,7 +26,7 @@ def upgrade() -> None:
         "city",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sa.String(length=100), nullable=False),
-        sa.Column("additional_info", sa.String(length=511), nullable=False),
+        sa.Column("additional_info", sa.String(length=511), nullable=True),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(op.f("ix_city_id"), "city", ["id"], unique=False)

@@ -20,7 +20,7 @@ class City(CityBase):
 
 class CityUpdate(CityBase):
     name: str
-    additional_info: str
+    additional_info: Optional[str]
     model_config = ConfigDict(from_attributes=True)
 
 

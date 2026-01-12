@@ -1,13 +1,10 @@
-from sqlalchemy.orm import Session
+import alembic
 
 from app.routers import cities, temperatures
 from app.models import Base
-from app.database import SessionLocal, engine
+from app.database import engine
 
 from fastapi import FastAPI
-
-
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 

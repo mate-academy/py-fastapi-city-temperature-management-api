@@ -2,6 +2,20 @@
 
 This is a FastAPI application that manages city data and their corresponding temperature data. 
 
+The application provides:
+
+* CRUD operations for cities.
+* Temperature tracking for cities by fetching data from an external weather service.
+* History of recorded temperatures for each city.
+* 
+Table of Contents
+
+* Installation
+* Running the Application
+* API Endpoints
+* Design Choices
+
+
 ## Installation
 
 ### Clone the repository:
