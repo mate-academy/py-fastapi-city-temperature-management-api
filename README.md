@@ -1,60 +1,86 @@
-## Task Description
+# City Weather Manager API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application that manages a database of cities and facilitates fetching their current temperature data from an external provider (Open-Meteo).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Project Overview
 
-### Part 1: City CRUD API
+This application consists of two main components:
+1.  **City CRUD API:** Endpoints to manage city data (Create, Read, Delete).
+2.  **Temperature API:** An asynchronous service to fetch real-time weather data for all stored cities and maintain a history of temperature records.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Features
 
-### Part 2: Temperature API
+* **RESTful API:** Clean endpoints for managing city and weather data.
+* **Async Processing:** Uses asynchronous HTTP requests to fetch weather data without blocking the application.
+* **Performance Optimized:** Implements bulk database commits to handle large updates efficiently.
+* **Automatic Geocoding:** Converts city names to coordinates automatically before fetching weather data.
+* **SQLite Database:** Lightweight, file-based database integration using SQLAlchemy.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+---
 
-### Additional Requirements
+## Setup & Installation
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### Prerequisites
+* Python 3.8 or higher
+* pip (Python package installer)
 
-## Evaluation Criteria
+### Installation Steps
 
-Your task will be evaluated based on the following criteria:
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository_url>
+    cd weather_app
+    ```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+2.  **Set up a Virtual Environment:**
+    * **Windows:**
+        ```bash
+        python -m venv venv
+        venv\Scripts\activate
+        ```
+    * **macOS / Linux:**
+        ```bash
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
 
-## Deliverables
+3.  **Install Dependencies:**
+    ```bash
+    pip install fastapi uvicorn sqlalchemy httpx
+    ```
 
-Please submit the following:
+## Running the Application
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+1.  Start the local server using Uvicorn:
+    ```bash
+    uvicorn app.main:app --reload
+    ```
 
-Good luck!
+2.  The API will be available at `http://127.0.0.1:8000`.
+
+## Usage & Documentation
+
+FastAPI provides automatic interactive documentation. Once the app is running, visit:
+
+* **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) - Test endpoints directly from the browser.
+* **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc) - Alternative documentation view.
+
+### Quick Start Workflow
+1.  **Create a City:** Use `POST /cities/` to add "London".
+2.  **Update Weather:** Use `POST /temperatures/update`. This triggers the background fetch.
+3.  **View Data:** Use `GET /temperatures/` to see the saved record.
+
+---
+
+## Design Choices
+
+* **Project Structure:** The application follows a modular structure (`routers`, `models`, `crud`, `schemas`) to separate concerns and improve maintainability.
+* **Asynchronous Client (`httpx`):** The temperature update endpoint uses `httpx` instead of `requests`. This allows the application to handle multiple concurrent requests efficiently and prevents the main thread from blocking while waiting for external API responses.
+* **Batch Database Commits:** The temperature update logic collects all data objects first and performs a single database commit transaction. This significantly reduces I/O overhead compared to committing records one by one inside a loop.
+* **Error Handling:** The external API fetcher includes specific error handling for network issues (`httpx.RequestError`) and data parsing errors, ensuring that a failure for one city does not crash the entire batch update process.
+
+## Assumptions & Simplifications
+
+* **External API:** The application uses **Open-Meteo** for weather data because it is free and does not require an API key, simplifying the setup process for reviewers.
+* **Geocoding:** It is assumed that the first result returned by the geocoding API is the correct city. In a production environment, a user selection step might be required to handle duplicate city names (e.g., London, UK vs. London, Ontario).
+* **Database:** SQLite is used as requested. For a high-traffic production environment, this would typically be swapped for PostgreSQL.
