@@ -58,3 +58,27 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## How to run the app
+Python 3.11 must be already installed  
+git clone https://github.com/viktoriaom/py-fastapi-city-temperature-management-api 
+cd py-fastapi-city-temperature-management-api  
+
+create .env file based on the example:  
+this API uses Weather API (https://www.weatherapi.com/docs/) for getting data about the weather  
+you need to generate API_KEY for using Weather API and save it into your .env file  
+
+python3 -m venv venv  
+source venv/bin/activate # *creates virtual environment on macOS/Linux*    
+venv\Scripts\activate # *creates virtual environment on Windows*  
+pip install -r requirements.txt  
+uvicorn main:app --reload # *starts the server*    
+
+The API will be available at http://127.0.0.1:8000/ 
+
+## Features
+* you can create, update & delete cities  
+* you can read all cities or only one  
+* you can update temperatures for all cities at once  
+* you can read all temperatures or temperatures for one city  
+* all functions work asynchronously  
