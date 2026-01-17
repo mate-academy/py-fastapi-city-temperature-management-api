@@ -1,60 +1,57 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A robust FastAPI application designed to manage city records and track real-time temperature history using asynchronous SQLAlchemy and external weather API integration.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## 🚀 Getting Started
 
-### Part 1: City CRUD API
+### Prerequisites
+Ensure you have Python 3.8+ installed.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### Installation
+1. **Clone the repository** (or navigate to the project folder):
+   ```bash
+   cd py-fastapi-city-temperature-management-api
+Install dependencies:
 
-### Part 2: Temperature API
+Bash
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+pip install fastapi uvicorn sqlalchemy aiosqlite httpx pydantic
+Running the Application
+Start the Uvicorn server with hot reload enabled:
 
-### Additional Requirements
+Bash
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+uvicorn main:app --reload
+API Documentation
+Once the server is running, access the interactive Swagger UI documentation at: 👉 http://127.0.0.1:8000/docs
 
-## Evaluation Criteria
+🏗️ Design Choices & Architecture
+Asynchronous Execution: The project leverages AsyncSession from SQLAlchemy, aiosqlite, and httpx for non-blocking I/O operations, ensuring high performance during concurrent API requests.
 
-Your task will be evaluated based on the following criteria:
+External API Integration: Open-Meteo was selected as the weather data provider. It offers high accuracy and allows for coordinate-based weather fetching without the need for API keys.
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+Resilient Error Handling: To meet production-grade requirements, the application implements safe JSON parsing using the .get() method. This prevents KeyError crashes if the external API returns unexpected or incomplete payloads.
 
-## Deliverables
+Session Management: Configured expire_on_commit=False in the async_sessionmaker. This ensures that city objects remain accessible within the service layer after database commits, preventing MissingGreenlet exceptions during async iterations.
 
-Please submit the following:
+✅ Features Implemented
+City CRUD: Full Create, Read, and Delete functionality for city management.
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+Automated Weather Updates: A specialized POST /temperatures/update endpoint that asynchronously fetches and stores current weather data for all registered cities.
 
-Good luck!
+Temperature History: Comprehensive history tracking with support for filtering records by city_id.
+
+Dependency Injection: Utilizes FastAPI's dependency injection system for database session management.
+
+🛠️ Project Structure
+main.py: Application entry point and API routing.
+
+models.py: SQLAlchemy database models.
+
+schemas.py: Pydantic models for data validation and serialization.
+
+crud.py: Database abstraction layer (Create, Read, Delete logic).
+
+services.py: External API integration and business logic for weather updates.
+
+database.py: Database connection and session configuration.
