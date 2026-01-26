@@ -7,7 +7,7 @@ from sqlalchemy.util.concurrency import asyncio
 
 from cities.models import DBCity
 from database import SessionLocal
-from . import models
+from temperatures import models
 from settings import settings
 
 
@@ -59,7 +59,7 @@ async def create_temperatures(city: DBCity, client: httpx.AsyncClient) -> None:
 
 
 async def update_temperature(db: AsyncSession) -> None:
-    result = await db.execute(select(models.DBCity))
+    result = await db.execute(select(DBCity))
     cities = result.scalars().all()
 
     async with httpx.AsyncClient() as client:
@@ -76,4 +76,4 @@ async def get_all_temperatures(db: AsyncSession, city_id: int | None = None) -> 
 
     result = await db.scalars(stmt)
 
-    return result
+    return result.all()

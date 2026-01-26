@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from cities import schemas
-from cities.schemas import CityBase
+from cities.schemas import CityBase, CityCreate
 from dependencies import get_db
 import cities.crud as crud
 
@@ -10,12 +10,12 @@ import cities.crud as crud
 router = APIRouter()
 
 
-@router.get("/cities/", response_model=list[schemas.CityBase])
+@router.get("/cities/", response_model=list[schemas.City])
 async def read_cities_endpoint(db: AsyncSession = Depends(get_db)):
     return await crud.get_cities_list(db=db)
 
 
-@router.post("/cities/", response_model=CityBase)
+@router.post("/cities/", response_model=schemas.City)
 async def create_city_endpoint(city: schemas.CityCreate, db: AsyncSession = Depends(get_db)):
     db_city = await crud.get_city_by_name(db=db, city_name=city.name)
 
@@ -25,7 +25,7 @@ async def create_city_endpoint(city: schemas.CityCreate, db: AsyncSession = Depe
     return await crud.create_city(db=db, city=city)
 
 
-@router.get("/cities/{city_id}/", response_model=schemas.CityBase)
+@router.get("/cities/{city_id}/", response_model=schemas.City)
 async def read_single_city_endpoint(city_id: int, db: AsyncSession = Depends(get_db)):
     db_city = await crud.get_city_by_id(db=db, city_id=city_id)
 
@@ -35,8 +35,8 @@ async def read_single_city_endpoint(city_id: int, db: AsyncSession = Depends(get
     return db_city
 
 
-@router.put("/cities/{city_id}/", response_model=schemas.CityBase)
-async def update_city_endpoint(city_id: int, city: schemas.CityBase,db: AsyncSession = Depends(get_db)):
+@router.put("/cities/{city_id}/", response_model=schemas.City)
+async def update_city_endpoint(city_id: int, city: schemas.CityUpdate, db: AsyncSession = Depends(get_db)):
     db_city = await crud.get_city_by_id(db=db, city_id=city_id)
 
     if db_city is None:

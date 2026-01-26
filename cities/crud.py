@@ -23,10 +23,10 @@ async def create_city(db: AsyncSession, city: schemas.CityCreate) -> models.DBCi
 
         if response.status_code != 200:
             response_data = response.json()
-            massage = response_data.get("error",{}).get("message")
+            message = response_data.get("error",{}).get("message")
             raise HTTPException(
                 status_code=response.status_code,
-                detail=massage
+                detail=message
             )
 
      db_city = models.DBCity(
@@ -48,7 +48,7 @@ async def get_city_by_id(db: AsyncSession, city_id: int) -> models.DBCity | None
     return await db.scalar(select(models.DBCity).where(models.DBCity.id == city_id))
 
 
-async def update_city(db: AsyncSession, db_city: DBCity, city: schemas.CityBase) -> models.DBCity:
+async def update_city(db: AsyncSession, db_city: DBCity, city: schemas.CityUpdate) -> models.DBCity:
     db_city.name = city.name
     db_city.additional_info = city.additional_info
 

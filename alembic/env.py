@@ -5,6 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 from cities.models import *
+from temperatures.models import *
 from settings import settings
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
