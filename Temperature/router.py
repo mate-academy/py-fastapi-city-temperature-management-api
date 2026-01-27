@@ -72,4 +72,4 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
             elif results["failed"]:
                 results["status"] = "partial_success"
 
-            return results
+        return results
