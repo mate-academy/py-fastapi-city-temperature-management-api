@@ -1,60 +1,94 @@
-## Task Description
+# City Temperature Tracker API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI-based application that manages city data and tracks their historical temperature trends using the Open-Meteo API. This project demonstrates asynchronous database operations with SQLAlchemy and concurrent external API integration.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Tech Stack
+1) Framework: FastAPI
+2) Database: SQLAlchemy 2.0 (Async) with SQLite and Alembic
+3) Package Manager: uv (Astral)
+4) Linting/Formatting: Ruff (PEP 8 compliant)
+5) HTTP Client: httpx (Async)
 
-### Part 1: City CRUD API
+### 🚀 Features
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- City Management: Full CRUD (Create, Read, Update, Delete) operations for
+  cities.
+- Automated Weather Updates: Fetches current weather for all registered cities
+  via geocoding and weather APIs.
+- Temperature History: View historical temperature data with filtering options.
+- Asynchronous Processing: Uses httpx and asyncio for non-blocking API calls.
 
-### Part 2: Temperature API
+### 🏗 Project Structure
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+The project follows a modular "app" structure for scalability:
 
-### Additional Requirements
+- src/
+- ├── city_app/           # City CRUD logic
+- │   ├── models.py       # SQLAlchemy DBCity model
+- │   ├── schemas.py      # Pydantic City schemas
+- │   ├── crud.py         # DB operations for cities
+- │   └── router.py       # API endpoints for cities
+- ├── temperature_app/    # Weather tracking logic
+- │   ├── models.py       # SQLAlchemy DBTemperature model
+- │   ├── services.py     # External API integration (Open-Meteo)
+- │   ├── crud.py         # DB operations for temperatures
+- │   └── routers.py      # API endpoints for weather updates
+- ├── database.py         # DB Engine and Base class
+- └── utils.py            # Shared dependencies (get_db)
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+main.py >> Entry point and router inclusion
 
-## Evaluation Criteria
+# 🛠 Setup & Installation
 
-Your task will be evaluated based on the following criteria:
+### Clone the repository
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```sh
+    git clone <your-repo-url>
+    cd city-temperature-tracker
+```
 
-## Deliverables
+### Create and activate virtual environment
 
-Please submit the following:
+```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+### Install dependencies
 
-Good luck!
+```sh
+    pip install fastapi[standard] uvicorn sqlalchemy aiolite httpx pydantic
+```
+
+### Running the ApplicationBash
+
+```sh
+    uvicorn main:app --reload
+```
+
+The API will be available at http://127.0.0.1:8000.You can access the
+interactive Swagger documentation at http://127.0.0.1:8000/docs
+
+# API EndpointsCity
+
+| Endpoint                | Method   | Description                                    |
+|:------------------------|:---------|:-----------------------------------------------|
+| `/cities/`              | `POST`   | Create a new city                              |
+| `/cities/`              | `GET`    | List all cities                                |
+| `/cities/{id}/`         | `GET`    | Get details of a specific city                 |
+| `/cities/{id}/`         | `PUT`    | Update city info                               |
+| `/cities/{id}/`         | `DELETE` | Remove a cityTemperature                       |
+| Endpoint                | Method   | Description                                    |
+| `/temperatures/update/` | `POST`   | Triggers a global sync of current temperatures |
+| `/temperatures/`        | `GET`    | Get all records (Optional: ?city_id=X)         |
+ 
+
+
+
+  
+
+# 💡Design Choices & Assumptions
+1. Open-Meteo API: Chosen because it requires no API key for development. Since Open-Meteo requires latitude/longitude, a Geocoding step was implemented in services.py to translate city names into coordinates automatically.
+2. Concurrency: In update_cities_temperature, I used asyncio.gather. This allows the application to fire off all network requests simultaneously rather than waiting for each city one-by-one, significantly improving performance.
+3. Database: Used SQLite with SQLAlchemy 2.0 syntax. I utilized AsyncSession to ensure the application remains non-blocking during I/O operations.
+4. Error Handling: Implemented custom exception helpers to ensure 404s and 400s are returned with clear messages if a city is missing or an API call fails.
