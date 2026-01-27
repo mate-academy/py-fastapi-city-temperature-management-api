@@ -13,6 +13,7 @@ class DBCity(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
     additional_info: Mapped[str] = mapped_column(String, nullable=True)
-    temperatures: Mapped[List[DBTemperature]] = relationship(
+    temperatures: Mapped[List["DBTemperature"]] = relationship(
         back_populates="city",
+        cascade="all, delete-orphan",
     )

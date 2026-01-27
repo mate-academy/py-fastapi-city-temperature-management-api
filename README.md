@@ -55,15 +55,15 @@ main.py >> Entry point and router inclusion
 ```
 
 ### Install dependencies
-
+You do not need to create a virtual environment manually. uv will create one for you in a .venv directory and sync all dependencies from your pyproject.toml and uv.lock.
 ```sh
-    pip install fastapi[standard] uvicorn sqlalchemy aiolite httpx pydantic
+    uv sync
 ```
 
 ### Running the ApplicationBash
-
+Use uv run to ensure the application executes within the managed environment
 ```sh
-    uvicorn main:app --reload
+    uv run uvicorn main:app --reload
 ```
 
 The API will be available at http://127.0.0.1:8000.You can access the

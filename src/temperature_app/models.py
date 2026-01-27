@@ -4,7 +4,6 @@ from sqlalchemy import Integer, Float, ForeignKey, DateTime
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.testing.schema import mapped_column
 
-from src.city_app import DBCity
 from src.database import Base
 
 
@@ -20,4 +19,4 @@ class DBTemperature(Base):
         "city.id",
         ondelete="CASCADE"
     ))
-    city: Mapped[DBCity] = relationship(back_populates="temperatures")
+    city: Mapped["DBCity"] = relationship(back_populates="temperatures")

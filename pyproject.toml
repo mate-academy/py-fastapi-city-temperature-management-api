@@ -6,12 +6,13 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi",
-    "uvicorn",
+    "uvicorn[standard]",
     "sqlalchemy",
-    "aiolite",
+    "aiosqlite",
     "httpx",
     "pydantic",
     "ruff",
+    "alembic",
 ]
 
 [tool.ruff]
