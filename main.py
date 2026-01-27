@@ -43,23 +43,43 @@ async def update_temperatures(db: Session = Depends(database.get_db)):
 
     async with httpx.AsyncClient() as client:
         for city in cities:
-            geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city.name}&count=1"
-            geo_res = await client.get(geo_url)
-            geo_data = geo_res.json()
+            try:
+                geo_url = (
+                    f"https://geocoding-api.open-meteo.com/v1/search?"
+                    f"name={city.name}&count=1"
+                )
+                geo_res = await client.get(geo_url)
+                geo_data = geo_res.json()
 
-            if "results" in geo_data:
-                res = geo_data["results"][0]
-                lat, lon = res["latitude"], res["longitude"]
+                results = geo_data.get("results")
+                if not results:
+                    continue
 
-                t_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
-                t_res = await client.get(t_url)
-                t_val = t_res.json()["current_weather"]["temperature"]
+                lat = results[0].get("latitude")
+                lon = results[0].get("longitude")
 
-                new_temp = models.Temperature(city_id=city.id, temperature=t_val)
-                db.add(new_temp)
+                temp_url = (
+                    f"https://api.open-meteo.com/v1/forecast?"
+                    f"latitude={lat}&longitude={lon}&current_weather=true"
+                )
+                temp_res = await client.get(temp_url)
+                temp_data = temp_res.json()
+
+                current_w = temp_data.get("current_weather")
+                if current_w and "temperature" in current_w:
+                    temp_val = current_w["temperature"]
+                    new_temp = models.Temperature(
+                        city_id=city.id,
+                        temperature=temp_val
+                    )
+                    db.add(new_temp)
+
+            except Exception as e:
+                print(f"Error updating {city.name}: {e}")
+                continue
 
     db.commit()
-    return {"status": "Temperatures updated"}
+    return {"status": "Temperatures updated successfully"}
 
 
 @app.get("/temperatures", response_model=List[schemas.Temperature])
