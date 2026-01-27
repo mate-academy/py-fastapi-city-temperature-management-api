@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.city_app import DBCity
-from src.temperature_app import DBTemperature, Temperature
+from src.temperature_app import DBTemperature
 from src.temperature_app.services import fetch_current_temp
 
 

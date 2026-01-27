@@ -1,9 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from typing import Any, AsyncGenerator
 
 from src.database import SessionLocal
 
 
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[Any, Any]:
     db = SessionLocal()
     try:
         yield db

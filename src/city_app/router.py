@@ -53,7 +53,7 @@ async def update_city(
         city_id: int,
         city_data: CityUpdate,
         db: AsyncSession = Depends(get_db)
-) -> City:
+) -> DBCity:
     city = await crud.update_city(db=db, city_id=city_id, city=city_data)
     return city
 

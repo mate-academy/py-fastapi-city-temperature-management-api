@@ -1,10 +1,10 @@
-from typing import List, Optional
+from typing import Optional, Sequence
 
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.city_app import DBCity, CityCreate, City, CityUpdate
+from src.city_app import DBCity, CityCreate, CityUpdate
 
 
 def raise_error(
@@ -17,7 +17,7 @@ def raise_error(
     )
 
 
-async def create_new_city(db: AsyncSession, city: CityCreate) -> City:
+async def create_new_city(db: AsyncSession, city: CityCreate) -> DBCity:
     db_city = DBCity(**city.model_dump())
     db.add(db_city)
     await db.commit()
@@ -29,7 +29,7 @@ async def get_list_of_city(
         db: AsyncSession,
         skip: int = 0,
         limit: int = 100,
-) -> List[City]:
+) -> Sequence[DBCity]:
     result = await db.scalars(
         select(DBCity).offset(skip).limit(limit)
     )
