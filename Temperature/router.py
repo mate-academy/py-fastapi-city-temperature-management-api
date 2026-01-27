@@ -11,7 +11,7 @@ from Temperature import crud
 from City import crud as city_crud
 from Temperature import schemas
 from dependencies import get_db
-
+from settings import settings
 
 load_dotenv()
 router = APIRouter()
@@ -36,30 +36,40 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
     cities = await city_crud.get_cities(db)
 
     if not cities:
-        return {"message": "No cities found"}
+        return {"message": "No cities found in database"}
+
+    results = {
+        "status": "completed",
+        "total_processed": len(cities),
+        "updated": [],
+        "failed": []
+    }
 
     async with httpx.AsyncClient() as client:
         for city in cities:
             try:
                 response = await client.get(
-                    BASE_URL,
-                    params={
-                        "key": WEATHER_API_KEY,
-                        "q": city.name
-                    }
+                    settings.API_BASE_URL,
+                    params={"key": settings.API_KEY, "q": city.name},
+                    timeout=10.0
                 )
-
-                if response.status_code != 200:
-                    print(f"Error fetching data for {city.name}: {response.text}")
-                    continue
-
+                response.raise_for_status()
                 data = response.json()
-
                 current_temp = int(data["current"]["temp_c"])
 
                 await crud.create_temperature(db=db, city_id=city.id, temp_val=current_temp)
 
-            except Exception as e:
-                print(f"Global error for city {city.name}: {e}")
+                results["updated"].append(city.name)
 
-    return {"message": "Temperatures updated successfully"}
+            except Exception as e:
+                error_msg = f"{type(e).__name__}: {str(e)}"
+                results["failed"].append({"city": city.name, "error": error_msg})
+                print(f"Error for {city.name}: {error_msg}")
+
+            if not results["updated"] and results["failed"]:
+                results["status"] = "failed"
+
+            elif results["failed"]:
+                results["status"] = "partial_success"
+
+            return results

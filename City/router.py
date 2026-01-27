@@ -34,7 +34,7 @@ async def read_city(city_id: int, db: AsyncSession = Depends(get_db)):
 async def update_city(city_id: int, city_data: schemas.UpdateCitySchema, db: AsyncSession = Depends(get_db)):
     db_city = await crud.update_city(db=db, city_id=city_id, city_data=city_data)
     if db_city is None:
-        raise HTTPException(status_code=400, detail="Incorrect data")
+        raise HTTPException(status_code=404, detail="City not found")
     return db_city
 
 @router.delete("/cities/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
