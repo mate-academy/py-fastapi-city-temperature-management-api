@@ -29,21 +29,21 @@ class TemperatureRepository:
             )
             for temp in temperatures
         ]
-        
+
         self.db.add_all(db_temperatures)
         self.db.commit()
-        
+
         for temp in db_temperatures:
             self.db.refresh(temp)
-        
+
         return db_temperatures
 
     def get_all(self, skip: int = 0, limit: int = 100) -> list[Temperature]:
         return self.db.query(Temperature).offset(skip).limit(limit).all()
 
-    def get_by_city_id(self, 
-                       city_id: int, 
-                       skip: int = 0, 
+    def get_by_city_id(self,
+                       city_id: int,
+                       skip: int = 0,
                        limit: int = 100) -> list[Temperature]:
         return (
             self.db.query(Temperature)

@@ -26,7 +26,7 @@ class Temperature(Base):
         nullable=False
     )
 
-    recorded_at: Mapped[datetime] = mapped_column(
+    date_time: Mapped[datetime] = mapped_column(
         server_default=func.now(),
         nullable=False
     )
