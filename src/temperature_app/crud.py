@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 import httpx
 from sqlalchemy import select
@@ -8,6 +9,8 @@ from src.city_app import DBCity
 from src.temperature_app import DBTemperature, Temperature
 from src.temperature_app.services import fetch_current_temp
 
+
+logger = logging.getLogger(__name__)
 
 async def update_cities_temperature(db: AsyncSession) -> list[DBTemperature]:
     result = await db.execute(select(DBCity))
@@ -21,7 +24,7 @@ async def update_cities_temperature(db: AsyncSession) -> list[DBTemperature]:
 
     for city, result in zip(cities, temp_results):
         if isinstance(result, Exception):
-            print(f"Skipping {city.name} due to error: {result}")
+            logger.error(result)
             continue
 
         temp_val, dt_obj = result
@@ -42,10 +45,10 @@ async def get_temperatures(
         city_id: int = None,
         skip: int = 0,
         limit: int = 100,
-) -> list[Temperature]:
+) -> list[DBTemperature]:
     query = select(DBTemperature).offset(skip).limit(limit)
     if city_id:
         query = query.where(DBTemperature.city_id == city_id)
 
     result = await db.execute(query)
-    return result.scalars().all()
+    return list(result.scalars().all())

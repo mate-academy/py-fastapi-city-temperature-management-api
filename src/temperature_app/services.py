@@ -7,8 +7,13 @@ async def fetch_current_temp(
         city_name: str
 ) -> tuple[float, datetime]:
     geo_url = "https://geocoding-api.open-meteo.com/v1/search"
-    geo_resp = await client.get(geo_url,
-                                params={"name": city_name, "count": 1})
+    geo_resp = await client.get(
+        geo_url,
+        params={"name": city_name, "count": 1}
+    )
+
+    geo_resp.raise_for_status()
+
     geo_data = geo_resp.json()
 
     if not geo_data.get("results"):

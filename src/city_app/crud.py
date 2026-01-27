@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import HTTPException
 from sqlalchemy import select
@@ -39,7 +39,7 @@ async def get_list_of_city(
 async def get_city_by_id(
         db: AsyncSession,
         city_id: int
-) -> City:
+) -> Optional[DBCity]:
     result = await db.get(
         DBCity,
         city_id
@@ -51,7 +51,7 @@ async def update_city(
         db: AsyncSession,
         city_id: int,
         city: CityUpdate
-) -> City:
+) -> DBCity:
     db_item = await get_city_by_id(db, city_id)
     if not db_item:
         raise_error(404, f"City with id {city_id} not found")

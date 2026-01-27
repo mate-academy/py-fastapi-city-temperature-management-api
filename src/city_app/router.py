@@ -1,9 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.city_app import crud
+from src.city_app import crud, DBCity
 from src.city_app import City, CityCreate, CityUpdate
 from src.utils import get_db
 
@@ -27,8 +27,10 @@ async def get_list_of_cities(
 async def get_city_by_id(
         city_id: int,
         db: AsyncSession = Depends(get_db)
-) -> City:
+) -> DBCity:
     city = await crud.get_city_by_id(db=db, city_id=city_id, )
+    if not city:
+        raise HTTPException(status_code=404, detail="City not found")
     return city
 
 
