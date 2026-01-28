@@ -1,60 +1,62 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This project provides a FastAPI service that fetches the current temperature for cities stored in the database and saves them in the `Temperature` table. The service uses asynchronous requests to external APIs for geocoding and weather data.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## Instructions to Run
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+1. Clone the repository:
 
-### Part 2: Temperature API
+```bash
+git clone <REPOSITORY_URL>
+cd <PROJECT_FOLDER>
+```
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+### Create and activate a virtual environment:
 
-### Additional Requirements
+```bash
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # macOS/Linux
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### Install dependencies:
 
-## Evaluation Criteria
+`pip install -r requirements.txt`
 
-Your task will be evaluated based on the following criteria:
+### Run the application:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+`uvicorn app.main:app --reload`
 
-## Deliverables
+### Test the API:
 
-Please submit the following:
+- Open Swagger UI at: http://127.0.0.1:8000/docs
+- Endpoint: POST /temperatures/update/ — fetches current temperatures for all cities in the database.
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## Design Choices
 
-Good luck!
+### Asynchronous Requests
+All external API calls (geocoding and weather) are performed asynchronously using `httpx.AsyncClient`. This allows fetching data for multiple cities concurrently, improving performance and reducing wait time.
+
+### Dependency Injection
+Database sessions are injected using FastAPI's `Depends(get_db)` to keep the code clean, maintainable, and testable.
+
+### Error Handling
+- `asyncio.gather(*tasks, return_exceptions=True)` ensures that a single failing request does not stop the entire update process.
+- Exceptions for individual cities are logged and skipped, allowing the remaining updates to proceed.
+
+### Project Structure
+- `services/` contains logic for external API calls (geocoding and weather).
+- `city/` and `temperature/` contain models, CRUD operations, and Pydantic schemas.
+- Routers are organized by resource type for clarity.
+
+### Pydantic Schemas
+Schemas validate and serialize input and output data, ensuring consistent API responses.
+
+## Assumptions / Simplifications
+- Geocoding is done using the OpenStreetMap Nominatim API.
+- Weather data is fetched from the Open-Meteo API.
+- Only the latest temperature per city is stored; historical records are not tracked.
+- All cities are updated concurrently using asynchronous tasks.
+- If a city's data fails to fetch, it is skipped without stopping the entire update process.
