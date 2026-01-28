@@ -1,0 +1,15 @@
+[project]
+name = "py-oct-25-fastapi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.18.1",
+    "dotenv>=0.9.9",
+    "fastapi[standard]>=0.128.0",
+    "pydantic-settings>=2.12.0",
+    "python-dotenv>=1.2.1",
+    "sqlalchemy>=2.0.46",
+]
