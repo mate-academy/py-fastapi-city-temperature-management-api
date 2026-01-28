@@ -1,0 +1,17 @@
+[project]
+name = "fastapi-city-temperature-management-api"
+version = "0.1.0"
+description = "FastAPI app: City CRUD + Temperature history updater"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.111",
+  "uvicorn[standard]>=0.30",
+  "sqlalchemy>=2.0",
+  "aiosqlite>=0.20",
+  "pydantic>=2.6",
+  "pydantic-settings>=2.2",
+  "httpx>=0.27",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
