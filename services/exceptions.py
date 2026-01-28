@@ -1,0 +1,2 @@
+class WeatherServiceError(Exception):
+    pass

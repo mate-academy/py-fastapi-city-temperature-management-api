@@ -58,3 +58,13 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+## How to run project:
+- Create and activate venv 
+    `python -m venv venv`
+    `venv\Scripts\activate`
+- Install dependencies 
+    `pip install -r requirements.txt`
+- Start the FastAPI server
+    `uvicorn app.main:app --reload`

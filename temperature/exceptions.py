@@ -1,0 +1,2 @@
+class TemperatureNotFound(Exception):
+    pass

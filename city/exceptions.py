@@ -1,0 +1,4 @@
+
+class InvalidCityIdException(Exception):
+    pass
+
