@@ -25,12 +25,15 @@ def root():
     return {"status": "ok"}
 
 
-@app.post("/cities", response_model=CityRead, status_code=status.HTTP_201_CREATED)
-def create_city_api(
-    city: CityCreate,
-    db: Session = Depends(get_db)
-):
-    return create_city(db, city)
+@app.post("/cities", response_model=CityRead, status_code=201)
+def create_city_api(city: CityCreate, db: Session = Depends(get_db)):
+    try:
+        return create_city(db, city)
+    except ValueError:
+        raise HTTPException(
+            status_code=409,
+            detail="City with this name already exists"
+        )
 
 
 @app.get("/cities", response_model=list[CityRead])
@@ -57,6 +60,7 @@ def delete_city_api(
     city = get_city(db, city_id)
     if not city:
         raise HTTPException(status_code=404, detail="City not found")
+
     delete_city(db, city)
 
 
@@ -67,6 +71,8 @@ async def update_temperatures(db: Session = Depends(get_db)):
     for city in cities:
         temperature = await fetch_temperature(city.name)
         create_temperature(db, city.id, temperature)
+
+    db.commit()
 
     return {
         "status": "ok",

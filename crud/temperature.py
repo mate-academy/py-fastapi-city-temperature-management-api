@@ -1,14 +1,18 @@
+import datetime
+
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 from models.temperature import Temperature
 
-def create_temperature(db: Session, city_id: int, value: float):
-    temp = Temperature(city_id=city_id, temperature=value)
-    db.add(temp)
-    db.commit()
-    db.refresh(temp)
-    return temp
+def create_temperature(db: Session, city_id: int, value: float) -> None:
+    db.add(
+        Temperature(
+            city_id=city_id,
+            temperature=value,
+            date_time=datetime.utcnow()
+        )
+    )
 
 
 def get_temperatures(db: Session, city_id: int | None = None):

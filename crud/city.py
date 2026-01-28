@@ -10,15 +10,17 @@ def get_cities(db: Session) -> list[City]:
 def get_city(db: Session, city_id: int) -> City | None:
     return db.get(City, city_id)
 
-def create_city(db: Session, city_data: CityCreate) -> City:
-    city = City(**city_data.model_dump())
-    db.add(city)
-    db.commit()
-    db.refresh(city)
-    return city
+def create_city(db: Session, city: CityCreate) -> City:
+    existing = db.query(City).filter(City.name == city.name).first()
+    if existing:
+        raise ValueError("City already exists")
 
-def delete_city(db: Session, city_id: int) -> None:
-    city = get_city(db, city_id)
-    if city:
-        db.delete(city)
-        db.commit()
+    db_city = City(**city.model_dump())
+    db.add(db_city)
+    db.commit()
+    db.refresh(db_city)
+    return db_city
+
+def delete_city(db: Session, city: City) -> None:
+    db.delete(city)
+    db.commit()
