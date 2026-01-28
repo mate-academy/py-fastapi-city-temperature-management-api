@@ -1,60 +1,159 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+FastAPI application for managing cities and storing historical temperature data fetched from an external weather API
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## Features
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+* CRUD API for managing cities
+* CRUD + list API for temperature records
+* Async endpoint to fetch current temperature for all cities
+* SQLite database with SQLAlchemy 2.0
+* Pydantic v2 schemas
+* Automatic API documentation via Swagger
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Tech Stack
 
-### Additional Requirements
+* Python 3.10+
+* FastAPI
+* SQLAlchemy 2.0
+* Pydantic v2
+* SQLite
+* httpx (async HTTP client)
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+---
 
-## Evaluation Criteria
+## Project Structure
 
-Your task will be evaluated based on the following criteria:
+```
+city_temperature_api/
+│
+├── app/
+│   ├── main.py
+│   ├── core/
+│   │   └── database.py
+│   ├── dependencies/
+│   │   └── db.py
+│   ├── models/
+│   │   ├── city.py
+│   │   └── temperature.py
+│   ├── schemas/
+│   │   ├── city.py
+│   │   └── temperature.py
+│   ├── routers/
+│   │   ├── cities.py
+│   │   └── temperatures.py
+│   └── services/
+│       └── weather.py
+│
+├── README.md
+├── requirements.txt
+└── app.db
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+---
 
-## Deliverables
+## Installation & Run
 
-Please submit the following:
+### 1. Clone repository
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+```bash
+git clone https://github.com/VYGAKOOL/py-fastapi-city-temperature-management-api
+cd city_temperature_api
+```
 
-Good luck!
+### 2. Create virtual environment
+
+```bash
+python -m venv venv
+```
+
+### 3. Activate virtual environment
+
+**Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+**Linux / macOS:**
+
+```bash
+source venv/bin/activate
+```
+
+### 4. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Run application
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## API Documentation
+
+After starting the server, open:
+
+* Swagger UI: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* ReDoc: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+
+---
+
+## API Endpoints
+
+### Cities
+
+* `POST /cities` – create city
+* `GET /cities` – list all cities
+* `GET /cities/{id}` – get city by ID
+* `PUT /cities/{id}` – update city (returns 400 if name already exists)
+* `DELETE /cities/{id}` – delete city
+
+### Temperatures
+
+* `POST /temperatures` – create temperature record manually
+* `GET /temperatures` – list all temperature records
+* `GET /temperatures?city_id={id}` – list temperatures for a city
+* `GET /temperatures/{id}` – get temperature record by ID
+* `DELETE /temperatures/{id}` – delete temperature record
+
+### Temperature Update
+
+* `POST /temperatures/update` – fetch current temperature for all cities and store it in the database
+
+---
+
+## Design Choices
+
+* **SQLAlchemy 2.0 style** (`Mapped`, `mapped_column`) is used for modern ORM patterns
+* **Pydantic v2** with `ConfigDict(from_attributes=True)` for ORM compatibility
+* **SQLite** chosen for simplicity and ease of setup
+* **Open-Meteo API** used for weather data (no API key required)
+* Temperature fetching implemented as **async** using `httpx`
+* All city and temperature updates check for data integrity to avoid crashes
+
+---
+
+## Assumptions & Simplifications
+
+* City temperature is fetched using the **city name** via Open-Meteo geocoding API
+* No authentication or authorization implemented
+* No database migrations (tables are created automatically on startup)
+* Time is stored in **UTC**
+* API responses are accessed safely using `.get()` to prevent KeyErrors
+* Updating a city name checks for duplicates and returns a 400 error if the name exists
+
+---
+
+## Notes
+
+This project is intended as a clean, minimal implementation focused on correctness, modern FastAPI practices, and readability.
