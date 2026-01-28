@@ -1,60 +1,101 @@
-## Task Description
+# City & Temperature API (FastAPI)
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+FastAPI application that:
+- manages **cities** (CRUD)
+- fetches and stores **current temperatures** for all cities
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Tech Stack
+- FastAPI  
+- SQLAlchemy  
+- SQLite  
+- httpx  
+- Uvicorn  
 
-### Part 1: City CRUD API
+## Project Structure
+```
+app/
+  main.py
+  database.py
+  models.py
+  schemas.py
+  crud.py
+  routers/
+    cities.py
+    temperatures.py
+  services/
+    weather.py
+```
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Setup & Run
 
-### Part 2: Temperature API
+### 1. Create virtual environment and install dependencies
+```bash
+python -m venv .venv
+source .venv/bin/activate    # macOS/Linux
+# .venv\Scripts\activate    # Windows
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+pip install fastapi uvicorn sqlalchemy httpx
+```
 
-### Additional Requirements
+### 2. Run the server
+```bash
+uvicorn app.main:app --reload
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+API will be available at:
+- Swagger UI: http://127.0.0.1:8000/docs  
+- OpenAPI: http://127.0.0.1:8000/openapi.json  
 
-## Evaluation Criteria
+### Database
+The project uses SQLite database:
+```
+sqlite:///./app.db
+```
+Tables are created automatically on startup.
 
-Your task will be evaluated based on the following criteria:
+## API Endpoints
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+### Cities
+- `POST /cities` — create city  
+- `GET /cities` — list all cities  
+- `GET /cities/{city_id}` — get one city  
+- `PUT /cities/{city_id}` — update city  
+- `DELETE /cities/{city_id}` — delete city  
 
-## Deliverables
+Example:
+```bash
+curl -X POST "http://127.0.0.1:8000/cities" \
+-H "Content-Type: application/json" \
+-d '{"name":"London","additional_info":"UK"}'
+```
 
-Please submit the following:
+### Temperatures
+- `POST /temperatures/update` — fetch temperature for all cities and save to DB  
+- `GET /temperatures` — list all temperature records  
+- `GET /temperatures?city_id={city_id}` — list records for one city  
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+Example:
+```bash
+curl -X POST "http://127.0.0.1:8000/temperatures/update"
+```
 
-Good luck!
+## Design Notes
+
+### Weather Provider
+The application uses **Open-Meteo API**:
+1. City name is converted to latitude and longitude  
+2. Current temperature is requested using coordinates  
+
+No API key is required.
+
+### Concurrency Safety
+Temperature fetching is done asynchronously using `asyncio.gather`.  
+Database writes are performed **after all async tasks finish**, inside a single transaction.
+
+This avoids sharing a SQLAlchemy `Session` between concurrent tasks and prevents race conditions.
+
+## Assumptions
+- City names are unique  
+- Temperature is stored in Celsius  
+- If one city fails to fetch temperature, other cities are still processed  
+- SQLite is used for simplicity  
