@@ -58,3 +58,37 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+# City Temperature Management API
+
+FastAPI application for managing cities and temperature history.
+
+## Features
+- CRUD API for cities
+- Asynchronous temperature updates from external source
+- Temperature history per city
+- SQLite database with SQLAlchemy
+- OpenAPI (Swagger) documentation
+
+## Tech Stack
+- Python 3.10
+- FastAPI
+- SQLAlchemy
+- SQLite
+- httpx
+
+## Project Structure
+- models/ – SQLAlchemy models
+- schemas/ – Pydantic schemas
+- crud/ – database logic
+- services/ – external API integrations
+- db/ – database configuration
+
+## How to Run
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
