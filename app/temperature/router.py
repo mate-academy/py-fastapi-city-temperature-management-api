@@ -29,13 +29,11 @@ async def list_temperatures(
     status_code=status.HTTP_201_CREATED,
 )
 async def update_cities_temperatures(
-    skip: int = 0,
-    limit: int = 100,
     temp_service: TemperatureService = Depends(),
     db: AsyncSession = Depends(get_db),
 ) -> list[models.Temperature]:
     """Fetches and updates temperature data for all registered cities."""
-    cities = await get_cities(db, skip=skip, limit=limit)
+    cities = await get_cities(db, limit=None)
 
     api_tasks = [temp_service.get_city_temperature_data(city) for city in cities]
     weather_data_list = await asyncio.gather(*api_tasks)

@@ -12,10 +12,15 @@ T = TypeVar("T", schemas.CityCreate, schemas.CityUpdate)
 
 
 async def get_cities(
-    db: AsyncSession, skip: int = 0, limit: int = 100
+    db: AsyncSession, skip: int = 0, limit: int | None = 100
 ) -> Sequence[models.City]:
     """Retrieves a list of cities from the database."""
-    fetched_data = await db.scalars(select(models.City).offset(skip).limit(limit))
+
+    query = select(models.City)
+    if limit is not None:
+        query = query.offset(skip).limit(limit)
+
+    fetched_data = await db.scalars(query)
 
     return fetched_data.all()
 
