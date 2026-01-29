@@ -12,7 +12,15 @@ async def fetch_temperature(lat: float, lon: float):
     }
 
     async with httpx.AsyncClient() as client:
-        resp = await client.get(API_URL, params=params)
-        data = resp.json()
+        try:
+            resp = await client.get(API_URL, params=params, timeout=10.0)
+            resp.raise_for_status()
+            data = resp.json()
+            temp = data.get("current_weather", {}).get("temperature")
+            if temp is None:
+                raise ValueError("Temperature data missing in API response")
+        except (httpx.RequestError, httpx.HTTPStatusError, ValueError) as e:
+            print(f"Weather API error: {e}")
+            return None, None
 
-    return data["current_weather"]["temperature"], datetime.utcnow()
+    return temp, datetime.utcnow()
