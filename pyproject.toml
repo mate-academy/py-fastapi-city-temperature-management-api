@@ -1,0 +1,54 @@
+[project]
+name = "py-fastapi-city-temperature-management-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "alembic>=1.18.1",
+    "fastapi>=0.128.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.12.0",
+    "ruff>=0.14.14",
+    "sqlalchemy>=2.0.46",
+    "uvicorn>=0.40.0",
+]
+
+[tool.ruff]
+line-length = 88
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "alembic/",
+    "alembic/versions/",
+    "city-temperature.db",
+    ".idea/",
+    "requirements.txt",
+    "uv.lock",
+]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "N", "D", "UP"]
+ignore = ["D100", "D104", "D107", "D203", "D213", "D205", "D400", "D401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
