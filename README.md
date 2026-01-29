@@ -36,15 +36,18 @@ uvicorn main:app --reload
 ## Server runs at http://127.0.0.1:8000
 
 ## Api Endpoints
+### Cities
+```bash
 POST   /cities/          - Create city
 GET    /cities/          - List all cities
 GET    /cities/{id}      - Get city by ID
 PUT    /cities/{id}      - Update city
 DELETE /cities/{id}      - Delete city
-POST   /cities/          - Create city
-
-GET    /cities/          - List all cities
-GET    /cities/{id}      - Get city by ID
-PUT    /cities/{id}      - Update city
-DELETE /cities/{id}      - Delete city
+```
+### Temperatures
+```bash
+POST /temperatures/update          - Fetch and store current temperatures
+GET  /temperatures/                - List all temperature records
+GET  /temperatures/?city_id={id}   - Filter temperatures by city
+```
 
