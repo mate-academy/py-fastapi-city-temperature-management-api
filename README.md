@@ -1,60 +1,126 @@
-## Task Description
+# FastAPI City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A modern FastAPI application for managing cities and their temperature records with real-time weather data integration.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Tech Stack
 
-### Part 1: City CRUD API
+- **FastAPI** - Modern web framework
+- **SQLAlchemy 2.0** - Async ORM
+- **Alembic** - Database migrations
+- **SQLite** - Database
+- **Pydantic** - Data validation
+- **uvicorn** - ASGI server
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Prerequisites
 
-### Part 2: Temperature API
+- Python 3.13+
+- SQLite
+- [uv](https://github.com/astral-sh/uv) package manager
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Installation
 
-### Additional Requirements
+### 1. Install uv
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### 2. Clone the repository
+```bash
+git clone https://github.com/Taras-Ivashchuk/py-fastapi-library-management-api
+cd py-fastapi-city-temperature-management-api
+```
 
-## Evaluation Criteria
+### 3. Install dependencies
+```bash
+uv sync
+```
 
-Your task will be evaluated based on the following criteria:
+### 4. Configure environment variables
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+Create a `.env` file in the project root:
 
-## Deliverables
+```env
+# Database
+DATABASE_URL=postgresql+asyncpg://username:password@localhost:5432/dbname
 
-Please submit the following:
+# API Configuration
+API_PREFIX=/api/v1
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+# Weather API
+WEATHER_API_KEY=your_weather_api_key_here
+```
 
-Good luck!
+**Get a free WeatherAPI key:** [https://www.weatherapi.com/](https://www.weatherapi.com/)
+
+### 5. Set up the database
+
+```bash
+
+# Run migrations
+alembic upgrade head
+```
+
+### 6. Run the application
+
+```bash
+# Development mode with auto-reload
+fastapi dev main.py
+
+# Production mode
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+The API will be available at: **http://127.0.0.1:8000**
+
+## API Documentation
+
+Once the server is running, access the interactive API documentation:
+
+- **Swagger UI**: http://127.0.0.1:8000/docs
+
+## API Endpoints
+
+### Cities
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/cities/` | Create a new city |
+| `GET` | `/api/v1/cities/` | List all cities |
+| `GET` | `/api/v1/cities/{id}/` | Get city by ID |
+| `PUT` | `/api/v1/cities/{id}/` | Update city |
+| `DELETE` | `/api/v1/cities/{id}/` | Delete city |
+
+### Temperatures
+
+| Method | Endpoint                          | Description                              |
+|--------|-----------------------------------|------------------------------------------|
+| `GET` | `/api/v1/temperatures/`           | Get all temperature records              |
+| `GET` | `/api/v1/temperatures/{city_id}/` | Get temperatures for specific city by ID |
+| `POST` | `/api/v1/temperatures/update`     | Fetch latest temperatures for all cities |
+
+
+## Project Structure
+
+```
+py-fastapi-city-temperature-management-api/
+├── alembic/                # Database migrations
+│   └── versions/
+├── city/                   # City module
+│   ├── models.py
+│   ├── schemas.py
+│   ├── services.py
+│   └── router.py
+├── temperature/            # Temperature module
+│   ├── models.py
+│   ├── schemas.py
+│   ├── services.py
+│   └── router.py
+├── core/                   # Core configuration
+│   ├── config.py
+│   └── database.py
+├── main.py                # Application entry point
+├── alembic.ini            # Alembic configuration
+├── pyproject.toml         # Project dependencies
+├── .env                   # Environment variables (not in git)
+└── README.md
+```
