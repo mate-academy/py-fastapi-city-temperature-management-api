@@ -16,6 +16,7 @@ A FastAPI application that:
 - flake8 (lint)
 
 ## Project Structure
+```text
 app/
   api/            # routers/endpoints
   core/           # settings/config
@@ -25,6 +26,7 @@ app/
   schemas/        # Pydantic schemas
   services/       # external temperature provider client
 alembic/          # database migrations
+```
 
 ## Setup
 
@@ -39,7 +41,7 @@ uv sync --extra dev
 DATABASE_URL=sqlite+aiosqlite:///./app.db
 TEMPERATURE_PROVIDER_BASE_URL=https://wttr.in
 ```
-### If .env is not provided, the app uses default values.
+If .env is not provided, the app uses default values.
 
 ### 3) Run migrations (Alembic)
 If this is the first time running the project:
@@ -59,19 +61,19 @@ uv run uvicorn app.main:app --reload
 ```
 Open Swagger UI:
 - http://127.0.0.1:8000/docs
-- 
+
 ### API Endpoints
 
 #### Cities
-- POST /cities — create a city
-- GET /cities — list all cities
-- GET /cities/{city_id} — get city details (implemented)
-- PUT /cities/{city_id} — update city (implemented)
-- DELETE /cities/{city_id} — delete city
+- POST `/cities` — create a city
+- GET `/cities` — list all cities
+- GET `/cities/{city_id}` — get city details (implemented)
+- PUT `/cities/{city_id}` — update city (implemented)
+- DELETE `/cities/{city_id}` — delete city
 #### Temperatures
-- POST /temperatures/update — fetch current temperature for every city and store records
-- GET /temperatures — list all temperature records (history)
-- GET /temperatures?city_id={city_id} — list temperature records for a specific city
+- POST `/temperatures/update` — fetch current temperature for every city and store records
+- GET `/temperatures` — list all temperature records (history)
+- GET `/temperatures?city_id={city_id}` — list temperature records for a specific city
 #### Temperature Provider
 The app uses the public endpoint:
 - wttr.in with JSON format: https://wttr.in/{city}?format=j1
@@ -86,3 +88,8 @@ It reads current_condition[0].temp_C.
 ```bash
 uv run flake8
 ```
+Updated README.md as requested.
+It now includes instructions to install dependencies with uv, run Alembic migrations, start the server,
+and test via Swagger. I also added a short section describing the temperature provider
+and the main design choices/assumptions (async stack, unique city names, batch timestamp,
+and graceful failure handling).
