@@ -50,3 +50,4 @@ async def fetch_current_temperature(lat: float, lon: float) -> float:
         raise WeatherServiceError("No current_weather.temperature in response.")
 
     return float(cw["temperature"])
+bb
