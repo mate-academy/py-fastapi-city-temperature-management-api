@@ -1,60 +1,114 @@
-## Task Description
+# City & Temperature Service (FastAPI)
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application with two main areas:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+- **City CRUD API**: create/list/update/delete cities stored in SQLite.
+- **Temperature API**: fetch current temperatures for all stored cities, persist them, and expose history endpoints.
 
-### Part 1: City CRUD API
+---
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Requirements
 
-### Part 2: Temperature API
+- **Python 3.13.5**
+- `virtualenv` (recommended)
+- Dependencies installed from `requirements.txt`
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+---
 
-### Additional Requirements
+## How to run
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### 1) Create and activate a virtual environment (virtualenv)
 
-## Evaluation Criteria
+Activate it:
 
-Your task will be evaluated based on the following criteria:
+- macOS / Linux:
+  ```bash
+  source .venv/bin/activate
+  ```
+- Windows (PowerShell):
+  ```powershell
+  .\.venv\Scripts\Activate.ps1
+  ```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+### 2) Install dependencies
 
-## Deliverables
+### 3) Database setup
 
-Please submit the following:
+This project uses **SQLite**. A local database file may already exist in the repo (e.g. `city_temperature.db`).
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+If migrations are not required/used in your environment, the app may create tables at startup (depending on implementation).
 
-Good luck!
+### 4) Start the API server
+
+Most commonly with Uvicorn:
+
+Then open:
+
+- API docs (Swagger UI): `http://127.0.0.1:8000/docs`
+- Alternative docs (ReDoc): `http://127.0.0.1:8000/redoc`
+
+---
+
+## API overview
+
+### City endpoints (CRUD)
+
+- `POST /cities` — Create a new city
+- `GET /cities` — List all cities
+- `GET /cities/{city_id}` — Get a specific city (optional)
+- `PUT /cities/{city_id}` — Update a city (optional)
+- `DELETE /cities/{city_id}` — Delete a city
+
+Example payload for create:
+
+### Temperature endpoints
+
+- `POST /temperatures/update` — Fetch current temperature for **all cities** and store the results  
+  (implemented using async I/O for external calls)
+- `GET /temperatures` — List all temperature records
+- `GET /temperatures?city_id={city_id}` — Temperature history for a single city
+
+---
+
+
+## Design choices (brief)
+
+- **FastAPI routers split by domain**: the project is organized into separate modules (e.g., `city/` and `temperature/`) to keep concerns isolated and make it easier to extend.
+- **SQLAlchemy + SQLite**: lightweight local persistence suitable for take-home tasks and easy local runs.
+- **Pydantic schemas**: request/response validation is handled explicitly via schemas (separating API contracts from DB models).
+- **Dependency injection**: DB session and other cross-cutting concerns are provided via FastAPI dependencies to keep handlers testable and avoid global state.
+- **Async temperature fetching**: the temperature refresh endpoint is designed to use async calls to avoid blocking the server while calling external resources.
+
+---
+
+## Assumptions / simplifications
+
+- **Temperature provider**: an external “current temperature” source is used; for simplicity, it may rely on a single provider and a minimal set of fields.
+- **City identity / lookup**: cities are assumed to be uniquely identifiable in a way that the chosen temperature provider can resolve (e.g., by name or a stored external identifier if implemented).
+- **History storage**: each update stores a new row per city per fetch run (no deduplication unless explicitly implemented).
+- **Auth & rate limiting omitted**: endpoints are unauthenticated; rate limiting and API key management (if required by the temperature provider) are kept minimal for the scope of the task.
+- **SQLite in-process**: suitable for local/dev; not intended as-is for high concurrency production workloads.
+
+---
+
+## Common troubleshooting
+
+- **`uvicorn` not found**: install dependencies via `pip install -r requirements.txt`. If needed:
+  ```bash
+  pip install uvicorn
+  ```
+- **Database/migrations issues**: ensure you’re in the activated virtualenv and try:
+  ```bash
+  alembic upgrade head
+  ```
+
+---
+
+## Project structure (high-level)
+
+- `main.py` — FastAPI app entrypoint
+- `database.py` — DB engine/session setup
+- `city/` — city models/schemas/router/crud
+- `temperature/` — temperature models/schemas/router/crud
+- `alembic/` + `alembic.ini` — migrations (if used)
+- `requirements.txt` — Python dependencies
