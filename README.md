@@ -58,3 +58,67 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+# City Temperature Management API
+
+REST API for managing cities and storing temperature data.
+
+---
+
+## 🚀 How to Run
+
+```bash
+git clone <repository_url>
+cd py-fastapi-city-temperature-management-api
+
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+uvicorn main:app --reload
+API available at:
+
+http://127.0.0.1:8000
+
+Docs: http://127.0.0.1:8000/docs
+Endpoints
+Cities
+
+POST /cities
+
+GET /cities
+
+GET /cities/{city_id}
+
+PUT /cities/{city_id}
+
+DELETE /cities/{city_id}
+
+Temperatures
+
+POST /temperatures/update
+
+GET /temperatures
+
+GET /temperatures?city_id={city_id}
+Design Decisions
+
+FastAPI + SQLAlchemy
+
+SQLite for simplicity
+
+Modular structure (cities, temperatures)
+
+Async temperature fetching with httpx
+
+DB operations executed via thread pool
+
+⚙ Assumptions
+
+No Alembic migrations
+
+API key stored directly in code
+
+Minimal error handling
+
+No authentication
