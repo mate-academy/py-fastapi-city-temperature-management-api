@@ -42,8 +42,8 @@ async def async_get_city_from_id(
 @router.put("/{city_id}", response_model=CityReadSchema)
 async def async_update_city_from_id(
     db: Annotated[AsyncSession, Depends(async_get_db)],
+    city_id: int,
     city: CityCreateUpdateSchema,
-    city_id: int
 ) -> City:
     return await async_update_city(db, city_id, city)
 

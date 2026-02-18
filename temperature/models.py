@@ -16,4 +16,4 @@ class Temperature(Base):
         ForeignKey("city.id", ondelete="CASCADE")
     )
 
-    city = relationship("City", back_populates="temperatures", lazy="selectin")
+    city = relationship("City", back_populates="temperatures")

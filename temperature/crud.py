@@ -1,4 +1,4 @@
-from sqlalchemy import select, delete
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from temperature.models import Temperature
@@ -8,7 +8,6 @@ async def async_create_temperatures(
     db: AsyncSession,
     temperatures: list[Temperature],
 ) -> list[Temperature]:
-    await db.execute(delete(Temperature))
 
     db.add_all(temperatures)
     await db.commit()
