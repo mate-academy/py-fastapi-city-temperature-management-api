@@ -16,6 +16,7 @@ async def async_create_new_city(
     try:
         await db.commit()
     except IntegrityError:
+        await db.rollback()
         raise HTTPException(
             status_code=409,
             detail="City already exists"
@@ -50,7 +51,14 @@ async def async_update_city(
     city.name = pydantic_city.name
     city.additional_info = pydantic_city.additional_info
 
-    await db.commit()
+    try:
+        await db.commit()
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="City already exists"
+        )
     await db.refresh(city)
 
     return city
