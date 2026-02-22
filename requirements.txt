@@ -1,0 +1,7 @@
+fastapi[standard]
+alembic
+aiohttp
+asyncio
+aiosqlite
+sqlalchemy
+httpx

@@ -1,60 +1,48 @@
-## Task Description
+# FastAPI Temperature-manager
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Description:
+FastAPI application for manage temperature in choosen cities.
+Asynchronous FastAPI application using **async SQLAlchemy** and **async Alembic** for database access and migrations.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+Endpoints:
 
-### Part 1: City CRUD API
+Manage cities:
+1. Add city
+2. List of all cities in database
+3. Get city by id
+4. Update city by id
+5. Remove from base city by id
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+Manage temperatures
+1. Update temperatures for all cities (168 records per city, 24*7)
+2. List of all temperatures
+3. List of temperatures by city_id
+4. Flush all records in temperatures
 
-### Part 2: Temperature API
+Stack:
+1. FastAPI
+2. SQLAlchemy(ORM)
+3. Pydantic
+4. Alembic
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## How to install and run:
+1. Clone repository:
+`git clone https://github.com/AndS9/py-fastapi-city-temperature-management-api.git`
+2. Init virtual enviroment and run it:
+`python -m venv .venv`
 
-### Additional Requirements
+    Start venv:
+    on macOs/linux  `source .venv/bin/activate`,       
+    on Windows      `soucre .venv/Scripts/activate` or `.\ venv\Scripts\activate.ps1`
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+3. Install requiring packages
+`pip install -r requirements.txt`
+4. Optional: Change path to database in app.settings(line 7)
+```
+7 line   DATABASE_URL: str | None = 'sqlite+aiosqlite:///./my_database.db'
 
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+```
+5. initalize database with:
+`alembic upgrade head`
+6. Run application from app directory
+`fastapi dev main.py` 
