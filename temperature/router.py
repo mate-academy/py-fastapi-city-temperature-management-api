@@ -36,15 +36,20 @@ async def update_temperatures(
                 f"appid={settings.WEATHER_API_KEY}"
                 f"&units=metric"
             )
-            response = await client.get(url)
-            data = response.json()
-            db_temperature = await crud.create_temperature(
-                db=db,
-                temperature=schemas.TemperatureCreate(
-                    city_id=city.id,
-                    date_time=datetime.now(),
-                    temperature=data["main"]["temp"],
-                ),
-            )
-            results.append(db_temperature)
+            try:
+                response = await client.get(url)
+                response.raise_for_status()
+                data = response.json()
+                db_temperature = await crud.create_temperature(
+                    db=db,
+                    temperature=schemas.TemperatureCreate(
+                        city_id=city.id,
+                        date_time=datetime.now(),
+                        temperature=data["main"]["temp"],
+                    ),
+                )
+                results.append(db_temperature)
+            except (httpx.HTTPStatusError, httpx.RequestError, KeyError):
+                continue
+
     return results
