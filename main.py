@@ -9,8 +9,6 @@ app = FastAPI(title=settings.PROJECT_NAME)
 app.include_router(cities.router)
 app.include_router(temps.router)
 
-Base.metadata.create_all(bind=engine)
-
 
 @app.get("/")
 def main():

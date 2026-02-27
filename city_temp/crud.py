@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Sequence
 
 from fastapi import HTTPException
@@ -87,7 +88,7 @@ def delete_city(
 def add_temperature(
         db: Session,
         city_id: int,
-        date_time,
+        date_time: datetime,
         temperature: float
 ) -> DBTemperature:
     obj = DBTemperature(

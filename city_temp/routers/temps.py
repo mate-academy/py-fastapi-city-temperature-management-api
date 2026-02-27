@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 import dependencies
 from city_temp import crud
+from city_temp.models import DBCity
 from city_temp.schemas import Temperature
 from city_temp.utils import (
     get_coords,
@@ -28,7 +29,7 @@ async def refresh_temperatures(
 
     async with httpx.AsyncClient(timeout=10) as client:
 
-        async def fetch_one(city) -> (
+        async def fetch_one(city: DBCity) -> (
                 tuple[int, datetime, float]
                 | Literal["skipped", "error"]
         ):
