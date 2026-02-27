@@ -153,3 +153,15 @@ GET /temperatures?city_id=1
 - Temperature fetching is implemented asynchronously using httpx and asyncio.gather to improve performance.
 - Batch insert with a single commit is used to reduce database overhead.
 - Error handling distinguishes between skipped cities (not found) and network errors.
+
+---
+
+## Assumptions and Simplifications
+
+- City names are assumed to be unique. No additional uniqueness validation beyond basic constraints was implemented.
+- SQLite is used as a lightweight local database instead of a production database.
+- Temperature updates are triggered manually via an endpoint rather than scheduled automatically.
+- No pagination was implemented for list endpoints due to the expected small dataset.
+- External API responses are trusted to follow the documented schema.
+- Basic console logging is used instead of a full logging system.
+- Authentication and authorization were not implemented as they were outside the project scope.
