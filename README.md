@@ -1,60 +1,80 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI service for managing cities and their latest temperatures, with weather data fetched from OpenWeather.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## How to Run the Application
 
-### Part 1: City CRUD API
+### 1) Clone and open the project
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+```bash
+git clone <your-repository-url>
+cd py-fastapi-city-temperature-management-api
+```
 
-### Part 2: Temperature API
+### 2) Create and activate virtual environment
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-### Additional Requirements
+### 3) Install dependencies
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+```bash
+pip install -r requirements.txt
+```
 
-## Evaluation Criteria
+### 4) Configure environment variables
 
-Your task will be evaluated based on the following criteria:
+Create a `.env` file in the project root:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```env
+API_KEY=your_openweather_api_key
+DATABASE_URL=your_database_url
+```
 
-## Deliverables
+> Use your real OpenWeather key in `API_KEY`.
 
-Please submit the following:
+### 5) Run database migrations
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+```bash
+alembic upgrade head
+```
 
-Good luck!
+### 6) Start the API
+
+```bash
+fastapi dev main.py
+```
+
+The API will be available at:
+
+- App: `http://127.0.0.1:8000`
+- Swagger UI: `http://127.0.0.1:8000/docs`
+
+---
+
+## Design Choices
+
+- **FastAPI** was selected for fast development, built-in validation, and async support.
+- **OpenWeather API** is used as an external source for current weather data.
+- **HTTP requests are async** to fetch temperatures for multiple cities concurrently and reduce total waiting time.
+- **SQLAlchemy ORM** is used for data modeling and persistence.
+- **Alembic** is used for schema versioning and repeatable DB changes.
+
+---
+
+## Assumptions and Simplifications
+
+- Only the **latest temperature** per city is stored (not full historical series).
+- City names are treated as unique entries.
+- If external weather fetch fails for a city, the update process continues for other cities.
+- Temperature values are requested in **metric** units.
+- Error handling is kept straightforward to keep the project structure simple.
+
+---
+
+## Notes
+
+- Ensure your database is running before applying migrations or starting the app.
+- If you change models, create a new Alembic migration before deploying.
