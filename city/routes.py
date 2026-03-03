@@ -58,7 +58,7 @@ async def update_city(
     return updated_city
 
 
-@router.delete("/cities/{city_id}", response_model=MessageSchema)
+@router.delete("/{city_id}", response_model=MessageSchema)
 async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
     result = await remove_city(city_id=city_id, db=db)
 

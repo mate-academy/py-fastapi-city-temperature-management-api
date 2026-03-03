@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from city.schemas import MessageSchema
 from dependencies import get_db
 from temperature import weather_service
-from temperature.crud import get_max_temperature, get_max_temperature_for_city
+from temperature.crud import get_all_temperatures_crud, get_max_temperature_for_city
 from temperature.schemas import CityMaxTemperatureSchema
 
 router = APIRouter(prefix="/temperatures", tags=["temperature"])
@@ -29,7 +29,7 @@ async def update_all_temperatures(background_tasks: BackgroundTasks):
 
 @router.get("/", response_model=list[CityMaxTemperatureSchema])
 async def get_all_temperatures(db: AsyncSession = Depends(get_db)):
-    result = await get_max_temperature(db=db)
+    result = await get_all_temperatures_crud(db=db)
 
     return result
 

@@ -1,33 +1,27 @@
-from sqlalchemy import select, func
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from city.models import City
 from temperature.models import Temperature
-from temperature.schemas import CityMaxTemperatureSchema, TemperatureBaseSchema
+from temperature.schemas import TemperatureBaseSchema
 
 
-async def get_max_temperature(
+async def get_all_temperatures_crud(
         db: AsyncSession
-) -> list[CityMaxTemperatureSchema]:
+) -> list[TemperatureBaseSchema]:
     result = await db.execute(
-        select(
-            City.id.label("city_id"),
-            City.name.label("city_name"),
-            func.max(Temperature.temperature).label("max_temperature")
-        )
-        .join(Temperature, City.id == Temperature.city_id)
-        .group_by(City.id, City.name)
-        .order_by(City.name)
+        select(Temperature)
+        .order_by(Temperature.date_time.desc())
     )
+    temperatures = result.scalars().all()
 
-    rows = result.all()
     return [
-        CityMaxTemperatureSchema(
-            city_id=row.city_id,
-            city_name=row.city_name,
-            max_temperature=row.max_temperature
+        TemperatureBaseSchema(
+            id=t.id,
+            city_id=t.city_id,
+            temperature=t.temperature,
+            date_time=t.date_time
         )
-        for row in rows
+        for t in temperatures
     ]
 
 
