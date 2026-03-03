@@ -4,12 +4,12 @@ from pydantic import BaseModel
 class CityBaseSchemas(BaseModel):
     id: int
     name: str
-    additional_info: str
+    additional_info: str | None
 
 
 class CreateCitySchemas(BaseModel):
     name: str
-    additional_info: str
+    additional_info: str | None
 
 
 class UpdateCitySchemas(BaseModel):

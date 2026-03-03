@@ -20,7 +20,7 @@ from dependencies import get_db
 router = APIRouter(prefix="/cities", tags=["cities"])
 
 
-@router.post("/cities", response_model=CityBaseSchemas)
+@router.post("/", response_model=CityBaseSchemas)
 async def cities(
         city_info: CreateCitySchemas,
         db: AsyncSession = Depends(get_db)
@@ -30,20 +30,20 @@ async def cities(
     return new_city
 
 
-@router.get("/cities", response_model=list[CityBaseSchemas])
+@router.get("/", response_model=list[CityBaseSchemas])
 async def list_cities(db: AsyncSession = Depends(get_db)):
     db_cities = await get_cities(db=db)
     return db_cities
 
 
-@router.get("/cities/{city_id}", response_model=CityBaseSchemas)
+@router.get("/{city_id}", response_model=CityBaseSchemas)
 async def get_city(city_id: int, db: AsyncSession = Depends(get_db)):
     city = await get_cities_by_city_id(city_id=city_id, db=db)
 
     return city
 
 
-@router.put("/cities/{city_id}", response_model=CityBaseSchemas)
+@router.put("/{city_id}", response_model=CityBaseSchemas)
 async def update_city(
         city_id: int,
         city_data: UpdateCitySchemas,
