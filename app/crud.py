@@ -25,7 +25,8 @@ async def get_one_city(db: AsyncSession, city_id: int):
 
 
 async def get_city_by_name(db: AsyncSession, city_name: str):
-    return await db.get(models.City, city_name)
+    result = await db.execute(select(models.City).where(models.City.name == city_name))
+    return result.scalars().first()
 
 
 async def update_city(db: AsyncSession, city_id: int, city: schemas.UpdateCity):
