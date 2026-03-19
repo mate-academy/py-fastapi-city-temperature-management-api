@@ -58,3 +58,19 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Run the project
+
+```bash
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload
+```
+
+## Notes
+
+- FastAPI was used for the API.
+- SQLAlchemy + SQLite were used for the database.
+- Alembic was used for migrations.
+- Async SQLAlchemy with aiosqlite was used for asynchronous database access.
+- The project is split into models, schemas, CRUD, routers, and main application file.
