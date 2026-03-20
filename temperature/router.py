@@ -44,7 +44,8 @@ async def update_temperatures(db: Session = Depends(get_db)):
                 results.append(record)
             except Exception as e:
                 print(f"Error fetching temperature for {city.name}: {e}")
-
+                
+    db.commit()
     return {"updated": len(results)}
 
 

@@ -9,6 +9,12 @@ router = APIRouter(prefix="/cities", tags=["cities"])
 
 @router.post("/", response_model=schemas.City)
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
+    cities = crud.get_cities(db=db)
+    if any(c.name == city.name for c in cities):
+        raise HTTPException(
+            status_code=400,
+            detail=f"City with name '{city.name}' already exists"
+        )
     return crud.create_city(db=db, city=city)
 
 
