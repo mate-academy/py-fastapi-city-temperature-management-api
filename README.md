@@ -1,60 +1,51 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+This is a FastAPI-based REST application that manages a list of cities and asynchronously fetches their current temperatures using the external [WeatherAPI](https://www.weatherapi.com/).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+##  How to Run the Application
 
-### Part 1: City CRUD API
+### Prerequisites
+- Python 3.9+ (Tested on 3.13)
+- A valid free API key from WeatherAPI.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### Step-by-Step Instructions
 
-### Part 2: Temperature API
+1. **Set up the project directory:**
+   Ensure all project files (`app/` folder, `requirements.txt`) are in your working directory.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+2. **Set up the Environment Variables:**
+   Create a file named `.env` in the root directory of the project and add your WeatherAPI key:
+   ```env
+   WEATHER_API_KEY=your_actual_api_key_here
+   ```
 
-### Additional Requirements
+3. **Install Dependencies:**
+   Run the following command in your terminal to install the required packages:
+   ```
+   pip install -r requirements.txt
+   ```
+4. **Start the Server:**
+   Launch the FastAPI application using Uvicorn:
+   ```
+   uvicorn app.main:app --reload
+   ```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+5. **Access the API:**
+   Open your browser and navigate to the interactive Swagger UI documentation:
+   https://www.google.com/search?q=http://127.0.0.1:8000/docs
 
-## Evaluation Criteria
+   Here you can interactively test all endpoints (e.g., add a city via POST /cities/, then update temperatures via POST /temperatures/update).
 
-Your task will be evaluated based on the following criteria:
+##  Design Choices
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+- **FastAPI:** High performance, native async support, and built-in Swagger UI.
+- **Modular Structure:** Code is divided into `models`, `schemas`, `services`, and `routers` for readability and scalability.
+- **Async Fetching:** Concurrent API requests using `httpx.AsyncClient` and `asyncio.gather()` to minimize execution time.
+- **SQLite + SQLAlchemy:** Zero-configuration setup for easy local testing, with ORM for relational mapping and cascading deletes.
 
-## Deliverables
+##  Assumptions and Simplifications
 
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+- **City Names:** Expects valid English names (e.g., "Kyiv"). Invalid or unfound cities are gracefully skipped and reported.
+- **Database:** SQLite is used for simplicity and local evaluation instead of a production-ready DB like PostgreSQL.
+- **Security:** No authentication/authorization is implemented to focus purely on core requirements.
+- **Timezones:** All timestamps are strictly stored in UTC.
