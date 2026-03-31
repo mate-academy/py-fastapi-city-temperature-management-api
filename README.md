@@ -1,60 +1,56 @@
-## Task Description
+# 🌦️ Weather & Temperature Tracker API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+> A modern asynchronous API for temperature monitoring, built with **FastAPI + SQLAlchemy 2.0**.  
+> This project focuses on high performance, correct timezone handling, and architectural clarity.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## 🚀 Key Features
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+| Feature | Description |
+|---------|------|
+| ⚡ **Fully Asynchronous** | Leverages `AsyncSession` for all database operations to ensure non-blocking I/O|
+| 📦 **High Performance** | Implements efficient batch creation using `session.execute(insert(...), data_list)`, significantly faster than standard loops|
+| 🔗 **Eager Loading** | Utilizes `joinedload` and `selectinload` strategies to prevent `MissingGreenlet` errors and solve the N+1 problem |
+| 🔄 **Circular Import-Free Architecture** | Pydantic models are split into `Base` and `Read` levels, ensuring stability and excellent IDE support without runtime rebuilds |
+| 🗑️ **Atomic Operations** | Deletions and lookups use SQL subqueries (`scalar_subquery`) for maximum precision and data integrity |
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## 🛠️ Technology Stack
 
-### Additional Requirements
+- **Framework** — [FastAPI](https://fastapi.tiangolo.com/)
+- **ORM** — SQLAlchemy 2.0 (Async)
+- **Validation** — Pydantic V2
+- **Migrations** — Alembic
+- **Database** — SQLite (Async)
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+---
 
-## Evaluation Criteria
+## ⚙️ Quick Start
 
-Your task will be evaluated based on the following criteria:
+### 1. Environment Setup
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+Clone the repository and create a virtual environment:
 
-## Deliverables
+```bash
+python -m venv venv
+source venv/bin/activate        # Linux / macOS
+# venv\Scripts\activate         # Windows
 
-Please submit the following:
+pip install -r requirements.txt
+```
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+### 2. Database Migrations
 
-Good luck!
+Run migrations to set up the table structure (including automatic timestamp generation at the DB level):
+
+```bash
+alembic upgrade head
+```
+
+### 3. Run the Server
+
+```bash
+uvicorn src.main:app --reload
+```
