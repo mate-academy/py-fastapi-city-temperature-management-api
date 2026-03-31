@@ -2,6 +2,8 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict
 
+from city.schemas import City
+
 
 class TemperatureBase(BaseModel):
     temperature: float
@@ -19,3 +21,4 @@ class Temperature(TemperatureBase):
 
     city_id: int
     date_time: datetime
+    city: City
