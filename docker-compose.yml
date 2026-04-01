@@ -1,0 +1,69 @@
+networks:
+  temperature-network:
+    driver: bridge
+
+services:
+  
+  temperature-db:
+    image: mysql:latest
+    container_name: temperature-db
+    networks:
+      - temperature-network
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DATABASE}
+      - MYSQL_USER=${USER_DB}
+      - MYSQL_PASSWORD=${PASSWORD}
+    volumes:
+      - temperature-volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  temperature-migration:
+    image: temperature-migration:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.migration
+    environment:
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+      - USER_DB=${USER_DB}
+      - PASSWORD=${PASSWORD}
+      - DATABASE=${DATABASE}
+    networks:
+      - temperature-network
+    depends_on:
+      temperature-db:
+        condition: service_healthy
+
+
+  temperature-app:
+    image: temperature-app:1.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: temperature-app
+    networks:
+      - temperature-network
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      temperature-db:
+        condition: service_healthy
+      temperature-migration:
+        condition: service_completed_successfully
+    environment:
+      - API_KEY=${API_KEY}
+      - ROOT_PASSWORD=${ROOT_PASSWORD}
+      - USER_DB=${USER_DB}
+      - PASSWORD=${PASSWORD}
+      - DATABASE=${DATABASE}
+
+volumes:
+  temperature-volume:
+    driver: local
