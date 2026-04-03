@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select, insert
 
 from dependencies import AsyncDB
-from httpx import AsyncClient
+from httpx import AsyncClient, RequestError
 
 from src.City.models import City
 from src.Temperature.models import Temperature
@@ -18,12 +18,15 @@ router = APIRouter()
 
 
 async def get_temperature_data(city_name: str, city_id: int, client: AsyncClient) -> tuple[dict, int]:
-    res = await client.get(
-        settings.WEATHER_API_BASE_URL,
-        params={"key": settings.WEATHER_API_KEY, "q": city_name},
-    )
-    if "current" in (res_dict := res.json()):
-        return res_dict["current"]["temp_c"], city_id
+    try:
+        res = await client.get(
+            settings.WEATHER_API_BASE_URL,
+            params={"key": settings.WEATHER_API_KEY, "q": city_name},
+        )
+    except RequestError:
+        ...
+    else:
+        return res.json()["current"]["temp_c"], city_id
 
 
 @router.post("/update")

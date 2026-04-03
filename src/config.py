@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from os import environ
 
 
 class Settings(BaseSettings):
