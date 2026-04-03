@@ -20,9 +20,10 @@ router = APIRouter()
 async def get_temperature_data(city_name: str, city_id: int, client: AsyncClient) -> tuple[dict, int]:
     res = await client.get(
         settings.WEATHER_API_BASE_URL,
-        params={"key": environ["WEATHER_API_KEY"], "q": city_name},
+        params={"key": settings.WEATHER_API_KEY, "q": city_name},
     )
-    return res.json()["current"]["temp_c"], city_id
+    if "current" in (res_dict := res.json()):
+        return res_dict["current"]["temp_c"], city_id
 
 
 @router.post("/update")
@@ -53,11 +54,7 @@ async def update_city(db: AsyncDB):
 
 
 @router.get("/", response_model=List[schemas.TemperatureRead])
-async def get_all_temperatures(db: AsyncDB):
+async def get_all_temperatures(db: AsyncDB, city_id=None):
+    if city_id:
+        return await crud.get_all_temperatures_by_city_id(db=db, city_id=city_id)
     return await crud.get_all_temperatures(db=db)
-
-
-@router.get("/{city_id}", response_model=List[schemas.TemperatureRead])
-async def get_temperatures_by_city_id(db: AsyncDB, city_id: int):
-    return await crud.get_all_temperatures_by_city_id(db=db, city_id=city_id)
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

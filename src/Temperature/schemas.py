@@ -11,6 +11,7 @@ class TemperatureBase(BaseModel):
 class TemperatureRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
+    id: int
     temperature: float
     date_time: datetime
     city: CityDetail

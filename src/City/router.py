@@ -1,5 +1,5 @@
 from os import environ
-from typing import List, AsyncGenerator
+from typing import List
 from httpx import AsyncClient
 from fastapi import APIRouter, HTTPException, status
 from src.City import schemas, crud
@@ -18,12 +18,12 @@ async def check_city_temperature(name: str) -> float | None:
             await client.get(
                 settings.WEATHER_API_BASE_URL,
                 params={
-                    "key": environ["WEATHER_API_KEY"],
+                    "key": settings.WEATHER_API_KEY,
                     "q": name,
                 }
             )
         ).json()
-    if "error" not in res:
+    if "current" in res:
         return res["current"]["temp_c"]
 
 @router.post("/", response_model=CityDetail, status_code=status.HTTP_201_CREATED)
