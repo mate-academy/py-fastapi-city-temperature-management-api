@@ -23,7 +23,7 @@ async def update_temperature(db: Session = Depends(get_db)):
             db,
             {
                 "city_id": city.id,
-                "datetime": datetime.now(timezone.utc),
+                "date_time": datetime.now(timezone.utc),
                 "temperature": temp,
             },
         )

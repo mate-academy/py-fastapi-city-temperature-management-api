@@ -4,6 +4,8 @@ import httpx
 from fastapi import HTTPException
 
 API_KEY = os.getenv("API_KEY")
+if not API_KEY:
+    raise RuntimeError("Missing OPENWEATHER_API_KEY")
 
 
 async def fetch_temperature(city_name: str) -> float:

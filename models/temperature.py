@@ -6,11 +6,11 @@ from database import Base
 
 
 class Temperature(Base):
-    __tablename__ = "temperature"
+    __tablename__ = "temperatures"
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, unique=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     city_id: Mapped[int] = mapped_column(Integer, ForeignKey("cities.id"))
-    datetime: Mapped[datetime] = mapped_column(DateTime)
+    date_time: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     temperature: Mapped[float] = mapped_column(Float)
 
-    city = relationship("City", back_populates="temperatures")
+    city: Mapped["City"] = relationship("City", back_populates="temperatures")
