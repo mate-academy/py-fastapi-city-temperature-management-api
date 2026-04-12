@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -11,7 +11,7 @@ from services.weather import fetch_temperature
 
 router = APIRouter()
 
-@router.post("/update", response_model=TemperatureRead)
+@router.post("/update", response_model=list[TemperatureRead])
 async def update_temperature(db: Session = Depends(get_db)):
     cities = get_cities(db)
 
@@ -23,7 +23,7 @@ async def update_temperature(db: Session = Depends(get_db)):
             db,
             {
                 "city_id": city.id,
-                "date_time": datetime.now(),
+                "datetime": datetime.now(timezone.utc),
                 "temperature": temp,
             },
         )

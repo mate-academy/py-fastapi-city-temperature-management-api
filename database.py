@@ -1,8 +1,8 @@
 from typing import Generator
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+
+from sqlalchemy.orm import sessionmaker, Session, declarative_base
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./temper.db"
 
@@ -16,7 +16,7 @@ Base = declarative_base()
 
 
 def get_db() -> Generator[Session]:
-    db = (SessionLocal())
+    db = SessionLocal()
     try:
         yield db
     finally:

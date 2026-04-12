@@ -1,4 +1,6 @@
-from sqlalchemy import Sequence, select
+from typing import Sequence
+
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from models import City

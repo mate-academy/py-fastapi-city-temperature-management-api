@@ -1,6 +1,9 @@
-import httpx
+import os
 
-API_KEY = "YOUR_API_KEY"
+import httpx
+from fastapi import HTTPException
+
+API_KEY = os.getenv("API_KEY")
 
 
 async def fetch_temperature(city_name: str) -> float:
@@ -13,8 +16,21 @@ async def fetch_temperature(city_name: str) -> float:
     }
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(url, params=params)
+        try:
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+        except httpx.HTTPError:
+            raise HTTPException(
+                status_code=502,
+                detail="The server couldn't fulfill the request.",
+            )
 
     data = response.json()
+    main = data.get("main")
+    if not main or "temp" not in main:
+        raise HTTPException(
+            status_code=502,
+            detail="The server couldn't fulfill the request.",
+        )
 
-    return data["main"]["temp"]
+    return main["temp"]

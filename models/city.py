@@ -12,7 +12,10 @@ class City(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String)
-    additional_info: Mapped[Optional[str]] = mapped_column(String)
+    additional_info: Mapped[Optional[str]] = mapped_column(
+        String,
+        nullable=True
+    )
 
     temperatures: Mapped[List[Temperature]] = relationship(
         "Temperature",
