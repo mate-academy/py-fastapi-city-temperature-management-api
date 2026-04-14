@@ -1,0 +1,1 @@
+from temperature_api.routers import router as temperature_router
