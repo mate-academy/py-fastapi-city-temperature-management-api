@@ -1,0 +1,11 @@
+flake8
+black
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+python-dotenv
+aiosqlite
+pytest
+pytest-asyncio
+httpx

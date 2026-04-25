@@ -1,60 +1,41 @@
-## Task Description
+<!-- @format -->
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+# Weather & City API
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+A complete FastAPI-based application for managing cities and their temperature measurements with async database operations and external API integration.
 
-### Part 1: City CRUD API
+## Features
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- **City Management (Full CRUD)** - Create, Read, Update, Delete cities with SQLite database
+- **Temperature Tracking** - Fetch current temperatures from OpenWeatherMap API
+- **Historical Data Storage** - Store and retrieve complete temperature history
+- **Async Architecture** - Non-blocking I/O for database and API calls
+- **Statistics Endpoint** - Get average, min, max temperatures per city
+- **Automatic API Documentation** - Interactive Swagger UI and ReDoc
+- **Dependency Injection** - Clean, testable code following FastAPI best practices
 
-### Part 2: Temperature API
+## Technology Stack
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+| Technology     | Purpose                                   |
+| -------------- | ----------------------------------------- |
+| FastAPI 0.104+ | Web framework with automatic OpenAPI docs |
+| SQLAlchemy 2.0 | Async ORM for database operations         |
+| aiosqlite      | Async SQLite database driver              |
+| httpx          | Async HTTP client for external API calls  |
+| Pydantic v2    | Data validation and serialization         |
+| python-dotenv  | Environment variable management           |
 
-### Additional Requirements
+## Prerequisites
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+- Python 3.9 or higher
+- pip (Python package manager)
+- (Optional) OpenWeatherMap API key - get free at [OpenWeatherMap](https://openweathermap.org/api)
 
-## Evaluation Criteria
+## Complete Installation & Setup Guide
 
-Your task will be evaluated based on the following criteria:
+### Step 1: Create Project Directory
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+```bash
+mkdir weather_city_api
+cd weather_city_api
+```
