@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from city.models import City
-from city.schemas import CityCreate, CityUpdate
+from schemas import CityCreate, CityUpdate
 
 
 def create_city_crud(db: Session, city_data: CityCreate):

@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     class Config:
-        case_sensitive=True,
+        case_sensitive=True
         env_file=".env"
 
 

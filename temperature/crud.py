@@ -1,3 +1,4 @@
+from fastapi import Query, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -9,7 +10,7 @@ from datetime import datetime
 import httpx
 
 
-def get_temperatures_crud(db: Session, city_id: int = None):
+def get_temperatures_crud(db: Session, city_id: int = Query(default=None)):
     if city_id:
         city = get_city_or_404(db, city_id)
         return city.temperatures
@@ -21,14 +22,28 @@ async def check_current_temperatures(db: Session):
 
     async with httpx.AsyncClient() as client:
         for city in cities:
-            response = await client.get(
-                f"https://api.openweathermap.org/data/2.5/weather?q={city.name}&appid={settings.API_KEY}&units=metric"
-            )
-            data = response.json()
+            try:
+                response = await client.get(
+                    f"https://api.openweathermap.org/data/2.5/weather",
+                    params={"q": city.name, "appid": settings.API_KEY, "units": "metric"}
+                )
+                response.raise_for_status()
+                data = response.json()
+                temp = data["main"]["temp"]
+            except httpx.RequestError:
+                raise HTTPException(status_code=503, detail=f"Weather service unavailable")
+
+            except httpx.HTTPStatusError as e:
+                print(f"Error for {city.name}: {e.response.status_code}")
+                continue
+
+            except KeyError:
+                print(f"Unexpected response format for {city.name}")
+                continue
             db_temperature = Temperature(
                 city_id=city.id,
                 date_time=datetime.now(),
-                temperature=data["main"]["temp"]
+                temperature=temp
             )
             db.add(db_temperature)
         db.commit()

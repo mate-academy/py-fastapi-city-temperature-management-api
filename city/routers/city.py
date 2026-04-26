@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from city.crud import create_city_crud, get_all_cities, get_city_or_404, update_city_by_id, delete_city_crud
-from city.schemas import CityResponse, CityCreate, CityUpdate
+from schemas import CityResponse, CityCreate, CityUpdate
 from dependencies import get_db
 
 router = APIRouter()
