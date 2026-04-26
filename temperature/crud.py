@@ -30,12 +30,12 @@ async def check_current_temperatures(db: Session):
                 response.raise_for_status()
                 data = response.json()
                 temp = data["main"]["temp"]
-            except httpx.RequestError:
-                raise HTTPException(status_code=503, detail=f"Weather service unavailable")
-
             except httpx.HTTPStatusError as e:
                 print(f"Error for {city.name}: {e.response.status_code}")
                 continue
+            
+            except httpx.RequestError:
+                raise HTTPException(status_code=503, detail=f"Weather service unavailable")
 
             except KeyError:
                 print(f"Unexpected response format for {city.name}")
