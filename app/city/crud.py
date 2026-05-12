@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert, update, delete, Row
+from sqlalchemy import select, insert, update, delete
 
 from app.city.models import City
 from app.city.schemas import CityCreate, CityUpdate
@@ -18,7 +18,7 @@ async def get_city(db: AsyncSession, city_id: int) -> City | None:
     return city_list.scalar_one_or_none()
 
 
-async def get_city_by_name(db: AsyncSession, city_name: str) -> Row[City] | None:
+async def get_city_by_name(db: AsyncSession, city_name: str) -> City | None:
     queryset = select(City).where(City.name == city_name)
     city_list = await db.execute(queryset)
     return city_list.scalar_one_or_none()
