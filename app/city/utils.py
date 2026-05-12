@@ -15,7 +15,7 @@ async def handle_city_not_found(*, db: AsyncSession, city_id: int) -> City:
 			detail="City not found"
 		)
 
-	return city[0]
+	return city
 
 
 async def handle_city_exists(
@@ -27,8 +27,8 @@ async def handle_city_exists(
 	city = await crud.get_city_by_name(db, city_data.name)
 
 	if (
-		(city and city_id is not None and city_id != city[0].id)
-		or (city and city_id != city[0].id)
+		(city and city_id is not None and city_id != city.id)
+		or (city and city_id != city.id)
 	):
 		raise HTTPException(
 			status_code=400,

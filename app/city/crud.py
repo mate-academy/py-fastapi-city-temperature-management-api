@@ -12,18 +12,16 @@ async def get_all_cities(db: AsyncSession) -> list[City]:
     return [city[0] for city in city_list.fetchall()]
 
 
-async def get_city(db: AsyncSession, city_id: int) -> Row[City] | None:
+async def get_city(db: AsyncSession, city_id: int) -> City | None:
     queryset = select(City).where(City.id == city_id)
     city_list = await db.execute(queryset)
-    return city_list.fetchone()
+    return city_list.scalar_one_or_none()
 
 
 async def get_city_by_name(db: AsyncSession, city_name: str) -> Row[City] | None:
     queryset = select(City).where(City.name == city_name)
-    result = await db.execute(queryset)
-    city = result.fetchone()
-
-    return city
+    city_list = await db.execute(queryset)
+    return city_list.scalar_one_or_none()
 
 
 async def create_city(db: AsyncSession, city_data: CityCreate) -> dict:
