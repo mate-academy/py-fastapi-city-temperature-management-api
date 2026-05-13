@@ -1,0 +1,13 @@
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "alembic upgrade head &&
+            fastapi run app/main.py"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
