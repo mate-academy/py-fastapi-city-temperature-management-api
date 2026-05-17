@@ -36,3 +36,18 @@ Content-Type: application/json
 ###
 
 DELETE http://127.0.0.1:8000/cities/1
+
+###
+
+POST http://127.0.0.1:8000/temperatures/update
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/temperatures
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/temperatures?city_id=1
+Accept: application/json

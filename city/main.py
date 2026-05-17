@@ -3,10 +3,13 @@ from sqlalchemy.orm import Session
 
 from city import crud, models, schemas
 from city.database import engine, get_db
+from temperature import models as temperature_models  # noqa: F401
+from temperature.router import router as temperature_router
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="City Temperature Management API")
+app.include_router(temperature_router)
 
 
 @app.get("/", tags=["health"])
