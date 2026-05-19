@@ -58,3 +58,32 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Implementation Notes
+
+- The API is implemented under the `app` package.
+- Cities are stored in SQLite file `cities.db` at workspace root.
+- To allow fetching current weather, `City.additional_info` can contain a JSON object with `lat` and `lon` (or `latitude` and `longitude`). Example:
+
+```
+{"lat": 52.52, "lon": 13.405}
+```
+
+The `/temperatures/update` endpoint uses Open-Meteo (no API key required) and will skip cities without coordinates.
+
+## Run
+
+Create a virtual environment, install dependencies and start the server:
+
+```bash
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+## Design choices & assumptions
+
+- I kept the database simple with SQLAlchemy ORM and a synchronous session for ease of use.
+- Temperature fetching is async and uses `httpx` to call Open-Meteo. Cities need coordinates stored in `additional_info` as JSON to fetch temperatures.
+
