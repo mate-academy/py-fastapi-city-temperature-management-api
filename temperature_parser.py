@@ -1,13 +1,19 @@
 import httpx
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 import models
 
 import datetime
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 async def get_temperature_data(cities, db: Session):
-    api_key = "c04b5109c4ab415e82a90045261404"
+    api_key = os.get("API_KEY")
 
     async with httpx.AsyncClient() as client:
         for city in cities:
@@ -19,11 +25,13 @@ async def get_temperature_data(cities, db: Session):
 
                 temperature = models.Temperature(
                     city_id=city.id,
-                    date_time=datetime.datetime.now(),
+                    date_time=datetime.date.today(),
                     temperature=temperature
                 )
                 db.add(temperature)
                 db.commit()
                 db.refresh(temperature)
             else:
-                return f"The temperature for {city} not found"
+                continue
+
+    return db.scalars(select(models.Temperature)).all()

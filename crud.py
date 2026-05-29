@@ -65,11 +65,16 @@ def delete_city(
     db.delete(city)
     db.commit()
 
-    return city
+    return None
 
 
-def get_all_temperatures(db: Session):
-    return db.scalars(select(models.Temperature)).all()
+def get_all_temperatures(db: Session, city_id: int | None = None):
+    queryset = select(models.Temperature)
+
+    if city_id is not None:
+        queryset = queryset.where(models.Temperature.city_id == city_id)
+
+    return db.scalars(queryset).all()
 
 
 def create_temperature(db: Session, temperature: TemperatureCreate):
@@ -84,7 +89,3 @@ def create_temperature(db: Session, temperature: TemperatureCreate):
     db.refresh(db_temperature)
 
     return db_temperature
-
-
-def get_temperature(db: Session, temperature_id: int):
-    return db.scalar(select(models.Temperature).where(models.Temperature.id == temperature_id))

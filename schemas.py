@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class CityBase(BaseModel):
     name: str
-    additional_information: str
+    additional_info: str
 
 
 class CityCreate(CityBase):
@@ -23,13 +23,13 @@ class CityUpdate(CityBase):
 
 
 class TemperatureBase(BaseModel):
-    city: CityList
+    city_id: int
     date_time: date
     temperature: str
 
 
 class TemperatureCreate(TemperatureBase):
-    city_id: int
+    pass
 
 
 class TemperatureList(TemperatureBase):
@@ -39,6 +39,4 @@ class TemperatureList(TemperatureBase):
 
 
 class TemperatureUpdate(TemperatureBase):
-    city_id: int
-
-
+    pass
