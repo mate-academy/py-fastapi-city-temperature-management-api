@@ -1,3 +1,5 @@
+import os
+
 import httpx
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -13,7 +15,7 @@ load_dotenv()
 
 
 async def get_temperature_data(cities, db: Session):
-    api_key = os.get("API_KEY")
+    api_key = os.getenv("API_KEY")
 
     async with httpx.AsyncClient() as client:
         for city in cities:

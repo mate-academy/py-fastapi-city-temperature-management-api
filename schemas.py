@@ -25,7 +25,7 @@ class CityUpdate(CityBase):
 class TemperatureBase(BaseModel):
     city_id: int
     date_time: date
-    temperature: str
+    temperature: float
 
 
 class TemperatureCreate(TemperatureBase):

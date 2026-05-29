@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime
 
 from sqlalchemy import String, ForeignKey, Date, Float
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,6 +21,5 @@ class Temperature(base):
     id: Mapped[int] = mapped_column(primary_key=True)
     city_id: Mapped[int] = mapped_column(ForeignKey("city.id"))
     city: Mapped["City"] = relationship(back_populates="temperatures")
-    date_time: Mapped[date] = mapped_column(Date)
+    date_time: Mapped[datetime] = mapped_column(Date)
     temperature: Mapped[float] = mapped_column(Float)
-

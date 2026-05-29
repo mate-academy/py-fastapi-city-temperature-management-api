@@ -61,8 +61,8 @@ def city_delete(city_id: int, db: Session = Depends(get_db)):
 
 
 @app.get("/temperatures/", response_model=list[schemas.TemperatureList])
-def temperatures_list(db: Session = Depends(get_db)):
-    return crud.get_all_temperatures(db=db)
+def temperatures_list(db: Session = Depends(get_db), city_id: int | None = None):
+    return crud.get_all_temperatures(db=db, city_id=city_id)
 
 
 def get_cities(db: Session = Depends(get_db)):

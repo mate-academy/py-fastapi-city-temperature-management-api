@@ -17,7 +17,7 @@ def create_city(
 ):
     db_city = models.City(
         name=city.name,
-        additional_information=city.additional_information
+        additional_info=city.additional_info
     )
 
     db.add(db_city)
@@ -45,7 +45,7 @@ def update_city(
         return None
 
     db_city.name = city_to_update.name
-    db_city.additional_information = city_to_update.additional_information
+    db_city.additional_info = city_to_update.additional_info
 
     db.commit()
     db.refresh(db_city)
