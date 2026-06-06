@@ -3,7 +3,7 @@ from fastapi import HTTPException
 
 import httpx
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from temperature_management import models
 from temperature_management import schemas
 
@@ -142,12 +142,15 @@ async def fetch_temperature(
 
 
 def get_all_temperatures(db: Session):
-    return db.scalars(select(models.DBTemperature)).all()
+    return db.scalars(select(
+        models.DBTemperature
+    ).options(joinedload(models.DBTemperature.city))
+    ).all()
 
 
 def get_temperatures_by_id(
         db: Session,
-        city_id: int
+        city_id: int | None = None
 ):
     db_city = db.get(models.DBCity, city_id)
     if not db_city:

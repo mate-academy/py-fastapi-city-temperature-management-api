@@ -83,7 +83,7 @@ def fetch_new_temperature(
 @router.get("/temperatures/", response_model=Union[list[schemas.Temperature], schemas.CityWithTemperatures])
 def read_temperatures(
         db: Annotated[Session, Depends(get_db)],
-        city_id: int
+        city_id: int | None = None
 ):
     if city_id:
         return crud.get_temperatures_by_id(db=db, city_id=city_id)

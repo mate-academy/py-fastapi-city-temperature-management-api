@@ -1,4 +1,4 @@
-# City Temperature Management API
+   # City Temperature Management API
 
 FastAPI application for managing city data and fetching current temperature data from external weather API.
 
