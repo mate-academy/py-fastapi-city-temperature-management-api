@@ -18,7 +18,3 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(city_router)
 app.include_router(temperature_router)
 
-
-@app.get("/")
-async def read_root():
-    return {"Hello": "World"}
