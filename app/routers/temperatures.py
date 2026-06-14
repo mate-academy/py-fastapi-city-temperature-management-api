@@ -37,7 +37,7 @@ def get_temperatures(
 ):
     query = db.query(Temperature)
 
-    if city_id:
+    if city_id is not None:
         query = query.filter(
             Temperature.city_id == city_id
         )

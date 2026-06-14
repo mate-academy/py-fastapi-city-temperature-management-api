@@ -52,5 +52,6 @@ def create_temperature(
 
     db.add(temperature)
     db.commit()
+    db.refresh(temperature)
 
     return temperature
