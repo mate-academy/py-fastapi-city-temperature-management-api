@@ -42,18 +42,15 @@ def read_temperatures(skip: int = 0, limit: int = 100, db: Session = Depends(get
     return crud.get_temperatures(db, skip=skip, limit=limit)
 
 @app.put("/temperatures/update")
-async def update_temperature(db: Session = Depends(get_db)):
-    cities = crud.get_cities(db)
-
+async def update_temperatures(db: Session = Depends(get_db)):
+    cities = crud.get_cities(db, skip=0, limit=1000)
     async with httpx.AsyncClient() as client:
         for city in cities:
-            temp_val = 20.0
-
-            temp_data = schemas.TemperatureCreate(
-                city_id=city.id,
-                date_time=datetime.now(),
-                temperature=temp_val
-            )
+            # Example API call structure
+            # response = await client.get(f"https://api.example.com/weather/{city.name}")
+            # if response.status_code == 200:
+            #     temp = response.json()['temp']
+            temp_val = 20.0 # Placeholder
+            temp_data = schemas.TemperatureCreate(city_id=city.id, date_time=datetime.now(), temperature=temp_val)
             crud.create_temperature(db, temp_data)
-
-    return {"message": "Temperature database updated for all cities."}
+    return {"message": "Updated"}

@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import List, Optional
 
@@ -12,12 +12,11 @@ class TemperatureCreate(TemperatureBase):
 
 
 class Temperature(TemperatureBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     city_id: int
     city: Optional['City'] = None
-
-    class Config:
-        from_attributes = True
 
 
 class CityBase(BaseModel):
@@ -26,12 +25,11 @@ class CityBase(BaseModel):
 
 
 class CityCreate(CityBase):
-    id: int
+    pass
 
 
 class City(CityBase):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     temperatures: List[Temperature] = []
-
-    class Config:
-        from_attributes = True

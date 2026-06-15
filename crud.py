@@ -3,8 +3,8 @@ import models
 import schemas
 
 
-def get_cities(db: Session):
-    return db.query(models.City).all()
+def get_cities(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.City).offset(skip).limit(limit).all()
 
 def create_city(db: Session, city: schemas.CityCreate):
     db_city = models.City(name=city.name,
@@ -14,8 +14,11 @@ def create_city(db: Session, city: schemas.CityCreate):
     db.refresh(db_city)
     return db_city
 
-def get_temperatures(db: Session):
-    return db.query(models.Temperature).all()
+def get_temperatures(db: Session, skip: int = 0, limit: int = 100, city_id: int = None):
+    query = db.query(models.Temperature)
+    if city_id is not None:
+        query = query.filter(models.Temperature.city_id == city_id)
+    return query.offset(skip).limit(limit).all()
 
 def get_temperature(db: Session, city_id: int = None):
     if city_id:
