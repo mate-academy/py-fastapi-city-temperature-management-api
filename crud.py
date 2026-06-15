@@ -20,11 +20,6 @@ def get_temperatures(db: Session, skip: int = 0, limit: int = 100, city_id: int 
         query = query.filter(models.Temperature.city_id == city_id)
     return query.offset(skip).limit(limit).all()
 
-def get_temperature(db: Session, city_id: int = None):
-    if city_id:
-        return db.query(models.Temperature).filter(models.Temperature.city_id == city_id).all()
-    return db.query(models.Temperature).all()
-
 def create_temperature(db: Session, temp: schemas.TemperatureCreate):
     db_temp = models.Temperature(**temp.model_dump())
     db.add(db_temp)

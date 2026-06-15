@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
 from typing import List, Optional
 
@@ -32,4 +32,8 @@ class City(CityBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    temperatures: List[Temperature] = []
+    temperatures: List[Temperature] = Field(default_factory=list)
+
+
+Temperature.model_rebuild()
+City.model_rebuild()

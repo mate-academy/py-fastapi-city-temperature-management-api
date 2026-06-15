@@ -38,19 +38,22 @@ def delete_city(city_id: int, db: Session = Depends(get_db)):
     return {"message": "City deleted successfully"}
 
 @app.get("/temperatures/", response_model=List[schemas.Temperature])
-def read_temperatures(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.get_temperatures(db, skip=skip, limit=limit)
+def read_temperatures(skip: int = 0, limit: int = 100, city_id: int | None = None, db: Session = Depends(get_db)):
+    return crud.get_temperatures(db, skip=skip, limit=limit, city_id=city_id)
 
-@app.put("/temperatures/update")
+@app.post("/temperatures/update")
 async def update_temperatures(db: Session = Depends(get_db)):
     cities = crud.get_cities(db, skip=0, limit=1000)
     async with httpx.AsyncClient() as client:
         for city in cities:
-            # Example API call structure
-            # response = await client.get(f"https://api.example.com/weather/{city.name}")
-            # if response.status_code == 200:
-            #     temp = response.json()['temp']
-            temp_val = 20.0 # Placeholder
-            temp_data = schemas.TemperatureCreate(city_id=city.id, date_time=datetime.now(), temperature=temp_val)
-            crud.create_temperature(db, temp_data)
+            try:
+                response = await client.get(f"https://wttr.in/{city.name}?format=j1")
+                data = response.json()
+
+                temp_val = float(data["current_condition"][0]["temp_C"])
+
+                temp_data = schemas.TemperatureCreate(city_id=city.id, date_time=datetime.now(), temperature=temp_val)
+                crud.create_temperature(db, temp_data)
+            except Exception as e:
+                print(f"Failed to update {city.name}: {e}")
     return {"message": "Updated"}
