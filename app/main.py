@@ -1,12 +1,8 @@
-from typing import Annotated
-
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-
+from fastapi import FastAPI
 from app.db.database import engine, Base
-from app.dependencies import get_db
+from app.routers import cities
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-CurrentSession = Annotated[Session, Depends(get_db)]
+app.include_router(cities.router)
