@@ -58,3 +58,42 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+---
+
+# City Temperature Management API
+
+A FastAPI-based web application for managing a registry of cities and tracking their historical temperature data. Supports full CRUD operations for cities and uses asynchronous background fetching to retrieve real-time weather logs concurrently for all stored cities.
+
+---
+
+## How to Run
+
+### 1. Environment Setup
+
+Make sure you have **Python 3.10+** installed. Navigate to the root directory of the project and activate your virtual environment:
+
+```bash
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+```
+
+### 2. Install Dependencies
+
+```bash
+pip install fastapi uvicorn sqlalchemy httpx
+```
+
+### 3. Run the Server
+
+Launch the application using Uvicorn from the root project directory to ensure absolute imports resolve correctly:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+### 4. Interactive API Documentation
+
+Once the server is running, open your browser and navigate to:
+
+- **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
