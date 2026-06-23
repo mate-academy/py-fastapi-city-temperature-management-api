@@ -1,60 +1,45 @@
-## Task Description
+# City & Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Running the Application
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+```bash
+# Create virtual environment
+python -m venv venv
 
-### Part 1: City CRUD API
+# Activate (Windows)
+venv\Scripts\activate
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+# Activate (macOS/Linux)
+source venv/bin/activate
 
-### Part 2: Temperature API
+# Install dependencies
+pip install -r requirements.txt
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+# Run the application
+fastapi dev app/main.py
+```
 
-### Additional Requirements
+API documentation will be available at:
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+```text
+http://127.0.0.1:8000/docs
+```
 
-## Evaluation Criteria
+---
 
-Your task will be evaluated based on the following criteria:
+## Design Choices
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+* **FastAPI** for a simple, modern, and high-performance REST API.
+* **SQLAlchemy ORM** for database access and model management.
+* **Dependency Injection** (`Depends`) for clean resource management and easier testing.
+* **httpx.AsyncClient** for non-blocking weather API requests.
+* **Project structure** follows FastAPI recommendations by keeping application code inside the `app/` package.
 
-## Deliverables
+---
 
-Please submit the following:
+## Assumptions & Simplifications
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+* **SQLite** is used for simplicity and easy local setup.
+* **wttr.in** is used as the weather provider because it requires no API key.
+* Database operations are synchronous since SQLite I/O overhead is minimal for this use case.
+* Temperature updates are committed in a single transaction to reduce database writes.
