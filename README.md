@@ -17,12 +17,6 @@ Run the API:
 uvicorn app.main:app --reload
 ```
 
-The interactive API documentation is available at:
-
-```text
-http://127.0.0.1:8000/docs
-```
-
 The SQLite database is created automatically as `weather.db`.
 
 ## Endpoints
