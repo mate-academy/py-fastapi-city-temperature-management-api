@@ -1,60 +1,55 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A small FastAPI application for storing cities and their temperature history.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Run the application
 
-### Part 1: City CRUD API
+Create and activate a virtual environment, then install the dependencies:
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+```bash
+python -m venv .venv
+pip install -r requirements.txt
+```
 
-### Part 2: Temperature API
+Run the API:
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+```bash
+uvicorn app.main:app --reload
+```
 
-### Additional Requirements
+The SQLite database is created automatically as `weather.db`.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Endpoints
 
-## Evaluation Criteria
+- `POST /cities` - create a city
+- `GET /cities` - list cities
+- `DELETE /cities/{city_id}` - delete a city
+- `POST /temperatures/update` - fetch and store current temperatures
+- `GET /temperatures` - list all temperature records
+- `GET /temperatures?city_id={city_id}` - list records for one city
 
-Your task will be evaluated based on the following criteria:
+Example city request:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```json
+{
+  "name": "Kyiv",
+  "additional_info": "Capital of Ukraine"
+}
+```
 
-## Deliverables
+## Design choices
 
-Please submit the following:
+The project uses async SQLAlchemy with SQLite and FastAPI dependency injection
+for database sessions.
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+Current temperatures are fetched asynchronously from `wttr.in`, which does not
+require an API key.
 
-Good luck!
+## Assumptions and simplifications
+
+- City names are unique.
+
+- Temperatures are stored in Celsius.
+- If temperature fetching fails for any city, no new records are stored.
+- Deleting a city also deletes its temperature history.
+- Optional city detail and update endpoints are not included.
