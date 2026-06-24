@@ -1,60 +1,65 @@
-## Task Description
+## City Weather Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+### Tech Stack
+- FastAPI asynchronous web framework
+- SQLAlchemy 2.0 object relational mapper
+- aiosqlite asynchronous driver for SQLite
+- HTTPX asynchronous HTTP client for external requests
+- Open-Meteo API free weather data provider
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+### How to Run the Application
 
-### Part 1: City CRUD API
+Step 1 
+- Set up the Virtual Environment
+- Open your project folder in your IDE
+- Open the integrated terminal
+- Create a virtual environment by running 
+```bash
+python -m venv venv
+```
+- Activate the virtual environment
+- For Windows PowerShell use 
+```bash
+.\venv\Scripts\activate
+```
+- For Windows Command Prompt use 
+```bash
+venv\Scripts\activate.bat
+```
+- For macOS or Linux use 
+```bash
+source venv/bin/activate
+```
+- You will know it works when you see venv at the beginning of your terminal line
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+Step 2 Install Dependencies
+- Install all required libraries by running 
+```bash
+pip install -r requirements.txt
+```
+- Wait for the installation process to finish
 
-### Part 2: Temperature API
+Step 3 Start the Uvicorn Server
+- Launch the development server with automatic reload by running 
+```bash
+uvicorn app.main:app --reload
+```
+- The application will automatically create the weather.db database file and initialize all required tables during this first startup
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+Step 4 Test via Swagger UI
+- Open your browser and navigate to [http://127.0.0.1:8000/docs](https://www.google.com/search?q=http://127.0.0.1:8000/docs)
+- This opens the interactive Swagger documentation where you can test all endpoints directly
 
-### Additional Requirements
+### Design Choices and Assumptions
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+- Modular Architecture
+The project is split into separate directories for cities and temperatures to keep the codebase clean organized and easy to maintain as it grows
 
-## Evaluation Criteria
+- Fully Asynchronous
+All database operations via aiosqlite and external API calls via HTTPX utilize async and await to prevent blocking the application event loop during network requests
 
-Your task will be evaluated based on the following criteria:
+- Cascade Deletion
+Foreign key constraints are configured with ON DELETE CASCADE meaning that if a city is deleted from the database all its related temperature history records are automatically removed to prevent orphaned data
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+- Open-Meteo Integration
+Since the Open-Meteo API requires precise latitude and longitude coordinates the temperature service uses a two-step process it first queries the Geocoding API to find the coordinates of a city by its name and then fetches the current temperature using those coordinates
