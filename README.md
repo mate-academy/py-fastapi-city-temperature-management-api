@@ -1,60 +1,27 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A comprehensive **FastAPI** application designed to manage global city metadata (via a full CRUD API) and automatically synchronize real-time temperature data from external web resources using concurrent asynchronous operations.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
 
-### Part 1: City CRUD API
+# Project Structure
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+The project strictly follows the official FastAPI project structure guidelines, separating database management, business logic layers, and route components:
 
-### Part 2: Temperature API
-
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
-
-### Additional Requirements
-
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
-
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+py-fastapi-city-temperature-management-api/
+│
+├── app/
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── cities.py          # CRUD API endpoints for managing city data
+│   │   └── temperatures.py    # Endpoints for syncing and retrieving temperature history
+│   │
+│   ├── __init__.py
+│   ├── crud.py                # Database interaction layer utilizing SQLAlchemy 2.0
+│   ├── database.py            # SQLite database engine connection and session setups
+│   ├── models.py              # Relational database ORM models
+│   ├── schemas.py             # Pydantic v2 data validation and serialization models
+│   └── services.py            # Async network service layer for external API integrations
+│
+├── main.py                    # Application entry point & service initialization
+├── requirements.txt           # Project package dependencies
+└── README.md                  # System documentation and instructions
