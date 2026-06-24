@@ -1,60 +1,111 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application that manages city data and tracks their current temperatures,
+sourced from the free [Open-Meteo](https://open-meteo.com/) weather API (no API key required).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## Requirements
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- Python 3.11+
+- An internet connection (to fetch live temperature data)
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Running the Application
 
-### Additional Requirements
+```bash
+# 1. Clone / unzip the project
+cd city-temperature-api
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+# 2. Create and activate a virtual environment (recommended)
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 
-## Evaluation Criteria
+# 3. Install dependencies
+pip install -r requirements.txt
 
-Your task will be evaluated based on the following criteria:
+# 4. Start the server
+uvicorn main:app --reload
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+The API will be available at **http://127.0.0.1:8000**.
 
-## Deliverables
+Interactive docs (Swagger UI): **http://127.0.0.1:8000/docs**
 
-Please submit the following:
+---
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## API Reference
 
-Good luck!
+### Cities
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/cities/` | Create a new city |
+| `GET` | `/cities/` | List all cities (supports `skip` & `limit`) |
+| `GET` | `/cities/{city_id}` | Get a specific city |
+| `PUT` | `/cities/{city_id}` | Update a city's fields |
+| `DELETE` | `/cities/{city_id}` | Delete a city (cascades to temperatures) |
+
+**Create city body**
+```json
+{ "name": "Kyiv", "additional_info": "Capital of Ukraine" }
+```
+
+### Temperatures
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/temperatures/update` | Fetch & store current temperatures for all cities |
+| `GET` | `/temperatures/` | List all temperature records |
+| `GET` | `/temperatures/?city_id=1` | Temperature history for a specific city |
+
+**Typical workflow**
+```bash
+# Add some cities
+curl -X POST http://localhost:8000/cities/ \
+     -H "Content-Type: application/json" \
+     -d '{"name": "Kyiv", "additional_info": "Capital of Ukraine"}'
+
+curl -X POST http://localhost:8000/cities/ \
+     -H "Content-Type: application/json" \
+     -d '{"name": "Lviv"}'
+
+# Trigger a temperature fetch for all cities
+curl -X POST http://localhost:8000/temperatures/update
+
+# View temperature history
+curl http://localhost:8000/temperatures/
+curl "http://localhost:8000/temperatures/?city_id=1"
+```
+
+---
+
+## Design Choices
+
+### Framework & Database
+- **FastAPI** for async-first routing and automatic OpenAPI documentation.
+- **SQLAlchemy 2.0** with the modern `Mapped`/`mapped_column` API for type-safe ORM models.
+- **SQLite** for zero-setup local development. Swapping to PostgreSQL requires only changing `DATABASE_URL` in `database.py`.
+
+### Two-step weather lookup
+Temperature fetching uses the Open-Meteo API in two steps:
+1. **Geocoding** (`geocoding-api.open-meteo.com`) — city name → (lat, lon)
+2. **Current weather** (`api.open-meteo.com`) — (lat, lon) → temperature (°C)
+
+Both are fully free and require no registration or API key.
+
+All cities are queried **concurrently** via `asyncio.gather`, so fetching 100 cities takes about the same time as fetching one.
+
+### Dependency Injection
+`get_db` is a FastAPI dependency that yields a per-request SQLAlchemy session and guarantees cleanup via a `finally` block. This pattern is consistent across all routers.
+
+### Error Handling
+- Duplicate city names return **409 Conflict**.
+- Missing resources return **404 Not Found**.
+- Failed temperature lookups (network errors, unknown city name) are collected and returned in the `failed` list of `POST /temperatures/update` rather than crashing the entire batch.
+- Cascade `delete-orphan` on the `City → Temperature` relationship ensures referential integrity on city deletion.
+
+### Cascade deletion
+Deleting a city also removes all of its temperature records via SQLAlchemy's `cascade="all, delete-orphan"` relationship option.
+
