@@ -1,0 +1,52 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="aiohappyeyeballs" />
+          <option value="aiohttp" />
+          <option value="aiohttp-retry" />
+          <option value="aiosignal" />
+          <option value="attrs" />
+          <option value="beautifulsoup4" />
+          <option value="blinker" />
+          <option value="click" />
+          <option value="contourpy" />
+          <option value="crispy-bootstrap4" />
+          <option value="dj-database-url" />
+          <option value="django-crispy-forms" />
+          <option value="django-debug-toolbar" />
+          <option value="django-extensions" />
+          <option value="flake8-annotations" />
+          <option value="flake8-quotes" />
+          <option value="Flask" />
+          <option value="Jinja2" />
+          <option value="matplotlib" />
+          <option value="newsapi" />
+          <option value="newsapi-python" />
+          <option value="pandas" />
+          <option value="pep8-naming" />
+          <option value="pytest" />
+          <option value="pytest-django" />
+          <option value="pytest-mock" />
+          <option value="pytest-xdist" />
+          <option value="python-dateutil" />
+          <option value="requests" />
+          <option value="twilio" />
+          <option value="Werkzeug" />
+          <option value="yarl" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="_random.random.*" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
