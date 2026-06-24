@@ -58,3 +58,15 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+## Як запустити
+1. Встановити залежності: `pip install -r requirements.txt`
+2. Створити `.env` файл з `WEATHER_API_KEY=f87e58f42df3966795d238a7a4cca75d`.
+3. Запустити: `uvicorn main:app --reload`
+
+## Дизайн
+- Використано **SQLAlchemy** для роботи з БД.
+- **FastAPI** для створення ендпоінтів.
+- Асинхронний клієнт **httpx** для запитів до OpenWeatherMap.
+- Реалізовано повний CRUD для міст та логіку збору температур.
