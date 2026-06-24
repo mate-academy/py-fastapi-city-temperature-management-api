@@ -48,6 +48,7 @@ require an API key.
 ## Assumptions and simplifications
 
 - City names are unique.
+
 - Temperatures are stored in Celsius.
 - If temperature fetching fails for any city, no new records are stored.
 - Deleting a city also deletes its temperature history.
