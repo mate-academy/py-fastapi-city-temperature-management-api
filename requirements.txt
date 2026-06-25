@@ -1,0 +1,6 @@
+fastapi[all]
+alembic
+sqlalchemy
+uvicorn
+aiosqlite
+pydantic
