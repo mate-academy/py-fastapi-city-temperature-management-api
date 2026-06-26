@@ -58,3 +58,80 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Project Setup
+
+Create and activate a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the application:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+Open the interactive API docs:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## API Endpoints
+
+### Cities
+
+- `POST /cities` - create a city
+- `GET /cities` - list all cities
+- `GET /cities/{city_id}` - get one city
+- `PUT /cities/{city_id}` - update one city
+- `DELETE /cities/{city_id}` - delete one city
+
+Example city payload:
+
+```json
+{
+  "name": "Kyiv",
+  "additional_info": "Capital of Ukraine"
+}
+```
+
+### Temperatures
+
+- `POST /temperatures/update` - fetch and save current temperatures for all cities
+- `GET /temperatures` - list all temperature records
+- `GET /temperatures?city_id=1` - list temperature records for a specific city
+
+## Design Notes
+
+- The app uses FastAPI routers to separate city and temperature endpoints.
+- SQLite is configured in `app/database.py`.
+- SQLAlchemy models are defined in `app/models.py`.
+- Pydantic schemas are defined in `app/schemas.py`.
+- Weather fetching is isolated in `app/services/weather.py`.
+- Database tables are created automatically on application startup with `Base.metadata.create_all`.
+
+## Weather API
+
+The project uses Open-Meteo because it does not require an API key:
+
+- Geocoding API: `https://geocoding-api.open-meteo.com/v1/search`
+- Forecast API: `https://api.open-meteo.com/v1/forecast`
+
+For each city, the application first resolves coordinates by city name, then requests the current `temperature_2m` value and stores it in the `temperatures` table.
+
+## Assumptions
+
+- City names should be recognizable by the Open-Meteo geocoding API.
+- If one city cannot be resolved or fetched, the update endpoint records an error for that city and continues with the others.
+- If no city can be updated, the endpoint returns `502 Bad Gateway`.
+- The local SQLite database file `city_temperature.db` is ignored by git and recreated automatically when the app starts.
