@@ -58,3 +58,71 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+## City Temperature Management API
+
+Overview
+
+This project is a REST API built with FastAPI, SQLAlchemy, and SQLite for managing cities and their temperatures.
+
+The application allows users to:
+
+* create, update, delete and retrieve cities;
+* fetch current temperatures from the Open-Meteo API asynchronously;
+* store temperature records in the database;
+* retrieve temperature history, optionally filtered by city.
+
+## How to run the application
+
+1. Clone the repository.
+2. Create and activate a virtual environment.
+
+```bash 
+python -m venv .venv
+source .venv/bin/activate        # Linux/macOS
+# or
+.venv\Scripts\activate           # Windows
+```
+
+3. Install dependencies.
+
+```bash
+pip install -r requirements.txt
+```
+
+4. Apply database migrations.
+
+```bash
+alembic upgrade head
+```
+
+5. Start the application.
+
+```bash
+uvicorn main:app --reload
+```
+6. Open Swagger documentation.
+
+```
+http://127.0.0.1:8000/docs
+```
+
+## Design choices
+
+The project follows a layered architecture:
+
+* models – SQLAlchemy ORM models
+* schemas – Pydantic models for request and response validation
+* crud – database operations
+* router – API endpoints
+* utils – asynchronous interaction with the external weather API
+
+Current weather data is retrieved asynchronously using httpx and Python’s asyncio.TaskGroup, allowing multiple city requests to be processed concurrently.
+
+## Assumptions and simplifications
+
+* SQLite is used as the database for simplicity.
+* Temperature data is retrieved from the Open-Meteo API.
+* If weather data for a city cannot be retrieved, that city is skipped and processing continues for the remaining cities.
+* Each temperature update creates a new record, preserving the history of temperature measurements.
