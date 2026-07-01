@@ -58,3 +58,163 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+---
+
+# City Temperature Management API
+
+This is a FastAPI application for managing cities and storing temperature history for those cities.
+
+The project has two main parts:
+
+- City CRUD API
+- Temperature API that fetches current temperatures from Open-Meteo
+
+## Requirements
+
+- Python 3.11+
+- FastAPI
+- Uvicorn
+- SQLAlchemy
+- aiosqlite
+- httpx
+- Alembic
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Running the Application
+
+From inside the project folder:
+
+```bash
+uvicorn main:app --reload
+```
+
+The API will run at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Interactive API documentation is available at:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Database
+
+The application uses SQLite with SQLAlchemy's async session support.
+
+The database URL is configured in `database.py`:
+
+```text
+sqlite+aiosqlite:///./city_temperature.db
+```
+
+If using Alembic, create and apply migrations before running the app:
+
+```bash
+alembic revision --autogenerate -m "create city and temperature tables"
+alembic upgrade head
+```
+
+## API Endpoints
+
+### City Endpoints
+
+Create a city:
+
+```text
+POST /cities/
+```
+
+Get all cities:
+
+```text
+GET /cities/
+```
+
+Get one city:
+
+```text
+GET /cities/{city_id}
+```
+
+Update a city:
+
+```text
+PUT /cities/{city_id}
+```
+
+Delete a city:
+
+```text
+DELETE /cities/{city_id}
+```
+
+### Temperature Endpoints
+
+Create a temperature record manually:
+
+```text
+POST /temperatures/
+```
+
+Get all temperature records:
+
+```text
+GET /temperatures/
+```
+
+Get temperature records for one city:
+
+```text
+GET /temperatures/?city_id={city_id}
+```
+
+Fetch and store current temperatures for all cities:
+
+```text
+POST /temperatures/update/
+```
+
+## Temperature Data Source
+
+The application uses Open-Meteo to fetch real temperature data.
+
+It first uses the Open-Meteo geocoding API to convert a city name into latitude and longitude:
+
+```text
+https://geocoding-api.open-meteo.com/v1/search
+```
+
+Then it uses the Open-Meteo forecast API to get the current temperature:
+
+```text
+https://api.open-meteo.com/v1/forecast
+```
+
+No API key is required.
+
+## Design Choices
+
+- FastAPI routers are separated by feature: `city` and `temperature`.
+- Pydantic schemas are used for request and response validation.
+- SQLAlchemy models are used to define database tables.
+- Dependency injection is used for database sessions through `get_db`.
+- Temperature records are stored separately from cities so each city can have a temperature history.
+- Open-Meteo was chosen because it provides free weather data without requiring an API key.
+- Alembic is used to manage database schema migrations.
+
+## Assumptions and Simplifications
+
+- City names are used for geocoding.
+- If Open-Meteo returns multiple matches for a city name, the first result is used.
+- Temperature values are stored in Celsius.
+- Database tables are created and updated through Alembic migrations.
+- Error handling is basic and can be improved further for production use.
