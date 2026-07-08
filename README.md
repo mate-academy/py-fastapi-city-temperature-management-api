@@ -58,3 +58,66 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+FastAPI application for managing city data and tracking their temperature history. The app consists of two main components: a CRUD API for cities and an API that fetches and stores current temperature data via the Open-Meteo external service.
+
+## Setup and Run Instructions
+
+```bash
+# 1. Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate        # Linux/macOS
+venv\\Scripts\\activate           # Windows
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Run the application
+uvicorn app.main:app --reload
+
+# 4. Open the documentation
+# Swagger UI:  http://127.0.0.1:8000/docs
+# ReDoc:       http://127.0.0.1:8000/redoc
+```
+
+## Endpoints
+
+### Cities
+
+| Method | Path | Description |
+|---|---|---|
+| POST | /cities/ | Create a new city |
+| GET | /cities/ | Get a list of all cities |
+| GET | /cities/{city_id} | Get details of a specific city |
+| PUT | /cities/{city_id} | Update details of a specific city |
+| DELETE | /cities/{city_id} | Delete a specific city |
+
+### Temperatures
+
+| Method | Path | Description |
+|---|---|---|
+| POST | /temperatures/update | Fetch current temperature for all cities and store it in the history |
+| GET | /temperatures/ | Get a list of all temperature records |
+| GET | /temperatures/?city_id={city_id} | Get temperature history for a specific city |
+
+## Tech Stack
+
+- FastAPI + Pydantic
+- SQLAlchemy + SQLite
+- httpx (async client for Open-Meteo)
+- uvicorn[standard]
+
+## Design Choices
+
+- The project is split into routers, models, schemas, and database logic to keep the code clean and easy to maintain.
+- `Depends(get_db)` is used to manage the database session safely for each request.
+- Open-Meteo was chosen because it is free and does not require an API key.
+- `httpx.AsyncClient` is used to fetch temperature data asynchronously, as required by the task.
+
+## Assumptions and Simplifications
+
+- Temperature is fetched by city name, so cities with the same name are not separated.
+- Authentication is not included.
+- Tables are created automatically on startup, without migrations.
+- SQLite is used for simplicity.
