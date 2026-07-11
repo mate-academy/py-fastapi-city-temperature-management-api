@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+import httpx
 
-from app import crud, models, schemas
+from app import crud, schemas
 from app.dependencies import get_db
 from app.services.weather import get_current_temperature
 
@@ -11,7 +12,10 @@ router = APIRouter(
 )
 
 
-@router.post("/update")
+@router.post(
+    "/update",
+    response_model=list[schemas.TemperatureResponse],
+)
 async def update_temperatures(
     db: Session = Depends(get_db),
 ):
@@ -20,15 +24,19 @@ async def update_temperatures(
     result = []
 
     for city in cities:
-        temperature = await get_current_temperature(city.name)
+        try:
+            temperature = await get_current_temperature(city.name)
 
-        record = crud.create_temperature(
-            db=db,
-            city_id=city.id,
-            temperature=temperature,
-        )
+            record = crud.create_temperature(
+                db=db,
+                city_id=city.id,
+                temperature=temperature,
+            )
 
-        result.append(record)
+            result.append(record)
+
+        except (ValueError, httpx.HTTPError):
+            continue
 
     return result
 
