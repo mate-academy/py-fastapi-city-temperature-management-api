@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/cities/", response_model=list[schemas.CityResponse])
-async def read_cheese_types(db: Annotated[AsyncSession, Depends(get_db)]):
+async def read_cities(db: Annotated[AsyncSession, Depends(get_db)]):
     return await crud.get_all_cities(db=db)
 
 
@@ -33,7 +33,7 @@ async def create_city(
 
 
 @router.get("/cities/{city_id}/", response_model=schemas.CityResponse)
-async def read_single_cheese(
+async def read_single_city(
         city_id: int,
         db: Annotated[AsyncSession, Depends(get_db)]
 ):

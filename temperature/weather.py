@@ -1,6 +1,8 @@
 import httpx
 
-API_KEY = "46527bf17d37498abfc91729260307"
+from settings import API_KEY_WEATHER
+
+API_KEY = API_KEY_WEATHER
 
 
 async def get_temperature(city_name: str) -> float:
@@ -19,6 +21,8 @@ async def get_temperature(city_name: str) -> float:
 
     return data["current"]["temp_c"]
 
+
 if __name__ == "__main__":
     import asyncio
+
     print(asyncio.run(get_temperature("Kyiv")))

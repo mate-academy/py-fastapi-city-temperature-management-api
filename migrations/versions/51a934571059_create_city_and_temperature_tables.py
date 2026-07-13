@@ -1,8 +1,8 @@
-"""create users table
+"""create city and temperature tables
 
-Revision ID: 0f8ab083bd80
+Revision ID: 51a934571059
 Revises: 
-Create Date: 2026-07-13 12:40:04.689527
+Create Date: 2026-07-13 14:48:00.679753
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '0f8ab083bd80'
+revision: str = '51a934571059'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -31,9 +31,9 @@ def upgrade() -> None:
     op.create_index(op.f('ix_cities_id'), 'cities', ['id'], unique=False)
     op.create_table('temperatures',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('city_id', sa.Integer(), nullable=False),
-    sa.Column('date_time', sa.DateTime(), nullable=False),
+    sa.Column('date_time', sa.DateTime(timezone=True), nullable=False),
     sa.Column('temperature', sa.Float(), nullable=False),
+    sa.Column('city_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['city_id'], ['cities.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
