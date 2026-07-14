@@ -2,7 +2,7 @@ from typing import Optional
 
 from fastapi import HTTPException
 from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, result
 from starlette import status
 
 from city_api.models import City
@@ -27,7 +27,12 @@ async def get_all_cities(db: AsyncSession) -> list[City]:
 
 
 async def get_city_by_id(db: AsyncSession, city_id: int) -> Optional[City]:
-    return await db.get(City, city_id)
+    result = await db.get(City, city_id)
+
+    if not result:
+        raise HTTPException(status_code=404, detail=f"City with id {city_id} not found")
+
+    return result
 
 
 async def update_city(db: AsyncSession, city_id: int, city: CityUpdateSchema) -> City:

@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/api/temperatures/",
+    "/temperatures/",
     response_model=List[TemperatureSchema],
     status_code=status.HTTP_200_OK,
 )
@@ -30,7 +30,7 @@ async def get_temperatures(
 
 
 @router.post(
-    "/api/temperatures/",
+    "/temperatures/",
     status_code=status.HTTP_201_CREATED,
 )
 async def create_temperature(
@@ -40,7 +40,7 @@ async def create_temperature(
 
 
 @router.get(
-    "/api/temperatures/update/",
+    "/temperatures/update/",
     status_code=status.HTTP_200_OK,
 )
 async def fetch_temperatures(db: AsyncSession = Depends(get_db)):

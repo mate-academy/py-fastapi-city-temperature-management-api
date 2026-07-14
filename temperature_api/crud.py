@@ -2,7 +2,7 @@ import datetime
 from typing import List, Optional
 
 from sqlalchemy import select, desc
-from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from temperature_api.models import Temperature
@@ -45,7 +45,7 @@ async def create_temperature(
 async def create_temperatures_bulk(
     db: AsyncSession,
     temperatures: List[TemperatureBaseSchema],
-) -> List[Temperature]:
+) -> None:
     temperatures_to_create = [item.model_dump() for item in temperatures]
 
     print(temperatures_to_create)
