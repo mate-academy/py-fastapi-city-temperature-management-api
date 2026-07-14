@@ -16,6 +16,10 @@ def get_cities(db: Session) -> list[City]:
     return list(db.execute(select(City)).scalars().all())
 
 
+def get_city(db: Session, city_id: int) -> City | None:
+    return db.execute(select(City).where(City.id == city_id)).scalar_one_or_none()
+
+
 def delete_city(db: Session, city_id: int) -> City | None:
     db_city = db.execute(select(City).where(City.id == city_id)).scalar_one_or_none()
     if db_city:

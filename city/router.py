@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from database import DbSession
-from city.crud import create_city, get_cities, delete_city
+from city.crud import create_city, get_cities, get_city, delete_city
 from city.schemas import CityCreate, CityResponse
 
 router = APIRouter(prefix="/cities", tags=["cities"])

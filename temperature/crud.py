@@ -41,6 +41,6 @@ async def update_temperatures(db: Session) -> list[Temperature]:
 
 def get_temperatures(db: Session, city_id: int | None = None) -> list[Temperature]:
     query = select(Temperature)
-    if city_id:
+    if city_id is not None:
         query = query.where(Temperature.city_id == city_id)
     return list(db.execute(query).scalars().all())
