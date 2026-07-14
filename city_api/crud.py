@@ -44,10 +44,8 @@ async def update_city(db: AsyncSession, city_id: int, city: CityUpdateSchema) ->
             detail=f"City with id {city_id} not found",
         )
 
-    for key, value in city.model_dump().items():
-        if value:
-            print(key, value)
-            setattr(obj, key, value)
+    for key, value in city.model_dump(exclude_unset=True).items():
+        setattr(obj, key, value)
 
     await db.commit()
     await db.refresh(obj)

@@ -23,6 +23,8 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         yield db
     except Exception:
         raise
+    finally:
+        db.close()
 
 
 class Base(DeclarativeBase):

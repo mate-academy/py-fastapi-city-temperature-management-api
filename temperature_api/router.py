@@ -1,14 +1,11 @@
-import datetime
 from typing import Optional, List
-from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 from fastapi.params import Depends
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from conf import settings
 from database import get_db
 from temperature_api import crud
 from city_api import crud as city_crud
@@ -19,7 +16,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/temperatures/",
+    "/temperatures",
     response_model=List[TemperatureSchema],
     status_code=status.HTTP_200_OK,
 )
@@ -30,7 +27,7 @@ async def get_temperatures(
 
 
 @router.post(
-    "/temperatures/",
+    "/temperatures",
     status_code=status.HTTP_201_CREATED,
 )
 async def create_temperature(
@@ -39,8 +36,8 @@ async def create_temperature(
     return await crud.create_temperature(db, temperature)
 
 
-@router.get(
-    "/temperatures/update/",
+@router.post(
+    "/temperatures/update",
     status_code=status.HTTP_200_OK,
 )
 async def fetch_temperatures(db: AsyncSession = Depends(get_db)):

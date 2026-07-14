@@ -15,7 +15,6 @@ async def get_temperatures(
     stmt = select(Temperature)
 
     if city_id:
-        print(1)
         stmt = stmt.where(Temperature.city_id == city_id)
 
     result = await db.scalars(stmt)
@@ -47,8 +46,6 @@ async def create_temperatures_bulk(
     temperatures: List[TemperatureBaseSchema],
 ) -> None:
     temperatures_to_create = [item.model_dump() for item in temperatures]
-
-    print(temperatures_to_create)
 
     stmt = (
         insert(Temperature)
