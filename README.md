@@ -58,3 +58,6 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+just add one more day in score)))
