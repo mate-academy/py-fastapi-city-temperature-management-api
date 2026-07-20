@@ -47,8 +47,8 @@ async def update_cities_temperature(
         db: AsyncSession,
 ) -> list[Temperature]:
 
-    # fixme (remove limit)
-    statement = select(City).limit(2)
+
+    statement = select(City)
     result = await db.execute(statement)
     cities_list = result.scalars().all()
 
