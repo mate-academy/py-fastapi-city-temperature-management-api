@@ -72,3 +72,20 @@ async def create_temperature(
         db=db,
         temperature=temperature
     )
+
+@router.post(
+    "/update",
+    response_model=list[schemas.TemperatureResponse],
+    summary="Update current temperatures for cities"
+)
+async def update_current_temperature(
+    db: AsyncSession = Depends(get_db)
+) -> list[models.Temperature]:
+
+    return await crud.update_cities_temperature(
+        db=db
+    )
+
+
+
+

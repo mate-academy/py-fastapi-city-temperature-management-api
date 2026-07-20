@@ -100,6 +100,7 @@ project/
 ├── temperature/
 │   ├── crud.py
 │   ├── models.py
+│   ├── remoteweather.py
 │   ├── router.py
 │   └── schemas.py
 │
@@ -127,6 +128,7 @@ project/
 |GET|`/temperatures`|Get temperatures|
 |GET|`/temperatures?city_id=1`|Filter by city|
 |POST|`/temperatures`|Create temperature record|
+|POST|`/temperatures/update`|Update temperatures for all cities|
 
 # Database
 
