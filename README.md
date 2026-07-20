@@ -11,7 +11,7 @@ Built with
 
 ### Requirements
 
-- Python 3.12+ (или твоя версия)
+- Python 3.12+
 - Git
 
 ### Clone repository
