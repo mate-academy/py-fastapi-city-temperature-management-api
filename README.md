@@ -1,60 +1,143 @@
-## Task Description
+# Installation and Running
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+**The project does not require environment variables.**
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+REST API for managing cities and their temperature records. 
+Built with 
+- FastAPI 
+- SQLAlchemy 
+- Alembic
+- SQLite
 
-### Part 1: City CRUD API
+### Requirements
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- Python 3.12+
+- Git
 
-### Part 2: Temperature API
+### Clone repository
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+```bash
+git clone ...
+cd ...
+```
 
-### Additional Requirements
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Create virtual environment
 
-## Evaluation Criteria
+### Linux/macOS
 
-Your task will be evaluated based on the following criteria:
+```bash
+python3 -m venv .venv
+```
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+#### Activate
 
-## Deliverables
+```bash
+source .venv/bin/activate
+```
 
-Please submit the following:
+### Windows
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+```bash
+.venv\Scripts\activate
+```
 
-Good luck!
+## Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## Apply migrations
+
+```bash
+alembic upgrade head
+```
+
+
+## Run application
+
+```bash
+uvicorn main:app --reload
+```
+
+or
+
+```bash
+python main.py
+```
+
+
+## Open / Show / Use API Documentation
+
+```
+http://127.0.0.1:8000/docs
+```
+
+# Technologies
+
+- FastAPI
+- SQLAlchemy 2.0 (Async)
+- Alembic
+- SQLite
+- Pydantic
+- Uvicorn
+
+
+# Project Structure
+
+Each module contains **models, schemas, CRUD logic, and API routes**
+
+```
+project/
+│
+├── cities/
+│   ├── crud.py
+│   ├── models.py
+│   ├── router.py
+│   └── schemas.py
+│
+├── temperature/
+│   ├── crud.py
+│   ├── models.py
+│   ├── remoteweather.py
+│   ├── router.py
+│   └── schemas.py
+│
+├── db/
+├── alembic/
+├── main.py
+└── weather.db
+```
+
+
+# Cities API
+
+|Method|Endpoint|Description|
+|---|---|---|
+|GET|`/cities`|Get all cities|
+|GET|`/cities/{id}`|Get city by ID|
+|POST|`/cities`|Create city|
+|PUT|`/cities/{id}`|Update city|
+|DELETE|`/cities/{id}`|Delete city|
+
+# Temperatures API
+
+|Method|Endpoint|Description|
+|---|---|---|
+|GET|`/temperatures`|Get temperatures|
+|GET|`/temperatures?city_id=1`|Filter by city|
+|POST|`/temperatures`|Create temperature record|
+|POST|`/temperatures/update`|Update temperatures for all cities|
+
+# Database
+
+- One city → many temperatures
+- Foreign key `temperature.city_id`
+
+# Notes
+
+- API documentation is available via Swagger UI.
+- Database schema is managed with Alembic migrations.
+
+
