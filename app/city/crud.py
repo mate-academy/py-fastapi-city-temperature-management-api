@@ -1,8 +1,8 @@
-from sqlalchemy import select, insert
+from sqlalchemy import select, insert, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.city.models import City
-from app.city.schemas import CityCreateModel
+from app.city.schemas import CityCreateModel, CityModel
 
 
 async def get_city_list(db: AsyncSession) -> list[City]:
@@ -23,3 +23,17 @@ async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
     await db.refresh(city)
 
     return city
+
+
+async def completely_update_city_by_id(
+    db: AsyncSession,
+    data: CityModel,
+    id_: int
+) -> City:
+    stmt = update(City).where(City.id == id_).values(**data.model_dump())
+
+    result = await db.execute(stmt)
+
+    await db.commit()
+
+    return result.fetchone()[0]
