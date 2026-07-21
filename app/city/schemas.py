@@ -10,5 +10,5 @@ class CityCreateModel(CityBaseModel):
     ...
 
 
-class CityListRetrieveModel(CityBaseModel):
+class CityModel(CityBaseModel):
     id: int
