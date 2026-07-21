@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class TemperatureBaseModel(BaseModel):
     id: int
     city_id: int
-    date_time: datetime = Field(exclude=True, default=datetime.now())
+    date_time: datetime
     temperature: str
