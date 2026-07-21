@@ -58,3 +58,4 @@ async def delete_city_by_id(
 ) -> None:
     stmt = delete(City).where(City.id == id_)
     await db.execute(stmt)
+    await db.commit()
