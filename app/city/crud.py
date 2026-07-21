@@ -15,6 +15,11 @@ async def get_city_by_id(db: AsyncSession, id_: int) -> City | None:
     return result.one_or_none()
 
 
+async def get_city_by_name(db: AsyncSession, name: str) -> City | None:
+    result = await db.execute(select(City).where(City.name == name))
+    return result.fetchone()[0]
+
+
 async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
     stmt = insert(City).values(**data.model_dump()).returning(City)
     result = await db.execute(stmt)
