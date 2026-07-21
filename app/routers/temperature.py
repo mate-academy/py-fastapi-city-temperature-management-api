@@ -17,3 +17,8 @@ async def get_all_temperatures(
     city_id: int | None = None
 ) -> list[Temperature]:
     return await crud.get_temperature_list(db, city_id)
+
+
+@router.post("/temperatures/update")
+async def update_city_temperature(db: AsyncSession = Depends(get_db)) -> None:
+    return await crud.update_temperature(db)
