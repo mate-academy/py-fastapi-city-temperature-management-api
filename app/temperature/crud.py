@@ -26,7 +26,7 @@ async def get_temperature_list(
     return list(result.scalars().all())
 
 
-async def parse_temperature_from_api_by_name(
+async def parse_temperature(
     client: httpx.AsyncClient,
     city_name: str
 ) -> str:
@@ -48,7 +48,7 @@ async def update_temperature(db: AsyncSession) -> None:
         cities = result.scalars().all()
 
         for city in cities:
-            temperature = await parse_temperature_from_api_by_name(
+            temperature = await parse_temperature(
                 client=client,
                 city_name=city.name
             )
