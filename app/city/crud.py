@@ -17,7 +17,7 @@ async def get_city_by_id(db: AsyncSession, id_: int) -> City | None:
 
 async def get_city_by_name(db: AsyncSession, name: str) -> City | None:
     result = await db.execute(select(City).where(City.name == name))
-    return result.fetchone()[0]
+    return result.scalar_one_or_none()
 
 
 async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
