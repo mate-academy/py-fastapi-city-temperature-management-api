@@ -36,13 +36,20 @@ async def completely_update_city_by_id(
     data: CityModel,
     id_: int
 ) -> City:
-    stmt = update(City).where(City.id == id_).values(**data.model_dump())
-
+    stmt = update(
+        City
+    ).where(
+        City.id == id_
+    ).values(
+        **data.model_dump()
+    ).returning(City)
     result = await db.execute(stmt)
+    city = result.scalar_one()
 
     await db.commit()
+    await db.refresh(city)
 
-    return result.fetchone()[0]
+    return city
 
 
 async def delete_city_by_id(
