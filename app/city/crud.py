@@ -23,7 +23,7 @@ async def get_city_by_name(db: AsyncSession, name: str) -> City | None:
 async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
     stmt = insert(City).values(**data.model_dump()).returning(City)
     result = await db.execute(stmt)
-    city = result.fetchone()[0]
+    city = result.scalar_one()
 
     await db.commit()
     await db.refresh(city)
