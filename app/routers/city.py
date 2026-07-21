@@ -1,3 +1,4 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -43,3 +44,28 @@ async def write_city(
 
 
     return await crud.create_city(db, data)
+
+
+@router.put("/cities/{city_id}", response_model=schemas.CityModel)
+async def modify_single_city(
+    city_id: int,
+    data: schemas.CityCreateModel,
+    db: AsyncSession = Depends(get_db)
+) -> models.City:
+    city = await crud.get_city_by_id(db, city_id)
+    stmt = select(models.City).where(models.City.name == data.name)
+    result = await db.execute(stmt)
+
+    if not city:
+        raise HTTPException(
+            status_code=404,
+            detail="City not found",
+        )
+
+    if result.scalar_one_or_none() and city.name != data.name:
+        raise HTTPException(
+            status_code=400,
+            detail="City with this name already exists"
+        )
+
+    return await crud.completely_update_city_by_id(db, data, city_id)
