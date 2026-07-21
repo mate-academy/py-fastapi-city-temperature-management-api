@@ -1,7 +1,7 @@
 import os
 
 import httpx
-from sqlalchemy import select
+from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from dotenv import load_dotenv
 
@@ -30,16 +30,16 @@ async def parse_temperature_from_api_by_name(
     client: httpx.AsyncClient,
     city_name: str
 ) -> str:
-    url = "https://api.tomorrow.io/v4/weather/realtime"
+    url = "http://api.weatherapi.com/v1/current.json"
     response = await client.get(
         url,
         params={
-            "apikey": os.getenv("API_KEY"),
-            "location": city_name
+            "key": os.getenv("API_KEY"),
+            "q": city_name
         }
     )
 
-    return str(response.json()["data"]["values"]["temperature"])
+    return str(response.json()["current"]["temp_c"])
 
 
 async def update_temperature(db: AsyncSession) -> None:
@@ -57,5 +57,5 @@ async def update_temperature(db: AsyncSession) -> None:
                 city_id=city.id,
             )
             db.add(instance)
-            await db.commit()
-            await db.refresh(instance)
+
+        await db.commit()
