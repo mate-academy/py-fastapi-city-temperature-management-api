@@ -16,9 +16,10 @@ async def get_city_by_id(db: AsyncSession, id_: int) -> City | None:
 
 
 async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
-    result = insert(City).values(**data.model_dump())
+    stmt = insert(City).values(**data.model_dump()).returning(City)
+    result = await db.execute(stmt)
+    city = result.fetchone()[0]
 
-    city = await db.scalar(result)
     await db.commit()
     await db.refresh(city)
 
