@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import Column, Integer, DateTime, String, ForeignKey
 
 from app.database import Base
@@ -15,5 +17,6 @@ class Temperature(Base):
     date_time = Column(
         DateTime(),
         nullable=False,
+        default=datetime.now()
     )
     temperature = Column(String(255), nullable=False)
