@@ -26,3 +26,11 @@ async def get_single_city(
         )
 
     return city
+
+
+@router.post("/cities", response_model=schemas.CityModel)
+async def write_city(
+    data: schemas.CityCreateModel,
+    db: AsyncSession = Depends(get_db)
+) -> models.City:
+    return await crud.create_city(db, data)
