@@ -1,4 +1,4 @@
-from sqlalchemy import select, insert, update
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.city.models import City
@@ -37,3 +37,11 @@ async def completely_update_city_by_id(
     await db.commit()
 
     return result.fetchone()[0]
+
+
+async def delete_city_by_id(
+    db: AsyncSession,
+    id_: int
+) -> None:
+    stmt = delete(City).where(City.id == id_)
+    await db.execute(stmt)
