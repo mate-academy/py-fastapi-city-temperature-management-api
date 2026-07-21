@@ -69,3 +69,11 @@ async def modify_single_city(
         )
 
     return await crud.completely_update_city_by_id(db, data, city_id)
+
+
+@router.delete("/cities/{city_id}")
+async def destroy_city(
+    city_id: int,
+    db: AsyncSession = Depends(get_db)
+) -> None:
+    await crud.delete_city_by_id(db, city_id)
