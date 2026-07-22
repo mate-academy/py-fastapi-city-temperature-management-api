@@ -44,7 +44,9 @@ async def modify_single_city(
     data: schemas.CityCreateUpdateModel,
     params: DatabaseCityIdParams
 ) -> models.City:
+    await utils.handle_city_not_found(params["city_id"], params["db"])
     await utils.handle_city_exists(data, params["db"], params["city_id"])
+
     return await crud.completely_update_city_by_id(
         db=params["db"],
         data=data,
