@@ -33,7 +33,7 @@ async def create_city(db: AsyncSession, data: CityCreateUpdateModel) -> City:
 
 async def completely_update_city_by_id(
     db: AsyncSession,
-    data: CityModel,
+    data: CityCreateUpdateModel,
     id_: int
 ) -> City:
     stmt = update(
