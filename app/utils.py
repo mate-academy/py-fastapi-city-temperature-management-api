@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, or_
 from fastapi import HTTPException
 
 from app.city.models import City
@@ -22,12 +23,12 @@ async def handle_city_exists(
     db: AsyncSession,
     city_id: int | None = None
 ) -> None:
-    if city_id is not None:
-        city = await crud.get_city_by_id(db, city_id)
-    else:
-        city = await crud.get_city_by_name(db, data.name)
+    city = await crud.get_city_by_name(db, data.name)
 
-    if city and city.name != data.name:
+    if (
+        (city and city_id != city.id)
+        or (city and city.name != data.name)
+    ):
         raise HTTPException(
             status_code=400,
             detail="City with this name already exists"
