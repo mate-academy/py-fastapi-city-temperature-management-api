@@ -20,7 +20,7 @@ async def handle_city_not_found(city_id: int, db: AsyncSession) -> City:
 async def handle_city_exists(
     data: schemas.CityCreateUpdateModel,
     db: AsyncSession,
-    city_id: int | None
+    city_id: int | None = None
 ) -> None:
     if city_id is not None:
         city = await crud.get_city_by_id(db, city_id)
