@@ -27,15 +27,7 @@ async def write_city(
     data: schemas.CityCreateUpdateModel,
     db: AsyncSession = Depends(get_db)
 ) -> models.City:
-    city = await crud.get_city_by_name(db, data.name)
-
-    if city:
-        raise HTTPException(
-            status_code=400,
-            detail="City with this name already exists"
-        )
-
-
+    await utils.handle_city_exists(data, db)
     return await crud.create_city(db, data)
 
 
