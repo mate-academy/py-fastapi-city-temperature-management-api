@@ -47,13 +47,15 @@ async def write_city(
 
 @router.put("/cities/{city_id}", response_model=schemas.CityModel)
 async def modify_single_city(
-    city_id: int,
     data: schemas.CityCreateModel,
-    db: AsyncSession = Depends(get_db)
+    params: DatabaseCityIdParams
 ) -> models.City:
-    city = await crud.get_city_by_id(db, city_id)
+    city = await crud.get_city_by_id(
+        params["db"],
+        params["city_id"]
+    )
     stmt = select(models.City).where(models.City.name == data.name)
-    result = await db.execute(stmt)
+    result = await (params["db"].execute(stmt))
 
     if not city:
         raise HTTPException(
@@ -67,7 +69,11 @@ async def modify_single_city(
             detail="City with this name already exists"
         )
 
-    return await crud.completely_update_city_by_id(db, data, city_id)
+    return await crud.completely_update_city_by_id(
+        db=params["db"],
+        data=data,
+        id_=params["city_id"]
+    )
 
 
 @router.delete("/cities/{city_id}")
