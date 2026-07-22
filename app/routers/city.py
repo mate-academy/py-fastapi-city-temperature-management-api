@@ -1,11 +1,10 @@
-from typing import Annotated
-
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.city import crud, schemas, models
 from app.dependencies import get_db, DatabaseCityIdParams
+from app import utils
 
 router = APIRouter()
 
@@ -17,15 +16,10 @@ async def get_all_cities(db: AsyncSession = Depends(get_db)) -> list[models.City
 
 @router.get("/cities/{city_id}", response_model=schemas.CityModel)
 async def get_single_city(params: DatabaseCityIdParams) -> models.City:
-    city = await crud.get_city_by_id(params["db"], params["city_id"])
-
-    if not city:
-        raise HTTPException(
-            status_code=404,
-            detail="City not found"
-        )
-
-    return city
+    return await utils.handle_city_not_found(
+        params["city_id"],
+        params["db"]
+    )
 
 
 @router.post("/cities", response_model=schemas.CityModel)
