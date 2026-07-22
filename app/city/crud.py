@@ -1,0 +1,61 @@
+from sqlalchemy import select, insert, update, delete
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.city.models import City
+from app.city.schemas import CityCreateUpdateModel, CityModel
+
+
+async def get_city_list(db: AsyncSession) -> list[City]:
+    result = await db.scalars(select(City))
+    return list(result.all())
+
+
+async def get_city_by_id(db: AsyncSession, id_: int) -> City | None:
+    result = await db.scalars(select(City).where(City.id == id_))
+    return result.one_or_none()
+
+
+async def get_city_by_name(db: AsyncSession, name: str) -> City | None:
+    result = await db.execute(select(City).where(City.name == name))
+    return result.scalar_one_or_none()
+
+
+async def create_city(db: AsyncSession, data: CityCreateUpdateModel) -> City:
+    stmt = insert(City).values(**data.model_dump()).returning(City)
+    result = await db.execute(stmt)
+    city = result.scalar_one()
+
+    await db.commit()
+    await db.refresh(city)
+
+    return city
+
+
+async def completely_update_city_by_id(
+    db: AsyncSession,
+    data: CityCreateUpdateModel,
+    id_: int
+) -> City:
+    stmt = update(
+        City
+    ).where(
+        City.id == id_
+    ).values(
+        **data.model_dump()
+    ).returning(City)
+    result = await db.execute(stmt)
+    city = result.scalar_one()
+
+    await db.commit()
+    await db.refresh(city)
+
+    return city
+
+
+async def delete_city_by_id(
+    db: AsyncSession,
+    id_: int
+) -> None:
+    stmt = delete(City).where(City.id == id_)
+    await db.execute(stmt)
+    await db.commit()
