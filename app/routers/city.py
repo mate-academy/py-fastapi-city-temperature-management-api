@@ -44,25 +44,7 @@ async def modify_single_city(
     data: schemas.CityCreateUpdateModel,
     params: DatabaseCityIdParams
 ) -> models.City:
-    city = await crud.get_city_by_id(
-        params["db"],
-        params["city_id"]
-    )
-    stmt = select(models.City).where(models.City.name == data.name)
-    result = await (params["db"].execute(stmt))
-
-    if not city:
-        raise HTTPException(
-            status_code=404,
-            detail="City not found",
-        )
-
-    if result.scalar_one_or_none() and city.name != data.name:
-        raise HTTPException(
-            status_code=400,
-            detail="City with this name already exists"
-        )
-
+    await utils.handle_city_exists(data, params["db"], params["city_id"])
     return await crud.completely_update_city_by_id(
         db=params["db"],
         data=data,
