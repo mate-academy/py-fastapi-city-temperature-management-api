@@ -1,6 +1,5 @@
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
 from app.city import crud, schemas, models
 from app.dependencies import get_db, DatabaseCityIdParams
