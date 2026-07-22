@@ -5,7 +5,7 @@ from app.city.models import City
 from app.city import crud, schemas
 
 
-async def handle_city_not_found(city_id: int, db: AsyncSession) -> City | None:
+async def handle_city_not_found(city_id: int, db: AsyncSession) -> City:
     city = await crud.get_city_by_id(db, city_id)
 
     if not city:
