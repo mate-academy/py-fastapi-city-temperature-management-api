@@ -11,3 +11,7 @@
 2. I added dependency injection for database session and query parameter `city_id` to reduce duplication parameters in view functions. 
 3. I used resource [Free Weather API](https://www.weatherapi.com/) to get information about weather by city. \
 And to make the code be asynchronously I chose the module `httpx`.
+
+
+## Simplifications I made
+The only simplification I made is I didn't implement handling error logic when application is trying to get information about weather by city name that does not exist.
