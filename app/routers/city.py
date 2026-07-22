@@ -72,4 +72,8 @@ async def modify_single_city(
 
 @router.delete("/cities/{city_id}")
 async def destroy_city(params: DatabaseCityIdParams) -> None:
+    await utils.handle_city_not_found(
+        params["city_id"],
+        params["db"]
+    )
     await crud.delete_city_by_id(params["db"], params["city_id"])
