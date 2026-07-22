@@ -1,9 +1,11 @@
+from typing import Annotated
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.city import crud, schemas, models
-from app.dependencies import get_db
+from app.dependencies import get_db, DatabaseCityIdParams
 
 router = APIRouter()
 
@@ -14,11 +16,8 @@ async def get_all_cities(db: AsyncSession = Depends(get_db)) -> list[models.City
 
 
 @router.get("/cities/{city_id}", response_model=schemas.CityModel)
-async def get_single_city(
-    city_id: int,
-    db: AsyncSession = Depends(get_db)
-) -> models.City:
-    city = await crud.get_city_by_id(db, city_id)
+async def get_single_city(params: DatabaseCityIdParams) -> models.City:
+    city = await crud.get_city_by_id(params["db"], params["city_id"])
 
     if not city:
         raise HTTPException(
@@ -72,8 +71,5 @@ async def modify_single_city(
 
 
 @router.delete("/cities/{city_id}")
-async def destroy_city(
-    city_id: int,
-    db: AsyncSession = Depends(get_db)
-) -> None:
-    await crud.delete_city_by_id(db, city_id)
+async def destroy_city(params: DatabaseCityIdParams) -> None:
+    await crud.delete_city_by_id(params["db"], params["city_id"])
