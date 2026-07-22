@@ -2,7 +2,7 @@ from sqlalchemy import select, insert, update, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.city.models import City
-from app.city.schemas import CityCreateModel, CityModel
+from app.city.schemas import CityCreateUpdateModel, CityModel
 
 
 async def get_city_list(db: AsyncSession) -> list[City]:
@@ -20,7 +20,7 @@ async def get_city_by_name(db: AsyncSession, name: str) -> City | None:
     return result.scalar_one_or_none()
 
 
-async def create_city(db: AsyncSession, data: CityCreateModel) -> City:
+async def create_city(db: AsyncSession, data: CityCreateUpdateModel) -> City:
     stmt = insert(City).values(**data.model_dump()).returning(City)
     result = await db.execute(stmt)
     city = result.scalar_one()

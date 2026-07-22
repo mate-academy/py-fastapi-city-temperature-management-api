@@ -30,7 +30,7 @@ async def get_single_city(params: DatabaseCityIdParams) -> models.City:
 
 @router.post("/cities", response_model=schemas.CityModel)
 async def write_city(
-    data: schemas.CityCreateModel,
+    data: schemas.CityCreateUpdateModel,
     db: AsyncSession = Depends(get_db)
 ) -> models.City:
     city = await crud.get_city_by_name(db, data.name)
@@ -47,7 +47,7 @@ async def write_city(
 
 @router.put("/cities/{city_id}", response_model=schemas.CityModel)
 async def modify_single_city(
-    data: schemas.CityCreateModel,
+    data: schemas.CityCreateUpdateModel,
     params: DatabaseCityIdParams
 ) -> models.City:
     city = await crud.get_city_by_id(

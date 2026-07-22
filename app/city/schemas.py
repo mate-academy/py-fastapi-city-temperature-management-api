@@ -6,7 +6,7 @@ class CityBaseModel(BaseModel):
     additional_info: str | None = None
 
 
-class CityCreateModel(CityBaseModel):
+class CityCreateUpdateModel(CityBaseModel):
     ...
 
 
