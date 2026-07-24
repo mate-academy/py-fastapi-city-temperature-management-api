@@ -1,0 +1,38 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="Django" />
+          <option value="djangorestframework" />
+          <option value="djangorestframework-simplejwt" />
+          <option value="drf-spectacular" />
+          <option value="django-filter" />
+          <option value="django-environ" />
+          <option value="psycopg2-binary" />
+          <option value="celery" />
+          <option value="django-celery-beat" />
+          <option value="django-celery-results" />
+          <option value="redis" />
+          <option value="stripe" />
+          <option value="requests" />
+          <option value="pytest" />
+          <option value="pytest-django" />
+          <option value="pytest-cov" />
+          <option value="factory-boy" />
+          <option value="django-cors-headers" />
+          <option value="whitenoise" />
+          <option value="gunicorn" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N806" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
