@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.database import init_db
-from app.routers import cities, temperatures
+from app.routers import cities_router, temperatures_router
 
 
 @asynccontextmanager
@@ -17,8 +17,8 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-app.include_router(cities.router)
-app.include_router(temperatures.router)
+app.include_router(cities_router)
+app.include_router(temperatures_router)
 
 
 @app.get("/", tags=["Health"])
