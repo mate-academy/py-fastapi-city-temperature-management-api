@@ -1,0 +1,15 @@
+.idea/
+.vscode/
+*.iml
+.env
+.DS_Store
+venv/
+.pytest_cache/
+**__pycache__/
+**db.sqlite3
+city_temperature_db.db
+media
+Dockerfile
+.gitignore
+.github
+README_TASK.md
