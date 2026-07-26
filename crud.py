@@ -1,2 +1,2 @@
-def just_one_day_to_add(days: int) -> None:
-    return f"{days} days strike"
+def one_more_day_to_add(number: int) -> None:
+    return (f"{number} day to add")
