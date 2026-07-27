@@ -8,7 +8,7 @@ class CityUpdate(BaseModel):
 
 class CityBase(BaseModel):
     name: str
-    additional_info: str
+    additional_info: str | None = None
 
 
 class CityCreate(CityBase):

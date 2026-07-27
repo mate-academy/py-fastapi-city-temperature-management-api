@@ -6,7 +6,7 @@ from city_api import city_schemas, city_crud
 
 router = APIRouter()
 
-@router.post("/cities/", response_model=city_schemas.CityCreate)
+@router.post("/cities/", response_model=city_schemas.City)
 def create_new_city(
     new_city: city_schemas.CityCreate,
     db: Session = Depends(get_db)

@@ -19,17 +19,13 @@ async def create_temperature(
 
 
 @router.get("/temperatures/", response_model=list[temp_schemas.Temperature])
-def get_temperatures_list(
+def get_temperatures(
+    city_id: int | None = None,
     db: Session = Depends(get_db)
 ):
-    return temp_crud.get_temperatures_list(db=db)
+    if city_id is None:
+        return temp_crud.get_temperatures_list(db=db)
 
-
-@router.get("/temperatures/city_id={city_id}", response_model=list[temp_schemas.Temperature])
-def get_temperatures_by_id(
-    city_id: int,
-    db: Session = Depends(get_db)
-):
     db_temp = temp_crud.get_temperatures_by_city_id(db=db, city_id=city_id)
 
     if db_temp is None:

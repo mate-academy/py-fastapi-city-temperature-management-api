@@ -13,7 +13,7 @@ class TemperatureCreate(TemperatureBase):
 
 class Temperature(TemperatureBase):
     id: int
-    city_id: int
+    city_id: int | None = None
 
     class Config:
 
