@@ -33,4 +33,4 @@ def get_temperatures_by_city_id(
         db: Session,
         city_id: int
 ):
-    return db.query(temp_models.DBTemperature).filter(temp_models.DBTemperature.city_id==city_id)
+    return db.query(temp_models.DBTemperature).filter(temp_models.DBTemperature.city_id==city_id).all()

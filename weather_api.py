@@ -32,7 +32,7 @@ async def create_temperature_from_list(
     weather_values = await asyncio.gather(*weather_for_city_list, return_exceptions=True)
 
     for index, values in enumerate(weather_values):
-        if isinstance(values, Exception):
+        if isinstance(values, Exception) or values.get("cod") != 200:
             continue
         else:
             temp_crud.create_temperature(
