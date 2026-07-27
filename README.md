@@ -1,60 +1,25 @@
-## Task Description
+1. How to run my application.
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+use command in the terminal: uvicorn main:app --reload
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+2. My project structure. The main directory of my project /py-fastapi-city-temperature-management-api/. It's include list of config files and directories:
 
-### Part 1: City CRUD API
+    - /city_api -- directory include all config files only for City table. 
+        There are:
+            - city_models.py -- This file only defines the Pydantic `City` model.
+            - city_schemas.py -- This file contains all the schemas for the `City` model.
+            - city_crud.py -- This file contains a set of functions for implementing endpoints related to the `City` model.
+            - city_router.py - routers for implementing `City` model endpoints.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+    - /temperature_api -- directory include all config files only for City table. 
+        There are:
+            - temp_models.py -- This file only defines the Pydantic `Temperature` model.
+            - temp_schemas.py -- This file contains all the schemas for the `Temperature` model.
+            - temp_crud.py -- This file contains a set of functions for implementing endpoints related to the `Temperature` model.
+            - temp_router.py - routers for implementing `Temperature` model endpoints.
 
-### Part 2: Temperature API
-
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
-
-### Additional Requirements
-
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
-
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+    - /db/databasem.py -- DB engine initialization.
+    - db_settings.py -- Database settings. DATABASE_URL and other configuration values (such as PROJECT_NAME) are defined here using Pydantic's BaseSettings, with support for overriding values via a .env file. If the project needs to work with multiple databases in the future, the connection settings for them should be added to this file as well.
+    - dependencies.py -- Shared FastAPI dependencies. Loads environment variables from .env (including OPENWEATHER_API_KEY, used for requests to the weather service) and defines get_db, a dependency that provides a database session per request via Depends(get_db), ensuring the session is properly closed after each request regardless of whether an error occurs.
+    - weather_api.py -- Handles integration with the external OpenWeatherMap service. get_weather_for_city performs a single async request to fetch current weather data for one city. create_temperature_from_list takes a list of cities from the database, fetches weather data for all of them concurrently using asyncio.gather, and stores a new Temperature record for each city that returned a successful response.
+    - main.py -- Application entry point. Creates the FastAPI app instance and registers the routers from each API module (city_router and temp_router), so their endpoints become part of the application.
