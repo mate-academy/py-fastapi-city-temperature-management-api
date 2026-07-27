@@ -38,20 +38,25 @@ async def create_city(db: AsyncSession, city: schemas.CreateUpdateCity) -> model
 
 async def update_city(
     db: AsyncSession, city_id: int, city: schemas.CreateUpdateCity
-) -> models.City:
+) -> models.City | None:
 
     city_db = await db.scalar(select(models.City).where(models.City.id == city_id))
+    if city_db is None:
+        return None
     city_db.name = city.name
     city_db.additional_info = city.additional_info
 
-    db.add(city_db)
     await db.commit()
     await db.refresh(city_db)
     return city_db
 
 
-async def delete_city(db: AsyncSession, city_id: int) -> None:
+async def delete_city(db: AsyncSession, city_id: int) -> bool:
 
     city = await db.scalar(select(models.City).where(models.City.id == city_id))
+    if city is None:
+        return False
+
     await db.delete(city)
     await db.commit()
+    return True

@@ -16,7 +16,7 @@ async def read_all_temperatures(
     db: SessionDep,
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 10,
-    city_id: Annotated[str | None, Query()] = None,
+    city_id: Annotated[int | None, Query()] = None,
 ):
     return await crud.get_temperature_list(
         db=db, limit=limit, skip=skip, city_id=city_id

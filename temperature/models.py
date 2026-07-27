@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class Temperature(Base):
     __tablename__ = "temperatures"
 
-    id: Mapped[int] = mapped_column(primary_key=True, unique=True, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
     city_id: Mapped[int] = mapped_column(
         ForeignKey("cities.id", ondelete="CASCADE"),
         nullable=False,

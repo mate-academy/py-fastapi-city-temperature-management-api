@@ -10,7 +10,7 @@ from city import models as city_models
 
 
 async def get_temperature_list(
-    db: AsyncSession, skip: int = 0, limit: int = 10, city_id: str | None = None
+    db: AsyncSession, skip: int = 0, limit: int = 10, city_id: int | None = None
 ) -> Sequence[models.Temperature]:
 
     stmt = (
@@ -20,7 +20,7 @@ async def get_temperature_list(
         .order_by(models.Temperature.date_time.desc())
     )
 
-    if city_id:
+    if city_id is not None:
         stmt = stmt.where(models.Temperature.city_id == city_id)
     temperatures = await db.scalars(stmt)
 
