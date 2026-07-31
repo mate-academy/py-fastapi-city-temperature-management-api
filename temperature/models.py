@@ -11,3 +11,4 @@ class DBTemperature(Base):
     city_id: Mapped[int] = mapped_column(ForeignKey("City.id"))
     date_time: Mapped[datetime] = mapped_column(nullable=False)
     temperature: Mapped[float] = mapped_column(nullable=False)
+
