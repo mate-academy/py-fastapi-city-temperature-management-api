@@ -1,8 +1,8 @@
-"""initial migration
+"""create city and temperature tables
 
-Revision ID: 265ce58009d4
-Revises: 
-Create Date: 2026-07-30 19:01:27.214383
+Revision ID: 7aba72409e00
+Revises: 08aa2760cb33
+Create Date: 2026-07-31 20:09:41.238810
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '265ce58009d4'
-down_revision: Union[str, Sequence[str], None] = None
+revision: str = '7aba72409e00'
+down_revision: Union[str, Sequence[str], None] = '08aa2760cb33'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

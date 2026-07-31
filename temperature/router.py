@@ -1,0 +1,47 @@
+import datetime
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from database import get_db
+import city.crud as city_crud
+from temperature import schemas, crud
+import httpx
+from settings import OPEN_WEATHER_MAP_KEY
+
+router = APIRouter()
+URL = "https://api.openweathermap.org/data/2.5/weather"
+
+
+@router.get("/temperatures/", response_model=list[schemas.Temperature])
+def get_temperatures(
+    city_id: int | None = None, db: Session = Depends(get_db)
+):
+    return crud.get_all_temperature(db, city_id)
+
+
+async def fetch_temperature(city_name) -> float:
+    async with httpx.AsyncClient() as client:
+        res = await client.get(
+            URL,
+            params={
+                "q": city_name,
+                "appid": OPEN_WEATHER_MAP_KEY,
+                "units": "metric",
+            },
+        )
+    return res.json()["main"]["temp"]
+
+
+@router.post("/temperatures/update")
+async def update_temperature(db: Session = Depends(get_db)):
+    temperature_for_cities = []
+    cities = city_crud.get_all_cities(db)
+    for city in cities:
+        temperature_for_city = {
+            "city_id": city.id,
+            "date_time": datetime.datetime.now(),
+            "temperature": await fetch_temperature(city.name),
+        }
+        temperature_for_cities.append(temperature_for_city)
+
+    crud.create_temperature_list(db, temperature_for_cities)
