@@ -1,6 +1,4 @@
-from typing import Annotated, Generator
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 import router as city_router
 
 app = FastAPI()

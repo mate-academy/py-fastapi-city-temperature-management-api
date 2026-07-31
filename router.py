@@ -97,7 +97,6 @@ async def update_temperatures(
 )
     updated = 0
     for city, temp in zip(cities, temperatures):
-        print(city.name, temp)
         if isinstance(temp, Exception):
             continue
         await crud.create_temperature(

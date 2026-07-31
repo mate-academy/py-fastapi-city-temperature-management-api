@@ -17,6 +17,7 @@ class TemperatureCreate(TemperatureBase):
 
 class Temperature(TemperatureBase):
     model_config = ConfigDict(from_attributes=True)
+    city_id: int
     id: int
 
 class City(CityBase):
