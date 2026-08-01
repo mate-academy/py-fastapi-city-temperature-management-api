@@ -1,3 +1,4 @@
+import sqlalchemy
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -40,7 +41,12 @@ def delete_city(city_id: int, db: Session = Depends(get_db)):
 
 @router.post("/cities/", response_model=schemas.City)
 def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
-    db_city = crud.create_city(db=db, city=city)
+    try:
+        db_city = crud.create_city(db=db, city=city)
+    except sqlalchemy.exc.IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="City already exists")
     if db_city is None:
         raise HTTPException(status_code=404, detail="City not found")
+
     return db_city
