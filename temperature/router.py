@@ -1,4 +1,5 @@
 import datetime
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -29,6 +30,8 @@ async def fetch_temperature(city_name) -> float:
                 "units": "metric",
             },
         )
+        res.raise_for_status()
+
     return res.json()["main"]["temp"]
 
 
@@ -36,12 +39,22 @@ async def fetch_temperature(city_name) -> float:
 async def update_temperature(db: Session = Depends(get_db)):
     temperature_for_cities = []
     cities = city_crud.get_all_cities(db)
+    updated = []
+    failed = []
     for city in cities:
+        try:
+            temperature = await fetch_temperature(city.name)
+            updated.append(city.name)
+        except httpx.HTTPStatusError:
+            failed.append(city.name)
+            continue
+
         temperature_for_city = {
             "city_id": city.id,
             "date_time": datetime.datetime.now(),
-            "temperature": await fetch_temperature(city.name),
+            "temperature": temperature,
         }
         temperature_for_cities.append(temperature_for_city)
 
     crud.create_temperature_list(db, temperature_for_cities)
+    return {"updated": updated, "failed": failed}
