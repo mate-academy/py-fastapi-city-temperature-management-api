@@ -3,7 +3,7 @@ import datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from database import get_db
+from dependencies import get_db
 import city.crud as city_crud
 from temperature import schemas, crud
 import httpx
