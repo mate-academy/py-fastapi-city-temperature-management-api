@@ -3,7 +3,9 @@ from sqlalchemy.orm import Session
 from temperature import models
 
 
-def get_all_temperature(db: Session, city_id: int | None):
+def get_all_temperature(
+    db: Session, city_id: int | None
+) -> list[models.DBTemperature]:
     queryset = select(models.DBTemperature)
     if city_id is not None:
         queryset = queryset.where(models.DBTemperature.city_id == city_id)
@@ -11,7 +13,9 @@ def get_all_temperature(db: Session, city_id: int | None):
     return db.scalars(queryset).all()
 
 
-def create_temperature_list(db: Session, temperatures_data: list[dict]):
+def create_temperature_list(
+    db: Session, temperatures_data: list[dict]
+) -> list[models.DBTemperature]:
     temperature_list = []
     for item in temperatures_data:
         temperature_list.append(models.DBTemperature(**item))

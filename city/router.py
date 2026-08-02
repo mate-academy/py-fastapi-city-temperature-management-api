@@ -2,19 +2,19 @@ import sqlalchemy
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from city import schemas, crud
+from city import schemas, crud, models
 from dependencies import get_db
 
 router = APIRouter()
 
 
 @router.get("/cities/", response_model=list[schemas.City])
-def read_cities(db: Session = Depends(get_db)):
+def read_cities(db: Session = Depends(get_db)) -> list[models.DBCity]:
     return crud.get_all_cities(db)
 
 
 @router.get("/cities/{city_id}", response_model=schemas.City)
-def read_city(city_id: int, db: Session = Depends(get_db)):
+def read_city(city_id: int, db: Session = Depends(get_db)) -> models.DBCity:
     db_city = crud.get_specific_city(db=db, city_id=city_id)
     if db_city is None:
         raise HTTPException(status_code=404, detail="City not found")
@@ -24,7 +24,7 @@ def read_city(city_id: int, db: Session = Depends(get_db)):
 @router.put("/cities/{city_id}", response_model=schemas.City)
 def update_city(
     city_id: int, city: schemas.CityUpdate, db: Session = Depends(get_db)
-):
+) -> models.DBCity:
     db_city = crud.update_specific_city(db=db, city_id=city_id, city=city)
     if db_city is None:
         raise HTTPException(status_code=404, detail="City not found")
@@ -32,7 +32,7 @@ def update_city(
 
 
 @router.delete("/cities/{city_id}", response_model=schemas.City)
-def delete_city(city_id: int, db: Session = Depends(get_db)):
+def delete_city(city_id: int, db: Session = Depends(get_db)) -> schemas.City:
     db_city = crud.delete_city(db=db, city_id=city_id)
     if db_city is None:
         raise HTTPException(status_code=404, detail="City not found")
@@ -40,7 +40,9 @@ def delete_city(city_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/cities/", response_model=schemas.City)
-def create_city(city: schemas.CityCreate, db: Session = Depends(get_db)):
+def create_city(
+    city: schemas.CityCreate, db: Session = Depends(get_db)
+) -> models.DBCity:
     try:
         db_city = crud.create_city(db=db, city=city)
     except sqlalchemy.exc.IntegrityError:

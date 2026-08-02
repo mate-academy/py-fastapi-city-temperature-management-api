@@ -4,18 +4,20 @@ from sqlalchemy.orm import Session
 from city import models, schemas
 
 
-def get_all_cities(db: Session):
+def get_all_cities(db: Session) -> list[models.DBCity]:
     return db.scalars(select(models.DBCity)).all()
 
 
-def get_specific_city(db: Session, city_id: int):
+def get_specific_city(db: Session, city_id: int) -> models.DBCity | None:
     db_city = db.scalars(
         select(models.DBCity).where(models.DBCity.id == city_id)
     ).one_or_none()
     return db_city
 
 
-def update_specific_city(db: Session, city_id: int, city: schemas.CityUpdate):
+def update_specific_city(
+    db: Session, city_id: int, city: schemas.CityUpdate
+) -> models.DBCity | None:
     db_city = db.scalars(
         select(models.DBCity).where(models.DBCity.id == city_id)
     ).one_or_none()
@@ -29,7 +31,7 @@ def update_specific_city(db: Session, city_id: int, city: schemas.CityUpdate):
     return db_city
 
 
-def create_city(db: Session, city: schemas.CityCreate):
+def create_city(db: Session, city: schemas.CityCreate) -> models.DBCity:
     db_city = models.DBCity(
         name=city.name, additional_info=city.additional_info
     )
@@ -39,7 +41,7 @@ def create_city(db: Session, city: schemas.CityCreate):
     return db_city
 
 
-def delete_city(db: Session, city_id: int):
+def delete_city(db: Session, city_id: int) -> schemas.City | None:
     db_city = db.scalars(
         select(models.DBCity).where(models.DBCity.id == city_id)
     ).one_or_none()

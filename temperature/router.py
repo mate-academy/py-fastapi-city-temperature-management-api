@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from dependencies import get_db
 import city.crud as city_crud
-from temperature import schemas, crud
+from temperature import schemas, crud, models
 import httpx
 from settings import OPEN_WEATHER_MAP_KEY
 
@@ -16,11 +16,11 @@ URL = "https://api.openweathermap.org/data/2.5/weather"
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
 def get_temperatures(
     city_id: int | None = None, db: Session = Depends(get_db)
-):
+) -> list[models.DBTemperature]:
     return crud.get_all_temperature(db, city_id)
 
 
-async def fetch_temperature(city_name) -> float:
+async def fetch_temperature(city_name: str) -> float:
     async with httpx.AsyncClient() as client:
         res = await client.get(
             URL,
@@ -36,7 +36,9 @@ async def fetch_temperature(city_name) -> float:
 
 
 @router.post("/temperatures/update")
-async def update_temperature(db: Session = Depends(get_db)):
+async def update_temperature(
+    db: Session = Depends(get_db),
+) -> dict[str, list[str]]:
     temperature_for_cities = []
     cities = city_crud.get_all_cities(db)
     updated = []
