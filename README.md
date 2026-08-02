@@ -11,7 +11,7 @@ The project has two main components:
 
 - **FastAPI** — web framework
 - **SQLAlchemy** — ORM
-- **PostgreSQL** — database
+- **SQLite** — database
 - **Alembic** — database migrations
 - **httpx** — async HTTP client for calling the OpenWeatherMap API
 - **Docker / Docker Compose** — containerization
@@ -38,16 +38,8 @@ cp .env_sample .env
 `.env` should contain:
 
 ```
-POSTGRES_DB=your_db_name
-POSTGRES_USER=your_db_user
-POSTGRES_PASSWORD=your_db_password
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
 OPEN_WEATHER_MAP_KEY=your_openweathermap_api_key
 ```
-
-`POSTGRES_HOST` should stay as `db` — that's the name of the database service inside Docker Compose.
 
 ### 3. Run with Docker
 
@@ -58,9 +50,10 @@ docker-compose up --build
 This single command will:
 
 - build the application image,
-- start a PostgreSQL container and wait until it's ready to accept connections,
 - automatically apply all Alembic migrations,
 - start the API server.
+
+The SQLite database file lives inside the project folder, which is mounted into the container, so your data persists across container restarts and rebuilds.
 
 Once it's running, open the interactive API docs:
 
@@ -78,7 +71,7 @@ All endpoints (`/cities`, `/temperatures`) can be explored and tested directly f
 
 **`database.py` vs. `dependencies.py`.** Database configuration (engine, session factory, declarative `Base`) lives in `database.py`, while the `get_db` dependency used by every route lives separately in `dependencies.py`. This keeps "how to connect to the database" and "how a request borrows a database session" as two distinct concerns.
 
-**PostgreSQL + Docker instead of plain SQLite.** SQLite alone would have satisfied all the functional requirements of this assignment — the reason for adding PostgreSQL and Docker Compose was purely to practice a more production-like setup (a real client-server database, containerized services, environment-based configuration) rather than any technical limitation of SQLite/SQLAlchemy.
+**SQLite, run inside Docker.** The task requires SQLite specifically, so that's what the app uses — there's no separate database server/container, just a `.db` file. Docker is still used, but only to package the application itself: it gives anyone running the project an identical, reproducible environment (same Python version, same dependencies) via a single `docker-compose up --build`, without needing a database container of its own.
 
 ## Error Handling
 
