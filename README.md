@@ -1,60 +1,32 @@
-## Task Description
+Cities & Temperature API
+FastAPI application for managing city data and tracking their current temperatures using an external weather service.
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+(a) Instructions to Run
+Install dependencies:
+Make sure you have Python installed, then run the following command in your terminal to install the required packages:
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+pip install fastapi uvicorn sqlalchemy httpx
 
-### Part 1: City CRUD API
+Run the server:
+Start the FastAPI application using Uvicorn:
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+uvicorn main:app --reload
 
-### Part 2: Temperature API
+Note: The database tables are created automatically on startup, so no manual database migrations are needed.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+Access the API Documentation:
+Open your browser and navigate to http://127.0.0.1:8000/docs to test endpoints via the interactive Swagger UI.
 
-### Additional Requirements
+(b) Design Choices
+Project Structure: Follows FastAPI best practices by using APIRouter to separate endpoints into a routers directory (cities.py and temperatures.py). This modularity ensures the application is scalable and maintainable.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+Database Layer: Utilizes SQLite with SQLAlchemy 2.0 modern syntax (Mapped and mapped_column). Database interactions are isolated in a dedicated crud.py file to separate business logic from routing.
 
-## Evaluation Criteria
+Dependency Injection: Depends(get_db) is utilized across all endpoints to ensure safe database session management (automatically opening and closing connections).
 
-Your task will be evaluated based on the following criteria:
+Cascade Deletion: Configured cascade="all, delete-orphan" on the City model. If a city is deleted via the API, its associated temperature history is automatically removed to maintain database integrity.
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+(c) Assumptions & Simplifications
+External API Choice: Used the free Open-Meteo API (Geocoding API + Weather Forecast API) for the async temperature update task because it is reliable and requires no API keys or authentication.
 
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+Database Migrations: Assumed that a complex migration setup (like Alembic) is not strictly required for this specific task scope, hence the automatic creation on startup.
