@@ -1,11 +1,10 @@
 from fastapi import (
     APIRouter,
     Depends,
-    status,
     HTTPException,
     Response,
+    status,
 )
-
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -48,10 +47,12 @@ def create_city(
 def get_cities(
     database: Session = Depends(get_db),
 ):
-    query = database.query(City)
+    query = select(CityModel)
 
     cities = database.scalars(query).all()
+
     return cities
+
 
 @router.delete(
     "/{city_id}",
