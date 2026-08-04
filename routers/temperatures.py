@@ -23,7 +23,6 @@ async def update_temperatures(db: Session = Depends(get_db)):
     async with httpx.AsyncClient() as client:
         for city in cities:
             try:
-                # Получаем координаты через геокодинг
                 geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city.name}&count=1"
                 geo_response = await client.get(geo_url)
                 geo_data = geo_response.json()
@@ -35,14 +34,12 @@ async def update_temperatures(db: Session = Depends(get_db)):
                 lat = geo_data["results"][0]["latitude"]
                 lon = geo_data["results"][0]["longitude"]
 
-                # Получаем температуру
                 weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true"
                 weather_response = await client.get(weather_url)
                 weather_data = weather_response.json()
 
                 temp_celsius = weather_data["current_weather"]["temperature"]
 
-                # Сохраняем в БД
                 crud.create_temperature(db=db, city_id=city.id, temp_val=temp_celsius)
                 results.append({"city": city.name, "status": "success", "temperature": temp_celsius})
 
