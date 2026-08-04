@@ -11,7 +11,7 @@ class City(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, index=True)
-    additional_info: Mapped[str | None] = mapped_column(String(500), nullable=False)
+    additional_info: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     temperatures: Mapped[list["Temperature"]] = relationship(
         back_populates="city"
