@@ -1,0 +1,49 @@
+# City Temperature API
+
+## Description
+
+FastAPI application for managing cities and temperature history.
+
+## Technologies
+
+- FastAPI
+- SQLAlchemy
+- SQLite
+- Pydantic
+- httpx
+
+## Installation
+
+pip install -r requirements.txt
+
+## Run
+
+uvicorn main:app --reload
+
+## API
+
+POST /cities
+
+GET /cities
+
+PUT /cities/{id}
+
+DELETE /cities/{id}
+
+POST /temperatures/update
+
+GET /temperatures
+
+GET /temperatures?city_id=1
+
+## Design
+
+- SQLite is used as the database.
+- SQLAlchemy ORM manages database access.
+- Weather data is fetched asynchronously using httpx.
+- Dependency injection is implemented using FastAPI Depends.
+
+## Assumptions
+
+- WeatherAPI is used as the temperature provider.
+- Temperature history is stored permanently.
