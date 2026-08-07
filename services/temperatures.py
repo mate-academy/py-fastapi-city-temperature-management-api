@@ -1,6 +1,6 @@
 from sqlalchemy.orm import joinedload
 from datetime import UTC, datetime
-from sqlite3 import IntegrityError
+from sqlalchemy.exc import IntegrityError
 
 from aiohttp import ClientSession
 from sqlalchemy import insert, select, update
@@ -69,13 +69,12 @@ async def update_temperatures(db: DataBaseDependency):
     db_temperatures = await db.execute(temperatures_query)
     result_temperatures = db_temperatures.scalars().all()
     for temperature in result_temperatures:
-        data = {"temperature": await weather(temperature.city.name), "date_time": datetime.now(UTC)}
+        data = {
+            "temperature": await weather(temperature.city.name),
+            "date_time": datetime.now(UTC),
+        }
         updated_query = (
-            update(Temperature)
-            .where(Temperature.id == temperature.id)
-            .values(
-               **data
-            )
+            update(Temperature).where(Temperature.id == temperature.id).values(**data)
         )
         try:
             await db.execute(updated_query)
@@ -84,4 +83,3 @@ async def update_temperatures(db: DataBaseDependency):
             await db.rollback()
 
     return {"message": "Temperature for cities are updated"}
-
