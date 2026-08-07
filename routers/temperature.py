@@ -19,6 +19,6 @@ async def post_temperatures(db: DataBaseDependency):
     return await create_temperatures(db=db)
 
 
-@temperature.patch("/temperatures")
+@temperature.post("/temperatures/update")
 async def patch_temperatures(db: DataBaseDependency):
     return await update_temperatures(db=db)

@@ -16,7 +16,7 @@ class TemperatureCreate(TemperatureBase):
 
 
 class TemperatureDetail(TemperatureBase):
-    pass
+    id: int
 
 
 class TemperatureUpdate(TemperatureBase):

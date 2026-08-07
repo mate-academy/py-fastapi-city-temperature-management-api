@@ -16,7 +16,7 @@ class CityUpdate(CityBase):
 
 
 class CityDetail(CityBase):
-    pass
+    id: int
 
 
 class CityList(CityBase):
