@@ -1,17 +1,16 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-import crud
-import schemas
-from database import SessionLocal, Base, engine
-
-Base.metadata.create_all(bind=engine)
+from database import SessionLocal
+from routers.cities import router as cities_router
+from routers.temperatures import router as temperatures_router
 
 app = FastAPI()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+app.include_router(cities_router)
+app.include_router(temperatures_router)
+
+app = FastAPI()
+
+async def get_db():
+    async with SessionLocal() as session:
+        yield session

@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class CityBase(BaseModel):
     name: str
-    additional_info: str
+    additional_info: str | None = None
 
 
 class CityCreate(CityBase):
