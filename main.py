@@ -9,8 +9,3 @@ app = FastAPI()
 app.include_router(cities_router)
 app.include_router(temperatures_router)
 
-app = FastAPI()
-
-async def get_db():
-    async with SessionLocal() as session:
-        yield session

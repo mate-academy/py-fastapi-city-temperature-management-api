@@ -1,25 +1,25 @@
 from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import crud
 import schemas
-from main import get_db
+from database import get_db
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/cities", tags=["Cities"])
 
-@router.get("/cities/", response_model=list[schemas.City])
+@router.get("/", response_model=list[schemas.City])
 async def read_cities(
-        db: Session = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
         skip: int = 0,
         limit: int = 100
 ):
     return await crud.get_all_cities(db, skip=skip, limit=limit)
 
-@router.post("/cities/", response_model=schemas.City)
+@router.post("/", response_model=schemas.City)
 async def create_city(
         city: schemas.CityCreate,
-        db: Session = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
 ):
     db_city = await crud.get_city_by_name(db, name=city.name)
 
@@ -30,8 +30,8 @@ async def create_city(
 
     return await crud.create_city(db, city=city)
 
-@router.get("/cities/{city_id}", response_model=schemas.City)
-async def read_city(city_id: int, db: Session = Depends(get_db)):
+@router.get("/{city_id}", response_model=schemas.City)
+async def read_city(city_id: int, db: AsyncSession = Depends(get_db)):
 
     city = await crud.get_city_by_id(db, city_id=city_id)
 
@@ -42,11 +42,11 @@ async def read_city(city_id: int, db: Session = Depends(get_db)):
         )
     return city
 
-@router.put("/cities/{city_id}", response_model=schemas.City)
+@router.put("/{city_id}", response_model=schemas.City)
 async def update_city(
     city_id: int,
     city: schemas.CityCreate,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     db_city = await crud.get_city_by_id(db, city_id)
 
@@ -58,10 +58,10 @@ async def update_city(
 
     return await crud.update_city(db, city_id, city)
 
-@router.delete("/cities/{city_id}")
+@router.delete("/{city_id}")
 async def delete_city(
         city_id: int,
-        db: Session = Depends(get_db),
+        db: AsyncSession = Depends(get_db),
 ):
     city = await crud.get_city_by_id(db, city_id=city_id)
 
