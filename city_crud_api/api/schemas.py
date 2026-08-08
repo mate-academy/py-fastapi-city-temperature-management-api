@@ -8,5 +8,7 @@ class CityCreate(BaseModel):
 
 class CityResponse(CityCreate):
     model_config = ConfigDict(from_attributes=True)
-
+    
     id: int
+    name: str
+    additional_info: str | None = None
