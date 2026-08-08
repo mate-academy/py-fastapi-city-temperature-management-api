@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from city_crud_api.api.schemas import CityCreate
-from city_crud_api.db import models
+from city_crud_api import models
 
 
 def get_all_cities(db: Session):

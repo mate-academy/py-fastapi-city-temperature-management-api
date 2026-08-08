@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from city_crud_api.db.engine import Base
+from db.engine import Base
 
 class City(Base):
     __tablename__ = 'cities'
