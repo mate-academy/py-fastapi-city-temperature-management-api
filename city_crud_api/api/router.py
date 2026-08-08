@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from city_crud_api.api import crud, schemas
-from db import get_db
+from db.engine import get_db
 
 router = APIRouter(
     prefix="/cities",
