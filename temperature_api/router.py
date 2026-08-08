@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+import httpx
 from sqlalchemy.orm import Session
-
-import asyncio
 
 from city_crud_api.api.crud import get_all_cities
 from db.engine import get_db
@@ -9,13 +8,13 @@ from temperature_api import schemas, crud
 from temperature_api.get_temp import get_temp
 
 router = APIRouter(
-    prefix="/temperature",
-    tags=["Temperature"],
+    prefix="/temperatures",
+    tags=["Temperatures"],
 )
 
 
 @router.get(
-    "/",
+    "",
     response_model=list[schemas.Temperature],
 )
 def read_temperatures(
@@ -34,13 +33,23 @@ def read_temperatures(
 @router.post(
     "/update",
     response_model=list[schemas.Temperature],
+    status_code=status.HTTP_201_CREATED,
 )
 async def update_temperatures(
     db: Session = Depends(get_db),
 ):
     cities = get_all_cities(db)
 
-    values = await asyncio.gather(*(get_temp(city.name) for city in cities))
+    values = []
+
+    for city in cities:
+        try:
+            values.append(await get_temp(city.name))
+        except (httpx.HTTPError, RuntimeError, ValueError) as exc:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=f"Could not update {city.name}: {exc}",
+            ) from None
 
     records = [
         crud.create_temperature(
