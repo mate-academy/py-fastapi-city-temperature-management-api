@@ -83,4 +83,4 @@ Open the docs: http://127.0.0.1:8000/docs
 - City names don't have to be unique.
 - `date_time` on a temperature record is the server time at the moment of the
   update call, not the observation time reported by wttr.in.
-- No authentication — all endpoints are open.
+- No authentication — all endpoints are open
