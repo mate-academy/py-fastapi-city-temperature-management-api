@@ -1,0 +1,14 @@
+[flake8]
+max-line-length = 88
+max-complexity = 10
+extend-ignore = E203, W503
+exclude =
+    .git,
+    .idea,
+    __pycache__,
+    .venv,
+    venv,
+    alembic/versions
+per-file-ignores =
+    app/models/__init__.py:F401
+    alembic/env.py:F401
