@@ -1,60 +1,55 @@
-## Task Description
+# Library Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Task
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+Create a Simple Library Management API
 
-### Part 1: City CRUD API
+### Objective
+You should develop a basic library management API using FastAPI and SQLAlchemy ORM with SQLite as the database.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+### Requirements
 
-### Part 2: Temperature API
+1. Set up the project structure with the following files:
+```
+- main.py
+- database.py
+- models.py
+- schemas.py
+- crud.py
+```
+2. Set up a SQLite database connection in the `database.py` file.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+3. Create SQLAlchemy models for 'Author' and 'Book' in the `models.py` file.
 
-### Additional Requirements
+4. The 'Author' model should have the following fields:
+```
+- id (integer, primary key)
+- name (string, unique)
+- bio (string)
+- books (relationship with the 'Book' model, one-to-many)
+```
+5. The 'Book' model should have the following fields:
+```
+- id (integer, primary key)
+- title (string)
+- summary (string)
+- publication_date (date)
+- author_id (foreign key referencing 'Author' model)
+```
+6. Create Pydantic models for data validation and serialization in the `schemas.py` file.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+7. Create CRUD utility functions for authors and books in the `crud.py` file.
 
-## Evaluation Criteria
-
-Your task will be evaluated based on the following criteria:
-
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
-
-## Deliverables
-
-Please submit the following:
-
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
-
-Good luck!
+8. In the `main.py` file, integrate the parts created in previous steps to build the FastAPI application:
+   - Create the database tables using the SQLAlchemy models.
+   - Define the FastAPI application object.
+   - Create a dependency function to manage database sessions.
+   - Implement API endpoints for the following actions:
+     - Create a new author.
+     - Retrieve a list of authors with pagination (skip, limit).
+     - Retrieve a single author by ID.
+     - Create a new book for a specific author.
+     - Retrieve a list of books with pagination (skip, limit).
+     - Filter books by author ID.
+     
+Upon completion, you should have a functional library management API that allows the user to manage authors and their books.
