@@ -58,3 +58,49 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## How to Run
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+The API is available at `http://127.0.0.1:8000`, interactive docs (Swagger) at
+`http://127.0.0.1:8000/docs`. The SQLite database (`city_temperature.db`) and
+its tables are created automatically on first startup.
+
+## Design Choices
+
+- **Project layout**: `database.py` (engine/session), `models.py` (SQLAlchemy
+  ORM), `schemas.py` (Pydantic request/response models), `crud.py`
+  (data-access layer), `external.py` (third-party weather API client),
+  `main.py` (FastAPI app and routes) — separates persistence, validation and
+  HTTP concerns.
+- **Weather source**: [Open-Meteo](https://open-meteo.com/) — free, requires
+  no API key. A city name is resolved to coordinates via its geocoding API,
+  then the forecast API is queried for `current_weather`.
+- **Concurrency**: `POST /temperatures/update` fetches every city's
+  temperature concurrently with `asyncio.gather`, through a single shared
+  `httpx.AsyncClient` injected as a FastAPI dependency, instead of awaiting
+  each city's HTTP round trip one at a time.
+- **`GET /temperatures/?city_id=...`** is implemented as an optional query
+  parameter on `GET /temperatures`, not a separate route, mirroring how
+  optional filters are conventionally expressed in FastAPI/REST APIs.
+- **Data integrity**: `City.name` is unique; creating or renaming a city to a
+  name that already exists returns `400` instead of a raw database error.
+  `Temperature` rows cascade-delete with their city (`cascade="all,
+  delete-orphan"`) so deleting a city can never leave orphaned temperature
+  records.
+
+## Assumptions and Simplifications
+
+- One `Temperature` reading is stored per city per call to
+  `POST /temperatures/update` (the endpoint is meant to be invoked
+  periodically, e.g. by a scheduler, rather than polling internally).
+- If a city's name can't be geocoded, or the weather API call fails, that
+  city is skipped for that update cycle rather than failing the whole
+  request (`asyncio.gather(..., return_exceptions=True)`).
+- No authentication is implemented — out of scope per the task description.

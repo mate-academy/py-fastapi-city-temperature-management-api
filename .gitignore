@@ -61,6 +61,10 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 
+# SQLite db for this project
+city_temperature.db
+city_temperature.db-journal
+
 # Flask stuff:
 instance/
 .webassets-cache
