@@ -1,0 +1,33 @@
+from datetime import datetime
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
+
+
+class CityBase(BaseModel):
+    name: str
+    additional_info: Optional[str] = None
+
+
+class CityCreate(CityBase):
+    pass
+
+
+class CityUpdate(BaseModel):
+    name: Optional[str] = None
+    additional_info: Optional[str] = None
+
+
+class CityResponse(CityBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TemperatureBase(BaseModel):
+    temperature: float
+
+
+class TemperatureResponse(TemperatureBase):
+    id: int
+    city_id: int
+    date_time: datetime
+    model_config = ConfigDict(from_attributes=True)
