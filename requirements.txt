@@ -1,0 +1,9 @@
+aiosqlite
+alembic
+fastapi
+sqlalchemy
+uvicorn
+pydantic-settings
+pydantic
+httpx
+greenlet
