@@ -65,6 +65,12 @@ async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
 
 @app.post("/temperatures/update")
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
+    if not settings.OPENWEATHER_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="OpenWeather API key is not configured"
+        )
+
     cities = await crud.get_cities(db)
     if not cities:
         raise HTTPException(status_code=404, detail="No cities found")
@@ -85,11 +91,11 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
 
                 new_temp = schemas.TemperatureCreate(
                     city_id=city.id,
-                    temperature=temp_value,  # date_time не треба
+                    temperature=temp_value,
                 )
                 await crud.create_temperature(db, new_temp)
             else:
-                print(f"Unable to get temperature for {city.name}")
+                print(f"No temperature records found for {city.name}")
 
     return {"message": "Temperatures updated"}
 
@@ -101,14 +107,19 @@ async def read_temperatures(
     return await crud.get_temperatures(db, skip, limit)
 
 
-@app.get("/temperatures/by_city", response_model=list[schemas.Temperature])
-async def read_temperatures_by_city(
-    city_id: int, db: AsyncSession = Depends(get_db)
+@app.get("/temperatures", response_model=list[schemas.Temperature])
+async def read_temperatures(
+    city_id: int | None = None,
+    skip: int = 0,
+    limit: int = 10,
+    db: AsyncSession = Depends(get_db),
 ):
-    temps = await crud.get_temperatures_by_city(db, city_id)
-    if not temps:
-        raise HTTPException(
-            status_code=404,
-            detail="No temperature records found for this city",
-        )
-    return temps
+    if city_id is not None:
+        temps = await crud.get_temperatures_by_city(db, city_id)
+        if not temps:
+            raise HTTPException(
+                status_code=404,
+                detail="No temperature records found for this city",
+            )
+        return temps
+    return await crud.get_temperatures(db, skip, limit)
