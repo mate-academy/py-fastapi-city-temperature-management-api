@@ -4,7 +4,7 @@ import datetime
 
 class CityBase(BaseModel):
     name: str
-    additional_info: str
+    additional_info: str | None
 
 
 class CityCreate(CityBase):
