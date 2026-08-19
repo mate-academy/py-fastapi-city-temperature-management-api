@@ -1,7 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.exc import IntegrityError
 import models
 import schemas
+from fastapi import HTTPException
 
 
 async def create_city(db: AsyncSession, city: schemas.CityCreate):
@@ -9,9 +11,13 @@ async def create_city(db: AsyncSession, city: schemas.CityCreate):
         name=city.name, additional_info=city.additional_info
     )
     db.add(new_city)
-    await db.commit()
-    await db.refresh(new_city)
-    return new_city
+    try:
+        await db.commit()
+        await db.refresh(new_city)
+        return new_city
+    except IntegrityError:
+        await db.rollback()
+        raise HTTPException(status_code=409, detail="City already exists")
 
 
 async def get_cities(db: AsyncSession, skip: int = 0, limit: int = 10):

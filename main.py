@@ -1,26 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 import httpx
-from datetime import datetime
 import schemas
 import crud
 from database import engine, Base
 from dependencies import get_db
-import os
-from fastapi import FastAPI
+from settings import settings
 
-
-
-OPENWEATHER_API_KEY = os.getenv("OPENWEATHER_API_KEY")
 OPENWEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
 
+app = FastAPI(title=settings.PROJECT_NAME)
 
-app = FastAPI()
 
 @app.get("/")
 def read_root():
     return {"message": "City Temperature API is running!"}
-
 
 
 @app.on_event("startup")
@@ -81,7 +75,7 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
                 OPENWEATHER_URL,
                 params={
                     "q": city.name,
-                    "appid": OPENWEATHER_API_KEY,
+                    "appid": settings.OPENWEATHER_API_KEY,
                     "units": "metric",
                 },
             )
@@ -91,12 +85,11 @@ async def update_temperatures(db: AsyncSession = Depends(get_db)):
 
                 new_temp = schemas.TemperatureCreate(
                     city_id=city.id,
-                    date_time=datetime.utcnow(),
-                    temperature=temp_value,
+                    temperature=temp_value,  # date_time не треба
                 )
                 await crud.create_temperature(db, new_temp)
             else:
-                print(f"Не вдалося отримати температуру для {city.name}")
+                print(f"Unable to get temperature for {city.name}")
 
     return {"message": "Temperatures updated"}
 
@@ -108,7 +101,7 @@ async def read_temperatures(
     return await crud.get_temperatures(db, skip, limit)
 
 
-@app.get("/temperatures/", response_model=list[schemas.Temperature])
+@app.get("/temperatures/by_city", response_model=list[schemas.Temperature])
 async def read_temperatures_by_city(
     city_id: int, db: AsyncSession = Depends(get_db)
 ):

@@ -17,7 +17,7 @@ class Temperature(Base):
     __tablename__ = "temperatures"
 
     id = Column(Integer, primary_key=True, index=True)
-    city_id = Column(Integer, ForeignKey("cities.id"))
+    city_id = Column(Integer, ForeignKey("cities.id"), nullable=False)
     date_time = Column(DateTime, default=datetime.utcnow)
     temperature = Column(Float, nullable=False)
     city = relationship("City", back_populates="temperatures")

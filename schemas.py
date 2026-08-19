@@ -15,13 +15,13 @@ class City(CityBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class TemperatureBase(BaseModel):
     city_id: int
-    date_time: datetime
     temperature: float
+    date_time: datetime | None = None
 
 
 class TemperatureCreate(TemperatureBase):
@@ -32,4 +32,4 @@ class Temperature(TemperatureBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
