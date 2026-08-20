@@ -58,3 +58,30 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+# City Weather Tracking API
+
+A production-ready **FastAPI** application designed to handle city management and record asynchronous climate snapshots using SQLite and SQLAlchemy.
+
+## Installation
+```bash
+pip install fastapi uvicorn sqlalchemy httpx
+```
+
+## Running the App
+```bash
+uvicorn main:app --reload
+```
+Access the interactive documentation at: http://localhost:8000/docs
+
+## Design Choices
+
+* SQLite for simplicity
+* SQLAlchemy as ORM
+* Open-Meteo API for fetching temperature data
+* Asynchronous requests to the external API
+
+## Assumptions
+
+* SQLite is used as the database engine
+* Temperature data is stored in Celsius
