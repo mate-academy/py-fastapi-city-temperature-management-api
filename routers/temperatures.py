@@ -9,13 +9,13 @@ from schemas import schemas
 
 
 router = APIRouter(prefix="/temperatures", tags=["Temperatures"])
-WEATHER_API_URL = "https://open-meteo.com"
+WEATHER_API_URL = "https://api.open-meteo.com/v1/forecast"
 
 
 async def fetch_weather_for_city(city_name: str) -> float:
     async with httpx.AsyncClient() as client:
         try:
-            geo_url = f"https://open-meteo.com{city_name}&count=1&language=en&format=json"
+            geo_url = f"https://geocoding-api.open-meteo.com/v1/search?name={city_name}&count=1&language=en&format=json"
             geo_response = await client.get(geo_url, timeout=10.0)
             geo_response.raise_for_status()
             geo_data = geo_response.json()
