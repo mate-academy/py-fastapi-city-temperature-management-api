@@ -3,9 +3,9 @@ import httpx
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from app.database import get_db
-from app.models import models
-from app.schemas import schemas
+from database import get_db
+from models import models
+from schemas import schemas
 
 
 router = APIRouter(prefix="/temperatures", tags=["Temperatures"])
