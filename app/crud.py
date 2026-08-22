@@ -4,6 +4,7 @@ Data-access layer.
 Keeping raw SQLAlchemy queries here (instead of inline in route handlers)
 keeps the routers thin and makes the query logic independently testable.
 """
+import datetime
 from typing import Optional
 
 from sqlalchemy.orm import Session
@@ -54,7 +55,7 @@ def delete_city(db: Session, db_city: models.City) -> None:
 # Temperature
 # ---------------------------------------------------------------------------
 def create_temperature(
-    db: Session, city_id: int, date_time, temperature: float
+    db: Session, city_id: int, date_time: datetime.datetime, temperature: float
 ) -> models.Temperature:
     db_temp = models.Temperature(
         city_id=city_id, date_time=date_time, temperature=temperature
