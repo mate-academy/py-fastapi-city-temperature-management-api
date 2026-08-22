@@ -1,4 +1,4 @@
-"""
+gi"""
 Application entrypoint.
 
 Wires together the two "apps" described in the requirements as two routers
