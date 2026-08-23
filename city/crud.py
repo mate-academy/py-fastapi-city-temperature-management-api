@@ -29,6 +29,7 @@ async def get_all_cities(
 async def get_city(db: AsyncSession, city_id: int) -> models.City | None:
 
     db_city = await db.scalar(select(models.City).where(models.City.id == city_id))
+
     if db_city is None:
         raise CityNotFoundError
 
@@ -57,9 +58,6 @@ async def update_city(
 
     db_city = await get_city(db, city_id)
 
-    if db_city is None:
-        raise CityNotFoundError
-
     db_city.name = city.name
     db_city.additional_info = city.additional_info
 
@@ -72,9 +70,6 @@ async def update_city(
 async def delete_city(db: AsyncSession, city_id: int) -> None:
 
     db_city = await get_city(db, city_id)
-
-    if db_city is None:
-        raise CityNotFoundError
 
     await db.delete(db_city)
     await db.commit()
