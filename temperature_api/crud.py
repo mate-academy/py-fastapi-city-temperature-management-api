@@ -20,12 +20,11 @@ async def get_temperature_by_id(db: AsyncSession, temperature_id: int) -> models
     return db_temperature
 
 
-async def get_temperature_by_city_id(db: AsyncSession, city_id: int) -> models.Temperature | None:
-    db_temperature = await db.scalars(
-    select(models.Temperature)
-    .where(models.Temperature.city_id == city_id)
-)
-    return db_temperature
+async def get_temperature_by_city_id(db: AsyncSession, city_id: int) -> Sequence[models.Temperature] | None:
+    return (await db.scalars(
+        select(models.Temperature)
+        .where(models.Temperature.city_id == city_id))
+    ).all()
 
 
 async def create_temperature(db: AsyncSession, temperature: schemas.Temperature) -> models.Temperature:
