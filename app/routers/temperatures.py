@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 import httpx
+from datetime import datetime
 
 from .. import models, schemas
 from ..database import SessionLocal
@@ -33,7 +34,11 @@ async def update_temperatures(db: Session = Depends(get_db)):
                     data = response.json()
                     current_temp = float(data["current_condition"][0]["temp_C"])
 
-                    new_temp = models.Temperature(city_id=city.id, temperature=current_temp)
+                    new_temp = models.Temperature(
+                        city_id=city.id,
+                        temperature=current_temp,
+                        date_time=datetime.now(datetime.UTC)
+                    )
                     db.add(new_temp)
             except Exception as e:
                 print(f"Failed to fetch data for {city.name}: {e}")
