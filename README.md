@@ -1,4 +1,4 @@
-# City Temperature Management API ☁
+# City Temperature Management API
 
 ## How to run
 1. Clone this repository to your local machine.

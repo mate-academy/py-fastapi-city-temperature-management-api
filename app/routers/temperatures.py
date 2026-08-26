@@ -2,20 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 import httpx
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .. import models, schemas
-from ..database import SessionLocal
+from ..dependencies import get_db
 
 router = APIRouter(prefix="/temperatures", tags=["Temperatures"])
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/update")
@@ -37,7 +29,7 @@ async def update_temperatures(db: Session = Depends(get_db)):
                     new_temp = models.Temperature(
                         city_id=city.id,
                         temperature=current_temp,
-                        date_time=datetime.now(datetime.UTC)
+                        date_time=datetime.now(timezone.utc)
                     )
                     db.add(new_temp)
             except Exception as e:
