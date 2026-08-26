@@ -10,7 +10,15 @@ router = APIRouter()
 
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
-async def get_temperatures_list(db: Annotated[AsyncSession, Depends(get_db)]):
+async def get_temperatures_list(
+        db: Annotated[AsyncSession, Depends(get_db)],
+        city_id: int| None = None,
+):
+    if city_id:
+        return await crud.get_temperature_by_city_id(
+            db=db,
+            city_id=city_id
+        )
     return await crud.get_all_temperature(db=db)
 
 
@@ -73,6 +81,6 @@ async def delete_temperature(
     await crud.delete_temperature(db=db, db_temperature=db_temperature)
 
 
-@router.post("/temperatures/update/", response_model=schemas.Temperature)
+@router.post("/temperatures/update/", response_model=list[schemas.Temperature])
 async def update_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
     return await crud.update_all_temperatures(db=db)

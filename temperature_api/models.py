@@ -11,7 +11,10 @@ class Temperature(Base):
     __tablename__ = "temperature"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    city_id: Mapped[int] = mapped_column(ForeignKey(City.id))
-    city: Mapped[City] = relationship(back_populates="temperature")
+    city_id: Mapped[int] = mapped_column(
+        ForeignKey("City.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    city: Mapped["City"] = relationship( "City", back_populates="temperature")
     date_time: Mapped[datetime]
     temperature: Mapped[float]
