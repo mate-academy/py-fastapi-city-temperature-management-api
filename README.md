@@ -1,3 +1,28 @@
+# City Temperature Management API ☁
+
+## How to run
+1. Clone this repository to your local machine.
+2. Create a virtual environment:
+   `python -m venv venv`
+3. Activate the virtual environment:
+   * On Windows: `.\venv\Scripts\activate`
+   * On macOS/Linux: `source venv/bin/activate`
+4. Install the required dependencies:
+   `pip install -r requirements.txt`
+5. Run the application using Uvicorn:
+   `uvicorn app.main:app --reload`
+6. Open `http://127.0.0.1:8000/docs` in your browser to view and interact with the Swagger API documentation.
+
+## Design Choices
+* **Separation of Concerns (Modularity):** Instead of writing all the code in a single `main.py` file, the project is divided into distinct modules. The database configuration and models (`database.py`, `models.py`) are strictly separated from the API routing logic (`routers/`). This prevents confusion, makes the codebase highly readable, and simplifies future maintenance.
+* **Dependency Injection:** Used FastAPI's `Depends` to inject database sessions into route handlers. This ensures database connections are safely managed (opened and closed) for each request, acting like a context manager.
+
+## Assumptions & Simplifications
+* **Database:** Used **SQLite** for simplicity and ease of local setup. This avoids the overhead of running a separate database server (like PostgreSQL) or configuring Docker containers for data storage.
+* **Database Migrations:** Used SQLAlchemy's `Base.metadata.create_all(bind=engine)` to automatically generate tables on application startup. In a real-world production environment, a migration tool like Alembic would be used instead.
+* **Weather Data Source:** Used the open `wttr.in` service as it doesn't require API key authentication, simplifying the implementation and avoiding secrets management for this task.
+
+## Original Task
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
