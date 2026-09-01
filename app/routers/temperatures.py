@@ -11,7 +11,10 @@ from app.services.weather import (
     WeatherServiceError,
     get_current_temperature,
 )
+import logging
 
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(
     prefix="/temperatures",
@@ -67,6 +70,11 @@ async def update_temperatures(
 
     for city, result in results:
         if isinstance(result, Exception):
+            logger.warning(
+                "Failed to fetch temperature for city %s: %s",
+                city.name,
+                result,
+            )
             continue
 
         temperature_record = models.Temperature(

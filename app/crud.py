@@ -23,9 +23,7 @@ def create_city(
 def get_cities(db: Session) -> list[models.City]:
     statement = select(models.City)
 
-    return list(
-        db.scalars(statement).all()
-    )
+    return db.scalars(statement).all()
 
 
 def get_city(
@@ -83,6 +81,4 @@ def get_temperatures(
         models.Temperature.date_time.desc()
     )
 
-    return list(
-        db.scalars(statement).all()
-    )
+    return db.scalars(statement).all()
