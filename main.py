@@ -6,6 +6,9 @@ from typing import List, Optional
 import models, schemas
 from database import get_db
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="City Temperature API")
 
@@ -61,6 +64,8 @@ async def update_temperatures(db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="No cities in database to update.")
 
     updated_records = 0
+    failed_cities = []
+
     async with httpx.AsyncClient() as client:
         for city in cities:
             try:
@@ -72,11 +77,21 @@ async def update_temperatures(db: Session = Depends(get_db)):
                     new_temp = models.Temperature(city_id=city.id, temperature=temp_c)
                     db.add(new_temp)
                     updated_records += 1
-            except Exception:
-                continue  # Ігноруємо помилки для окремих міст, щоб цикл не переривався
+                else:
+                    failed_cities.append(city.name)
+                    logger.warning(f"Failed to fetch data for {city.name}: Status {response.status_code}")
+
+            except Exception as e:
+                logger.error(f"Error updating temperature for {city.name}: {e}")
+                failed_cities.append(city.name)
+                continue
 
     db.commit()
-    return {"message": f"Updated temperatures for {updated_records} cities."}
+
+    return {
+        "message": f"Updated temperatures for {updated_records} cities.",
+        "failed_updates": failed_cities
+    }
 
 
 @app.get("/temperatures", response_model=List[schemas.Temperature])
