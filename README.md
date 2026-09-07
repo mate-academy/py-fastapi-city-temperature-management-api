@@ -1,60 +1,209 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application for managing cities and storing their temperature
+history.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+The project contains two API areas:
 
-### Part 1: City CRUD API
+- CRUD endpoints for cities.
+- Temperature endpoints that fetch current weather data and store it in
+  SQLite.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Technologies
 
-### Part 2: Temperature API
+- FastAPI
+- SQLAlchemy ORM
+- SQLite
+- Pydantic
+- HTTPX
+- Open-Meteo API
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+Open-Meteo is used because it provides geocoding and current temperature
+data without requiring an API key.
 
-### Additional Requirements
+## Project structure
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+```text
+fastapi-city-temperature-api/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── database.py
+│   ├── dependencies.py
+│   ├── models.py
+│   ├── schemas.py
+│   ├── crud.py
+│   ├── routers/
+│   │   ├── __init__.py
+│   │   ├── cities.py
+│   │   └── temperatures.py
+│   └── services/
+│       ├── __init__.py
+│       └── weather.py
+├── .gitignore
+├── requirements.txt
+└── README.md
+```
 
-## Evaluation Criteria
+## Installation
 
-Your task will be evaluated based on the following criteria:
+Create and activate a virtual environment:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
 
-## Deliverables
+Install dependencies:
 
-Please submit the following:
+```bash
+pip install -r requirements.txt
+```
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## Run the application
 
-Good luck!
+From the project root:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+The application will be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+Swagger documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+## City API
+
+### Create a city
+
+```http
+POST /cities
+```
+
+Example JSON:
+
+```json
+{
+  "name": "Tallinn",
+  "additional_info": "Capital of Estonia"
+}
+```
+
+### List cities
+
+```http
+GET /cities
+```
+
+Pagination is available:
+
+```text
+GET /cities?skip=0&limit=20
+```
+
+### Get one city
+
+```http
+GET /cities/{city_id}
+```
+
+### Update a city
+
+```http
+PUT /cities/{city_id}
+```
+
+Example JSON:
+
+```json
+{
+  "name": "Tallinn",
+  "additional_info": "Updated information"
+}
+```
+
+### Delete a city
+
+```http
+DELETE /cities/{city_id}
+```
+
+Deleting a city also deletes its stored temperature records.
+
+## Temperature API
+
+### Update temperatures
+
+```http
+POST /temperatures/update
+```
+
+The endpoint:
+
+1. Reads all cities from SQLite.
+2. Resolves city coordinates using Open-Meteo Geocoding API.
+3. Fetches current temperature asynchronously.
+4. Stores successful results in the `temperatures` table.
+5. Returns stored records and any city-specific errors.
+
+### List temperature history
+
+```http
+GET /temperatures
+```
+
+Pagination:
+
+```text
+GET /temperatures?skip=0&limit=100
+```
+
+### Filter by city
+
+```text
+GET /temperatures?city_id=1
+```
+
+## Design choices
+
+SQLAlchemy is used synchronously for SQLite because the database work is
+small and simple. External weather requests are asynchronous, as required
+by the task, and are executed concurrently with `asyncio.gather`.
+
+The city table stores only the fields required by the task. Coordinates
+are resolved from the city name when temperature data is requested, so
+latitude and longitude do not need to be stored.
+
+Separate routers are used for cities and temperatures. Database session
+management is implemented as a FastAPI dependency.
+
+## Error handling
+
+The API returns:
+
+- `404` when a requested city does not exist.
+- `409` when a city name conflicts with an existing unique city.
+- `400` when temperature update is requested with no cities.
+- `502` when no temperature can be fetched from the external provider.
+
+If temperature fetching fails only for some cities, successful
+temperatures are still stored and the response contains an `errors`
+list.
+
+## Assumptions and simplifications
+
+- City names are unique.
+- Open-Meteo's first geocoding result is considered the intended city.
+- Temperature values are stored in degrees Celsius.
+- External weather data is fetched only when
+  `POST /temperatures/update` is called.
+- Database migrations are not used; tables are created automatically on
+  application startup.
