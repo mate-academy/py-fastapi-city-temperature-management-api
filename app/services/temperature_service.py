@@ -43,7 +43,7 @@ async def get_all_temperatures(db: AsyncSession) -> list[DBTemperature]:
 async def get_all_temperatures_by_city_id(
         db: AsyncSession,
         city_id: int
-) -> DBCity:
+) -> list[DBTemperature]:
     db_temperatures = await db.scalars(
         select(DBTemperature).where(DBTemperature.city_id == city_id)
     )

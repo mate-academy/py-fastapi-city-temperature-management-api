@@ -30,10 +30,13 @@ async def read_temperatures(db: CommonDB):
 
 
 @router.get(
-    "/temperatures/{city_id}",
+    "/temperatures",
     response_model=list[temperature_schema.Temperature]
 )
-async def read_temperatures_by_city(city_id: int, db: CommonDB):
+async def read_temperatures_by_city(
+        db: CommonDB,
+        city_id: int | None = None,
+):
     db_city = await city_service.get_city_by_id(db=db, city_id=city_id)
 
     if not db_city:
