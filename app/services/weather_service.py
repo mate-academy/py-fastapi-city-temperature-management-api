@@ -48,7 +48,7 @@ async def get_current_temperature(latitude: float, longitude: float) -> float:
     return data["current"]["temperature_2m"]
 
 
-async def get_temperature_by_city_name(city_name) -> float | None:
+async def get_temperature_by_city_name(city_name: str) -> float | None:
     coordinates = await get_coordinates_by_city_name(city_name)
 
     if coordinates is None:
