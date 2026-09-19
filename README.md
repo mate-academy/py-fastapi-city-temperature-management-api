@@ -1,60 +1,52 @@
-## Task Description
+# City Data & Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A production-ready FastAPI application designed to manage city records and track their historical temperature data using asynchronous requests to the external Open-Meteo API.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## Features
+- **City CRUD API**: Create, read, update, and delete operations for city entities.
+- **Asynchronous Temperature Fetching**: A non-blocking service that looks up city coordinates via geolocation and records the current live temperature in the database.
+- **Unified Filtration & Pagination**: Built-in support for paginated temperature reports filterable by specific cities.
+- **Automatic Cascades**: Automatic deletion of corresponding temperature logs when a city is removed to ensure database integrity.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+---
 
-### Part 2: Temperature API
+## Installation & Setup
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+1. **Clone the project directory** and navigate to its root:
+   ```bash
+   cd city_weather_app
+   ```
 
-### Additional Requirements
+2. **Install all required dependencies** using `pip`:
+   ```bash
+   pip install fastapi uvicorn sqlalchemy httpx
+   ```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+3. **Start the local development server** via Uvicorn:
+   ```bash
+   uvicorn main:app --reload
+   ```
 
-## Evaluation Criteria
+4. **Access the Interactive API Documentation**:
+   Open your browser and head to [http://127.0.0](http://127.0.0) to explore the system via the interactive Swagger UI.
 
-Your task will be evaluated based on the following criteria:
+---
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+## Design Choices & Architecture
 
-## Deliverables
+- **Clean Project Structure**: The project is split into isolated domains (`models.py`, `schemas.py`, `crud.py`, `main.py`) separating the data representation, request validation, database operations, and application routing to follow clean-code guidelines.
+- **Asynchronous HTTP Client (`httpx`)**: Fetching temperature records from an external service can introduce latency. The `/temperatures/update` endpoint relies entirely on an async execution context using `httpx.AsyncClient` to keep the application responsive during API calls.
+- **External Data Source**: Open-Meteo API was chosen because it provides a highly reliable, free, and completely keyless global forecast service that aligns well with prototyping needs.
+- **Data Safety & Constraints**: The city entity enforces a unique constraint on the `name` column, preventing duplicates. Database schemas utilize strict `ForeignKey` constraints with cascading options (`cascade="all, delete-orphan"`), preventing orphan entries when a city is wiped from the database.
 
-Please submit the following:
+---
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+## Assumptions & Simplifications
 
-Good luck!
+1. **Two-Step Geocoding Pipeline**: Since the database stores only the basic string literal name of a city, the application must perform a two-step lookup per city inside the update script:
+   - *Step A:* Resolve the city name into `latitude` and `longitude` coordinates using the Open-Meteo Geocoding engine.
+   - *Step B:* Query the exact current temperature of those exact coordinates.
+2. **Graceful Fault Tolerance**: If a city name cannot be resolved by the geocoding service (e.g., if typos were inserted into the name field during creation) or if the internet connection drops momentarily, the update function will silently log or skip the specific city record, continuing its workflow for the remaining data pool.
+3. **Local Database Configuration**: SQLite is selected for simplicity, running off a single local database file (`weather.db`). Table instances are bootstrapped automatically at runtime using SQLAlchemy's metadata mapping layer (`Base.metadata.create_all`).
