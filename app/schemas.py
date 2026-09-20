@@ -3,8 +3,12 @@ from pydantic import BaseModel
 
 
 class City(BaseModel):
+    id: int
     name: str
-    additional_info: str
+    additional_info: str | None = None
+
+    class Config:
+        from_attributes = True
 
 
 class CityCreate(City):
@@ -20,9 +24,13 @@ class CityRead(City):
 
 
 class Temperature(BaseModel):
+    id: int
     city_id: int
     date_time: date
     temperature: float
+
+    class Config:
+        from_attributes = True
 
 
 class TemperatureCreate(Temperature):

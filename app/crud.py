@@ -27,6 +27,11 @@ async def get_all_temperatures(db: AsyncSession):
     return [temperature[0] for temperature in temperatures_list.fetchall()]
 
 
+async def get_city_by_id(db: AsyncSession, city_id: int):
+    result = await db.execute(select(models.CityDB).where(models.CityDB.id == city_id))
+    return result.scalars().first()
+
+
 async def create_temperature(db: AsyncSession, temperature: schemas.TemperatureCreate):
     query = insert(models.TemperatureDB).values(
         city_id=temperature.city_id,
