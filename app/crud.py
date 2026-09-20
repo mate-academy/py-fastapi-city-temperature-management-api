@@ -1,30 +1,12 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, insert
 
 from . import models, schemas
 
 
 async def get_all_cities(db: AsyncSession):
-    query = select(models.CityDB)
-    cities_list = await db.execute(query)
-    return [city[0] for city in cities_list.fetchall()]
-
-
-async def create_city(db: AsyncSession, city: schemas.CityCreate):
-    query = insert(models.CityDB).values(
-        name=city.name,
-        additional_info=city.additional_info,
-    )
-    result = await db.execute(query)
-    await db.commit()
-    resp = {**city.model_dump(), "id": result.lastrowid}
-    return resp
-
-
-async def get_all_temperatures(db: AsyncSession):
-    query = select(models.TemperatureDB)
-    temperatures_list = await db.execute(query)
-    return [temperature[0] for temperature in temperatures_list.fetchall()]
+    result = await db.execute(select(models.CityDB))
+    return result.scalars().all()
 
 
 async def get_city_by_id(db: AsyncSession, city_id: int):
@@ -32,13 +14,22 @@ async def get_city_by_id(db: AsyncSession, city_id: int):
     return result.scalars().first()
 
 
-async def create_temperature(db: AsyncSession, temperature: schemas.TemperatureCreate):
-    query = insert(models.TemperatureDB).values(
-        city_id=temperature.city_id,
-        date_time=temperature.date_time,
-        temperature=temperature.temperature,
-    )
-    result = await db.execute(query)
+async def create_city(db: AsyncSession, city: schemas.CityCreate):
+    db_city = models.CityDB(**city.model_dump())
+    db.add(db_city)
     await db.commit()
-    resp = {**temperature.model_dump(), "id": result.lastrowid}
-    return resp
+    await db.refresh(db_city)
+    return db_city
+
+
+async def get_all_temperatures(db: AsyncSession):
+    result = await db.execute(select(models.TemperatureDB))
+    return result.scalars().all()
+
+
+async def create_temperature(db: AsyncSession, temperature: schemas.TemperatureCreate):
+    db_temperature = models.TemperatureDB(**temperature.model_dump())
+    db.add(db_temperature)
+    await db.commit()
+    await db.refresh(db_temperature)
+    return db_temperature
