@@ -2,7 +2,9 @@ from collections.abc import Sequence
 
 import httpx
 from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from starlette import status
 
 import schemas
 from db import models
@@ -17,7 +19,14 @@ def create_city(db: Session, city: schemas.CityCreate) -> models.DBCity:
         additional_info=city.additional_info,
     )
     db.add(db_city)
-    db.commit()
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"City with name '{city.name}' already exists",
+        )
     db.refresh(db_city)
     return db_city
 

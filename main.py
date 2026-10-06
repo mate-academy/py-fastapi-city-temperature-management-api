@@ -9,10 +9,10 @@ import crud
 import schemas
 from db.engine import SessionLocal
 from db.models import DBCity
-from db.engine import Base, engine
 from db import models
+import logging
 
-Base.metadata.create_all(bind=engine)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -51,10 +51,6 @@ def create_city(
 def delete_city(city_id: int, db: Session = Depends(get_db)):
     crud.delete_city(db=db, city_id=city_id)
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
 
 @app.post("/temperatures/update/")
 async def update_temps(db: Session = Depends(get_db)):
@@ -68,7 +64,7 @@ async def update_temps(db: Session = Depends(get_db)):
     updated = 0
     for city, temp in zip(cities, results):
         if temp is None or isinstance(temp, Exception):
-            print(f"skip {city.name}: {temp!r}")
+            logger.warning("skip %s: %r", city.name, temp)
             continue
 
         temp_rec = models.DBTemperature(
