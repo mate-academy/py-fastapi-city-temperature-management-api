@@ -1,60 +1,110 @@
-## Task Description
+# City and Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application designed to manage city records and track current weather temperature data fetched automatically from an external weather service (Open-Meteo API).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+---
 
-### Part 1: City CRUD API
+## Tech Stack
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+- Python 3.11+
+- FastAPI — Modern, fast asynchronous web framework
+- SQLAlchemy 2.0 (Async) + aiosqlite — Asynchronous ORM with SQLite database
+- Pydantic v2 — Data validation and serialization
+- HTTPX — Asynchronous HTTP client for external API requests
+- Uvicorn — ASGI server
 
-### Part 2: Temperature API
+---
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Project Structure
 
-### Additional Requirements
+app/
+├── __init__.py
+├── main.py
+├── api/
+│   ├── __init__.py
+│   ├── dependencies.py      # Database session dependency
+│   ├── cities.py            # /cities router
+│   └── temperatures.py      # /temperatures router
+├── crud/
+│   ├── __init__.py
+│   ├── city.py              # City CRUD database operations
+│   └── temperature.py       # Temperature database operations
+├── db/
+│   ├── __init__.py
+│   ├── engine.py            # Async engine and session setup
+│   └── models.py            # SQLAlchemy models
+└── schemas/
+    ├── __init__.py
+    ├── city.py              # Pydantic models for City
+    └── temperature.py       # Pydantic models for Temperature
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+---
 
-## Evaluation Criteria
+## Setup and Execution Instructions
 
-Your task will be evaluated based on the following criteria:
+### Step 1: Set up the environment
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+Create and activate a virtual environment:
+python -m venv .venv
 
-## Deliverables
+On Linux/macOS:
+source .venv/bin/activate
 
-Please submit the following:
+On Windows (Git Bash):
+source .venv/Scripts/activate
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+On Windows (CMD):
+.venv\Scripts\activate
 
-Good luck!
+Install required dependencies:
+pip install -r requirements.txt
+
+### Step 2: Run the application
+
+uvicorn app.main:app --reload
+
+The application will be running at http://127.0.0.1:8000.
+
+### Step 3: Interactive API Documentation
+
+Swagger UI: http://127.0.0.1:8000/docs
+ReDoc: http://127.0.0.1:8000/redoc
+
+---
+
+## API Endpoints
+
+Cities API (/cities):
+- POST /cities — Create a new city record
+- GET /cities — Retrieve a list of all cities
+- GET /cities/{city_id} — Retrieve details for a specific city
+- PUT /cities/{city_id} — Update details of a specific city
+- DELETE /cities/{city_id} — Delete a specific city (cascades to related temperature records)
+
+Temperatures API (/temperatures):
+- POST /temperatures/update — Fetch and save the current temperature for all cities in the database via the Open-Meteo API
+- GET /temperatures — Retrieve history of all temperature records
+- GET /temperatures?city_id={city_id} — Retrieve temperature records for a specific city
+
+---
+
+## Design Choices and Architecture
+
+1. Concurrent Async Requests:
+Fetching weather data for multiple cities sequentially would cause performance bottlenecks. By combining httpx.AsyncClient with asyncio.gather(), weather forecasts for all cities are fetched concurrently in parallel, significantly reducing response time.
+
+2. Open-Meteo External Weather API:
+Selected Open-Meteo API as the weather provider because it is free, reliable, requires no API key registration, and provides both Geocoding and Forecast endpoints.
+
+3. Graceful Error Handling:
+By specifying return_exceptions=True in asyncio.gather(), any failure while retrieving temperature for a single city (e.g., city name not found by geocoding) is caught safely without stopping the updates for other valid cities.
+
+4. Database Cascade and Foreign Keys in SQLite:
+SQLite disables Foreign Key constraints by default. A database connection event listener (PRAGMA foreign_keys=ON) is attached to the SQLAlchemy engine to guarantee foreign key constraint enforcement and cascade deletion (ON DELETE CASCADE) when a city is removed.
+
+---
+
+## Assumptions and Simplifications
+
+- Geocoding Matching: The first result returned by the geocoding service is assumed to be the correct match for the given city name.
+- Temperature Units: All temperature values are recorded and stored in Celsius (°C).
