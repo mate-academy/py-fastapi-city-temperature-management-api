@@ -36,11 +36,11 @@ async def get_current_temperature(client: httpx.AsyncClient, city_name: str) -> 
         response.raise_for_status()
 
         return float(response.json()["current"]["temperature_2m"])
-    
+
     except httpx.HTTPError as exc:
         raise WeatherError(
             f"Weather service request failed for {city_name}: {type(exc).__name__}"
         ) from exc
-    
+
     except (KeyError, TypeError, ValueError) as exc:
         raise WeatherError(f"Unexpected response for {city_name}") from exc
