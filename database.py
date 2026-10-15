@@ -3,20 +3,19 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     AsyncSession,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from settings import settings
 
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
 
-engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-)
+engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
 AsyncSessionLocal = async_sessionmaker(
     class_=AsyncSession,
-    autocommit=False,
     autoflush=False,
     bind=engine,
     expire_on_commit=False,
 )
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass

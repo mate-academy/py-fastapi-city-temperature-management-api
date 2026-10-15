@@ -11,14 +11,15 @@ class CityCreate(CityBase):
     pass
 
 
-class CityList(CityBase):
-    id: int
-    model_config = ConfigDict(from_attributes=True)
-
-
-class CityDetail(CityList):
-    temperatures: list[TemperatureSchema] = []
-    model_config = ConfigDict(from_attributes=True)
-
 class CityUpdate(CityBase):
     pass
+
+
+class City(CityBase):
+    id: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CityDetail(City):
+    temperatures: list[TemperatureSchema] = []

@@ -1,61 +1,57 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends, HTTPException, status
 
-
-from dependencies import get_db
 from cities import schemas, crud
-from cities.utils import _get_city_or_404
+from cities.models import City
+from cities.utils import get_city_or_404
+from dependencies import DbSession
 
-router = APIRouter
+router = APIRouter(prefix="/cities", tags=["cities"])
+
+CityOr404 = Annotated[City, Depends(get_city_or_404)]
 
 
-@router.post("/cities/", response_model=schemas.CityList)
-async def create_city(
-        db: Annotated[AsyncSession, Depends(get_db)],
-        city: schemas.CityCreate
-):
-    db_city = await crud.get_city_by_name(db=db, name=city.name)
-    if db_city:
+@router.post(
+    "/",
+    response_model=schemas.City,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_city(db: DbSession, city: schemas.CityCreate):
+    if await crud.get_city_by_name(db=db, name=city.name):
         raise HTTPException(
             status_code=400, detail="City with this name already exists"
         )
 
-    return crud.create_city(db=db, city=city)
+    return await crud.create_city(db=db, city=city)
 
-@router.get("/cities/", response_model=schemas.CityList)
-async  def cities_list(
-    db: Annotated[AsyncSession, Depends(get_db)],
-):
+
+@router.get("/", response_model=list[schemas.City])
+async def cities_list(db: DbSession):
     return await crud.get_cities(db=db)
 
-@router.get("/cities/{id}/", response_model=schemas.CityDetail)
-async def city_detail(
-    db: Annotated[AsyncSession, Depends(get_db)],
-    city_id: int,
-):
-    city = await _get_city_or_404(db=db, city_id=city_id)
 
+@router.get("/{city_id}/", response_model=schemas.CityDetail)
+async def city_detail(city: CityOr404):
     return city
 
-@router.put("/cities/{id}/", response_model=schemas.CityList)
+
+@router.put("/{city_id}/", response_model=schemas.City)
 async def city_update(
-    db: Annotated[AsyncSession, Depends(get_db)],
-    city_id: int,
-    city_data: schemas.CityUpdate
+    db: DbSession,
+    city: CityOr404,
+    city_data: schemas.CityUpdate,
 ):
-    city = await _get_city_or_404(db=db, city_id=city_id)
+    same_name_city = await crud.get_city_by_name(db=db, name=city_data.name)
+    if same_name_city and same_name_city.id != city.id:
+        raise HTTPException(
+            status_code=400, detail="City with this name already exists"
+        )
 
     return await crud.update_city(db=db, db_city=city, city_data=city_data)
 
 
-@router.delete("/cities/{city_id}/")
-async def city_delete(
-    city_id: int,
-    db: Annotated[AsyncSession, Depends(get_db)],
-):
-    db_city = await _get_city_or_404(db, city_id)
-    await crud.delete_city(db=db, db_city=db_city)
+@router.delete("/{city_id}/")
+async def city_delete(db: DbSession, city: CityOr404):
+    await crud.delete_city(db=db, db_city=city)
     return {"detail": "City deleted"}
-
