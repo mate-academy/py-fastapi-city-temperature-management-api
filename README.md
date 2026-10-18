@@ -1,60 +1,83 @@
-## Task Description
+Markdown
+# Weather & Cities Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A modular **FastAPI** web service for managing cities and performing bulk asynchronous temperature updates using the **Open-Meteo API**
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## 🛠 Tech Stack
 
-### Part 1: City CRUD API
+* **Python 3.10+**
+* **FastAPI** — Web framework
+* **SQLAlchemy** — ORM for SQLite database interactions
+* **Pydantic v2** — Data validation and serialization
+* **HTTPX** — Async HTTP client for external API requests
+* **Uvicorn** — ASGI server
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+---
 
-### Part 2: Temperature API
+## 🏗 Design Decisions
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+* **Feature-Based Architecture:** The application is split into independent feature modules (`cities/` and `temperatures/`), providing a clean structure that is easy to scale and maintain
+* **External Weather Integration:** Uses the free **Open-Meteo API** (Geocoding API to resolve city coordinates and Forecast API to fetch current temperature metrics). No API keys required
+* **Cascade Deletion:** Database models configured with `cascade="all, delete-orphan"`. Deleting a city automatically cleans up all associated temperature history records
+* **Bulk Temperature Processing:** The `POST /temperatures/update` endpoint queries all existing cities from the database, asynchronously fetches their latest temperature readings, and saves the new entries in bulk
 
-### Additional Requirements
+---
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## 📁 Project Structure
 
-## Evaluation Criteria
+```text
+.
+├── database.py         # SQLite connection setup & SessionLocal configuration
+├── models.py           # SQLAlchemy models (City, Temperature)
+├── main.py             # Application entrypoint & router initialization
+├── cities/             # City management module
+│   ├── crud.py
+│   ├── router.py
+│   └── schemas.py
+├── temperatures/       # Temperature management module
+│   ├── crud.py
+│   ├── router.py
+│   ├── schemas.py
+│   └── service.py      # Async HTTP service (httpx -> Open-Meteo API)
+└── requirements.txt
+🚀 Getting Started
+1. Clone & Set Up Virtual Environment
 
-Your task will be evaluated based on the following criteria:
+python -m venv venv
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+# On Windows:
+venv\Scripts\activate
 
-## Deliverables
+# On Linux/macOS:
+source venv/bin/activate
+2. Install Dependencies
 
-Please submit the following:
+pip install -r requirements.txt
+3. Run the Uvicorn Server
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+uvicorn main:app --reload
+The application will be running at http://127.0.0.1:8000.
 
-Good luck!
+📖 API Documentation
+Interactive API documentation is generated automatically:
+
+Swagger UI: http://127.0.0.1:8000/docs
+
+ReDoc: http://127.0.0.1:8000/redoc
+
+📌 Main Endpoints
+Cities (/cities)
+POST /cities/ — Create a new city
+
+GET /cities/ — Retrieve all cities
+
+GET /cities/{city_id} — Get specific city details
+
+PUT /cities/{city_id} — Update a city's information
+
+DELETE /cities/{city_id} — Delete a city (cascades to related temperature logs)
+
+Temperatures (/temperatures)
+POST /temperatures/update — Fetch and save current weather for all registered cities via Open-Meteo
+
+GET /temperatures/ or GET /temperatures/?city_id={id} — Retrieve temperature history (filterable by city_id)
