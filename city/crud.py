@@ -5,7 +5,9 @@ from city import models
 
 
 async def get_all_cities(db: AsyncSession) -> list[models.DBCity]:
-    return await db.scalars(select(models.DBCity).all())
+    cities = await db.scalars(select(models.DBCity))
+
+    return cities.all()
 
 
 async def create_city(db: AsyncSession, city: models.DBCity) -> models.DBCity:
