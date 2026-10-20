@@ -1,0 +1,1 @@
+"""City temperature management application."""

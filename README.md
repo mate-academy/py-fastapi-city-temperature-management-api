@@ -1,60 +1,82 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application for maintaining a list of cities and recording their current
+temperatures. Data is stored in SQLite through SQLAlchemy. Current weather is loaded
+asynchronously from the keyless [Open-Meteo API](https://open-meteo.com/).
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Running the application
 
-### Part 1: City CRUD API
+Python 3.11 or newer is recommended.
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
 
-### Part 2: Temperature API
+The API is then available at `http://127.0.0.1:8000`. Interactive OpenAPI
+documentation is available at `http://127.0.0.1:8000/docs`.
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+By default, the application creates `city_temperatures.db` in the project directory.
+Set `DATABASE_URL` to use another SQLAlchemy database URL:
 
-### Additional Requirements
+```bash
+DATABASE_URL=sqlite:///./another.db uvicorn app.main:app
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## API
 
-## Evaluation Criteria
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/cities` | Create a city |
+| `GET` | `/cities` | List cities |
+| `GET` | `/cities/{city_id}` | Get one city |
+| `PUT` | `/cities/{city_id}` | Update supplied city fields |
+| `DELETE` | `/cities/{city_id}` | Delete a city and its temperature history |
+| `POST` | `/temperatures/update` | Fetch and save current temperatures for all cities |
+| `GET` | `/temperatures` | List all recorded temperatures |
+| `GET` | `/temperatures?city_id=1` | Filter temperature history by city |
+| `GET` | `/health` | Health check |
 
-Your task will be evaluated based on the following criteria:
+Example:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```bash
+curl -X POST http://127.0.0.1:8000/cities \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Dublin","additional_info":"Ireland"}'
 
-## Deliverables
+curl -X POST http://127.0.0.1:8000/temperatures/update
+curl 'http://127.0.0.1:8000/temperatures?city_id=1'
+```
 
-Please submit the following:
+## Design choices
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+- Routers, persistence models, validation schemas, and the external weather client
+  are separated so each part can be tested or replaced independently.
+- A database session and the weather service are injected as FastAPI dependencies.
+- Weather requests for all cities run concurrently using `asyncio.gather`. Records
+  are committed only after every request succeeds; an upstream failure returns
+  `502 Bad Gateway` without saving a partial update.
+- SQLAlchemy provides the persistence layer, while SQLite keeps local setup simple.
+- The application creates its database tables automatically during startup.
 
-Good luck!
+## Assumptions and simplifications
+
+- Open-Meteo geocoding can return several places with the same name. This project
+  intentionally uses the first result because the required city model has no country
+  or coordinates.
+- Deleting a city cascades to its temperature history.
+- Every call to `/temperatures/update` creates a new history record for each city,
+  even if Open-Meteo returns the same observation time as an earlier call.
+- Database migrations and authentication are outside the scope of this assignment.
+
+## Tests
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+Tests use an isolated in-memory SQLite database and a fake weather service, so they
+do not require internet access.
