@@ -19,8 +19,16 @@ async def create_city(db: AsyncSession, city: models.DBCity) -> models.DBCity:
     db.add(db_city)
     await db.commit()
     await db.refresh(db_city)
+    return db_city
 
 
 async def delete_city(db: AsyncSession, city_id: int) -> None:
-    return await db.delete(models.DBCity).where(models.DBCity.id == city_id)
+    result = await db.scalars(
+        select(models.DBCity).where(models.DBCity.id == city_id)
+    )
+    city = result.first()
+
+    if city is not None:
+        await db.delete(city)
+        await db.commit()
 
