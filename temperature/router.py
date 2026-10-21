@@ -15,6 +15,6 @@ async def read_temperatures(db: Annotated[AsyncSession, Depends(get_db)], city_i
     return await crud.get_all_temperatures(db=db, city_id=city_id)
 
 
-@router.post("/temperatures/", response_model=list[schemas.TemperatureCreate])
+@router.post("/temperatures/update/", response_model=list[schemas.TemperatureCreate])
 async def create_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
     return await crud.create_temperatures_by_helper(db)
