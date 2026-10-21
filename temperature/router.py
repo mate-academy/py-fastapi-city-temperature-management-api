@@ -12,4 +12,4 @@ router = APIRouter()
 
 @router.get("/temperatures/", response_model=list[schemas.Temperature])
 async def read_temperatures(db: Annotated[AsyncSession, Depends(get_db)]):
-    return await crud.get_temperatures(db)
+    return await crud.get_all_temperatures(db)
