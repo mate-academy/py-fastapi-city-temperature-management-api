@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "City temperature"
 
     DATABASE_URL: str = "sqlite+aiosqlite:///./db.sqlite3"
+    API_KEY: str
 
     class Config:
         case_sensitive = True
