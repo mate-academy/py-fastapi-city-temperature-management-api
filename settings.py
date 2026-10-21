@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PROJECT_NAME: str = "City temperature"
 
-    DATABASE_URL: str = "sqlite+aiosqlite:///./db.sqlite3"
+    DATABASE_URL: str
     API_KEY: str
 
     class Config:
