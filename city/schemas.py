@@ -5,6 +5,7 @@ class CityBase(BaseModel):
     name: str
     additional_info: str
 
+
 class CityCreate(CityBase):
     pass
 

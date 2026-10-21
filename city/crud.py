@@ -31,4 +31,3 @@ async def delete_city(db: AsyncSession, city_id: int) -> None:
     if city is not None:
         await db.delete(city)
         await db.commit()
-

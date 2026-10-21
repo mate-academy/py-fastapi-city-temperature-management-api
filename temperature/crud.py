@@ -10,7 +10,10 @@ from temperature.models import DBTemperature
 from temperature.weather_helper import get_weather
 
 
-async def get_all_temperatures(db: AsyncSession, city_id: int | None) -> list[models.DBTemperature]:
+async def get_all_temperatures(
+        db: AsyncSession,
+        city_id: int | None
+) -> list[models.DBTemperature]:
     query = select(DBTemperature).options(
         selectinload(DBTemperature.city)
     )
@@ -22,7 +25,9 @@ async def get_all_temperatures(db: AsyncSession, city_id: int | None) -> list[mo
     return result.all()
 
 
-async def create_temperatures_by_helper(db: AsyncSession) -> models.DBTemperature:
+async def create_temperatures_by_helper(
+        db: AsyncSession
+) -> models.DBTemperature:
     result = await db.scalars(select(DBCity))
     cities = result.all()
 
