@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from city import models
+from city import models, schemas
 
 
 async def get_all_cities(db: AsyncSession) -> list[models.DBCity]:
@@ -10,7 +10,7 @@ async def get_all_cities(db: AsyncSession) -> list[models.DBCity]:
     return cities.all()
 
 
-async def create_city(db: AsyncSession, city: models.DBCity) -> models.DBCity:
+async def create_city(db: AsyncSession, city: schemas.CityCreate) -> models.DBCity:
     db_city = models.DBCity(
         name=city.name,
         additional_info=city.additional_info,

@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
+from fastapi.openapi.models import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from city import schemas, crud, models
@@ -24,9 +25,15 @@ async def create_city(
     return await crud.create_city(db=db, city=city)
 
 
-@router.delete("/cities/{city_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/cities/{city_id}/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response,
+    response_model=None
+)
 async def delete_city(
         city_id: int,
         db: Annotated[AsyncSession, Depends(get_db)]
-) -> models.DBCity:
-    return await crud.delete_city(db=db, city_id=city_id)
+) -> Response:
+    await crud.delete_city(db=db, city_id=city_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

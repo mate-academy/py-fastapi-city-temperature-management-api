@@ -1,15 +1,15 @@
-import os
-
 import httpx
 from dotenv import load_dotenv
 
+from settings import settings
+
 load_dotenv()
 
-API_KEY = os.environ.get("API_KEY")
+API_KEY = settings.API_KEY
 WEATHER_URL = "https://api.weatherapi.com/v1/current.json"
 
 
-async def get_weather(city: str) -> None:
+async def get_weather(city: str) -> float:
     if not API_KEY:
         raise httpx.HTTPStatusError("API key not provided")
     async with httpx.AsyncClient() as client:
