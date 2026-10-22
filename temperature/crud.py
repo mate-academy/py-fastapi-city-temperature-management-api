@@ -27,7 +27,7 @@ async def get_all_temperatures(
 
 async def create_temperatures_by_helper(
         db: AsyncSession
-) -> list[models.DBTemperature]:
+) -> models.DBTemperature:
     result = await db.scalars(select(DBCity))
     cities = result.all()
 

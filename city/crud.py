@@ -12,7 +12,7 @@ async def get_all_cities(db: AsyncSession) -> list[models.DBCity]:
 
 async def create_city(
         db: AsyncSession,
-        city: schemas.CityCreate
+        city: models.DBCity
 ) -> models.DBCity:
     db_city = models.DBCity(
         name=city.name,
