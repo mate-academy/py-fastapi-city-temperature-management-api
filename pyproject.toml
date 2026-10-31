@@ -3,7 +3,10 @@ name = "py-fastapi-city-temperature-management-api"
 version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "fastapi>=0.162.0",
+    "httpx>=0.28.1",
     "pydantic-settings>=2.16.2",
     "sqlalchemy>=2.1.6",
+    "uvicorn>=0.30.0",
 ]

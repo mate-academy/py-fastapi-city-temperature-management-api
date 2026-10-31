@@ -1,22 +1,17 @@
-from typing import Annotated
+from fastapi import APIRouter, HTTPException, status
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from dependencies import get_db
-from city import schemas, crud
+from city import crud, schemas
+from dependencies import DbSession
 
 router = APIRouter(prefix="/cities", tags=["cities"])
 
-DbSession = Annotated[AsyncSession, Depends(get_db)]
 
-
-@router.post("/", response_model=schemas.City, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=schemas.City, status_code=status.HTTP_201_CREATED)
 async def city_create(data: schemas.CityCreate, db: DbSession):
     return await crud.create_city(db=db, data=data)
 
 
-@router.get("/", response_model=list[schemas.City])
+@router.get("", response_model=list[schemas.City])
 async def cities_get(db: DbSession):
     return await crud.get_all_cities(db=db)
 
