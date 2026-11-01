@@ -9,4 +9,4 @@ class CityRead(BaseModel):
 
 class CityCreate(BaseModel):
     name: str
-    additional_info: str
+    additional_info: str | None = None

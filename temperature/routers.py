@@ -25,7 +25,7 @@ def temperatures_read(
     return get_all_temps(db)
 
 
-@temp_router.get("/temperatures/{city_id}", response_model=list[schemas.TemperatureRead])
+@temp_router.get("/temperatures/?city_id={city_id}", response_model=list[schemas.TemperatureRead])
 def temperature_read(
     city_id: int,
     db: Session = Depends(get_db),
