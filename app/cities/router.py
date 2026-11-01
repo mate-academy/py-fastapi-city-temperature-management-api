@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.cities.models import City
 from app.cities.schemas import CityRead, CityCreate
@@ -10,88 +11,78 @@ from app.db.database import get_db
 router = APIRouter()
 
 @router.get("", response_model=list[CityRead])
-def get_cities(db: Session = Depends(get_db)):
-    return db.query(City).all()
+async def get_cities(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(City))
+    return result.scalars().all()
 
 @router.get("/{city_id}", response_model=CityRead)
-def get_city(city_id: int, db: Session = Depends(get_db)):
-    city = db.query(City).filter(City.id == city_id).first()
+async def get_city(
+    city_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    city = await db.get(City, city_id)
 
     if city is None:
-        raise HTTPException(
-            status_code=404,
-            detail="City not found"
-        )
+        raise HTTPException(status_code=404, detail="City not found")
 
     return city
 
-@router.post(
-    "",
-    response_model=CityRead,
-    status_code=201
-)
-def post_city(
-        new_city: CityCreate,
-        db: Session = Depends(get_db)
+@router.post("", response_model=CityRead, status_code=201)
+async def create_city(
+    new_city: CityCreate,
+    db: AsyncSession = Depends(get_db),
 ):
+    city = City(**new_city.model_dump())
+    db.add(city)
+
     try:
-        city = City(**new_city.model_dump())
-        db.add(city)
-        db.commit()
-        db.refresh(city)
-
+        await db.commit()
+        await db.refresh(city)
         return city
-
     except SQLAlchemyError:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(
             status_code=500,
-            detail="Database operation failed"
+            detail="Database operation failed",
         )
 
 @router.put("/{city_id}", response_model=CityRead)
-def update_city(
+async def update_city(
     city_id: int,
     fields_to_update: CityCreate,
-    db: Session = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
 ):
+    city = await db.get(City, city_id)
+
+    if city is None:
+        raise HTTPException(status_code=404, detail="City not found")
+
+    for field, value in fields_to_update.model_dump().items():
+        setattr(city, field, value)
+
     try:
-        city_to_update = db.query(City).filter(City.id == city_id).first()
-
-        if city_to_update is None:
-            raise HTTPException(
-                status_code=404,
-                detail="City not found"
-            )
-
-        for field, value in fields_to_update.model_dump().items():
-            setattr(city_to_update, field, value)
-        db.commit()
-        db.refresh(city_to_update)
-
-        return city_to_update
-
+        await db.commit()
+        await db.refresh(city)
+        return city
     except SQLAlchemyError:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(
             status_code=500,
-            detail="Database operation failed"
+            detail="Database operation failed",
         )
 
 @router.delete("/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_city(city_id: int, db: Session = Depends(get_db)):
+async def delete_city(city_id: int, db: AsyncSession = Depends(get_db)):
+    city = await db.get(City, city_id)
+
+    if city is None:
+        raise HTTPException(status_code=404, detail="City not found")
     try:
-        city_to_delete = db.query(City).filter(City.id == city_id).first()
-        if city_to_delete is None:
-            raise HTTPException(
-                status_code=404,
-                detail="City not found"
-            )
-        db.delete(city_to_delete)
-        db.commit()
+        await db.delete(city)
+        await db.commit()
     except SQLAlchemyError:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(
             status_code=500,
-            detail="Database operation failed"
+            detail="Database operation failed",
         )

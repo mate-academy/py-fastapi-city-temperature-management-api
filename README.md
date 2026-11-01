@@ -1,60 +1,139 @@
-## Task Description
+# City Temperature API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+An asynchronous FastAPI application for managing cities and collecting their current temperatures from an external weather service.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+## Features
 
-### Part 1: City CRUD API
+- Create, read, update, and delete cities
+- Fetch current temperatures for all stored cities
+- Store temperature history in SQLite
+- Filter temperature records by city
+- Asynchronous database and HTTP operations
+- Automatic cascade deletion of related temperature records
+- Interactive API documentation
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+## Tech Stack
 
-### Part 2: Temperature API
+- Python 3.12+
+- FastAPI
+- SQLAlchemy Async
+- SQLite with `aiosqlite`
+- Alembic
+- HTTPX
+- WeatherAPI
+- Pydantic
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+## Installation
 
-### Additional Requirements
+The project uses [uv](https://docs.astral.sh/uv/) for dependency management.
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+Install the project dependencies:
 
-## Evaluation Criteria
+```bash
+uv sync
+```
 
-Your task will be evaluated based on the following criteria:
+Create a `.env` file based on `.sample.env`:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```env
+WEATHER_API_KEY=your_weather_api_key
+```
 
-## Deliverables
+A free API key can be obtained from [WeatherAPI](https://www.weatherapi.com/).
 
-Please submit the following:
+## Database Setup
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+Apply all database migrations:
 
-Good luck!
+```bash
+uv run alembic upgrade head
+```
+
+## Running the Application
+
+Start the development server:
+
+```bash
+uv run uvicorn app.main:app --reload
+```
+
+The application will be available at:
+
+- API: http://127.0.0.1:8000
+- Swagger UI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
+
+## Running Tests
+
+```bash
+uv run pytest
+```
+
+## API Endpoints
+
+### Cities
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/cities` | Create a city |
+| `GET` | `/cities` | Get all cities |
+| `GET` | `/cities/{city_id}` | Get a city by ID |
+| `PUT` | `/cities/{city_id}` | Update a city |
+| `DELETE` | `/cities/{city_id}` | Delete a city |
+
+Example request:
+
+```json
+{
+  "name": "Kyiv",
+  "additional_info": "Capital of Ukraine"
+}
+```
+
+### Temperatures
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/temperatures/update` | Fetch and store temperatures for all cities |
+| `GET` | `/temperatures` | Get complete temperature history |
+| `GET` | `/temperatures?city_id={city_id}` | Filter temperature records by city |
+
+Temperatures are stored in degrees Celsius.
+
+## Design Choices
+
+- Database operations use SQLAlchemy `AsyncSession`.
+- Weather requests are performed asynchronously with HTTPX.
+- Requests for multiple cities are executed concurrently.
+- Alembic manages the database schema.
+- SQLite foreign keys are enabled explicitly.
+- Deleting a city also deletes its temperature history through `ON DELETE CASCADE`.
+- Database operations are rolled back when an error occurs.
+
+## Project Structure
+
+```text
+app/
+├── cities/
+│   ├── models.py
+│   ├── router.py
+│   └── schemas.py
+├── temperature/
+│   ├── models.py
+│   ├── router.py
+│   ├── schemas.py
+│   └── services.py
+├── db/
+│   └── database.py
+└── main.py
+
+alembic/
+└── versions/
+```
+
+## Assumptions and Simplifications
+
+- City names must be recognized by WeatherAPI.
+- Temperature values are stored in Celsius.
+- A single failed weather request prevents the update operation from being completed.
+- SQLite is used because the project is intended for educational and local use.
