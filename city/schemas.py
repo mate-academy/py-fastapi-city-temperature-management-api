@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class CityRead(BaseModel):
     id: int
     name: str
-    additional_info: str
+    additional_info: str | None = None
 
 
 class CityCreate(BaseModel):

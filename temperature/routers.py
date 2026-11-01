@@ -20,22 +20,16 @@ temp_router = APIRouter()
 
 @temp_router.get("/temperatures/", response_model=list[schemas.TemperatureRead])
 def temperatures_read(
+    city_id: int | None = None,
     db: Session = Depends(get_db),
 ):
-    return get_all_temps(db)
+    if city_id is None:
+        return get_all_temps(db)
 
-
-@temp_router.get("/temperatures/?city_id={city_id}", response_model=list[schemas.TemperatureRead])
-def temperature_read(
-    city_id: int,
-    db: Session = Depends(get_db),
-):
-    db_temp = crud.get_temps_by_city(db, city_id)
-
-    if db_temp is None:
+    if db.get(DBCity, city_id) is None:
         raise HTTPException(status_code=404, detail="No such city!")
-    else:
-        return db_temp
+
+    return crud.get_temps_by_city(db, city_id)
 
 
 @temp_router.post("/temperatures/update/", response_model=list[schemas.TemperatureRead])
