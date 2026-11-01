@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import httpx
 import asyncio
 
@@ -52,18 +54,13 @@ async def get_weather(client: httpx.AsyncClient, city: str):
     }
 
 
-async def scrap_cities_weather():
-    сities = ["Berlin", "Hamburg"]
-
+async def scrap_cities_weather(cities: list[str]):
     async with httpx.AsyncClient() as client:
         tasks = [
             get_weather(client, city)
-            for city in сities
+            for city in cities
         ]
 
         result = await asyncio.gather(*tasks)
 
     return result
-
-
-print(asyncio.run(scrap_cities_weather()))
