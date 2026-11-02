@@ -36,7 +36,7 @@ async def city_update(city_id: int, db: DbSession, data: schemas.CityUpdate):
     return city
 
 
-@router.delete("/{city_id}", response_model=schemas.City)
+@router.delete("/{city_id}", response_model=bool)
 async def city_delete(city_id: int, db: DbSession):
     if not await crud.delete_city(db=db, city_id=city_id):
         raise HTTPException(
