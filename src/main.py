@@ -8,7 +8,7 @@ from src.temperature.router import router as temperature_router
 
 Base.metadata.create_all(bind=engine)
 
-src = FastAPI(title="City Temperature Management API")
+app = FastAPI(title="City Temperature Management API")
 
-src.include_router(city_router)
-src.include_router(temperature_router)
+app.include_router(city_router)
+app.include_router(temperature_router)
