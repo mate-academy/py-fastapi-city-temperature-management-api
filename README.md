@@ -74,6 +74,9 @@ The SQLite database (`cities.db`) is created in the current working directory
 when the application starts. Interactive API documentation is available at
 `http://127.0.0.1:8000/docs`.
 
+On startup, the application adds Kyiv, Lviv, and Odesa as demo cities if they
+do not already exist. Existing cities and their data are preserved.
+
 ## API examples
 
 - `POST /cities` with `{"name": "Kyiv", "additional_info": "Ukraine"}` creates a city.
@@ -82,6 +85,11 @@ when the application starts. Interactive API documentation is available at
 - `DELETE /cities/{city_id}` deletes the city and its temperature history.
 - `POST /temperatures/update` fetches and stores current readings for known cities.
 - `GET /temperatures` lists readings; `GET /temperatures?city_id=1` filters by city.
+
+City endpoints return `404` when a requested city does not exist and `409` when
+a create or update conflicts with an existing city name. Temperature updates
+return the number of readings stored; unresolved cities and upstream failures
+are skipped.
 
 ## Design choices and assumptions
 

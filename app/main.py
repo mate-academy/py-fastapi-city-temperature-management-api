@@ -1,4 +1,6 @@
 from datetime import datetime
+from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator
 
 import httpx
 from fastapi import Depends, FastAPI, HTTPException, Query, Response, status
@@ -10,7 +12,6 @@ from app.models import City, Temperature
 from app.schemas import CityCreate, CityRead, CityUpdate, TemperatureRead
 
 Base.metadata.create_all(bind=engine)
-app = FastAPI(title="City Temperature API")
 
 
 def seed_demo_data() -> None:
@@ -27,6 +28,15 @@ def seed_demo_data() -> None:
         db.commit()
     finally:
         db.close()
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    seed_demo_data()
+    yield
+
+
+app = FastAPI(title="City Temperature API", lifespan=lifespan)
 
 
 @app.post("/cities", response_model=CityRead, status_code=status.HTTP_201_CREATED)
