@@ -1,3 +1,92 @@
+# City Temperature Management API
+
+A FastAPI app that manages cities and stores a history of their temperatures.
+Current temperatures come from [Open-Meteo](https://open-meteo.com/), which is
+free and needs no API key.
+
+## How to run
+
+```bash
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env               # sets DATABASE_URL (SQLite by default)
+uvicorn main:app --reload
+```
+
+Open http://127.0.0.1:8000/docs for interactive Swagger docs.
+Tables are created automatically on startup.
+
+## Endpoints
+
+| Method | Path                            | Description                                  |
+|--------|---------------------------------|----------------------------------------------|
+| POST   | `/cities`                       | Create a city                                |
+| GET    | `/cities`                       | List cities (`skip`, `limit`)                |
+| GET    | `/cities/{city_id}`             | Get one city                                 |
+| PUT    | `/cities/{city_id}`             | Update a city (partial updates allowed)      |
+| DELETE | `/cities/{city_id}`             | Delete a city and its temperature records    |
+| POST   | `/temperatures/update`          | Fetch and store current temperature for all cities |
+| GET    | `/temperatures`                 | List temperature records, newest first (`skip`, `limit`) |
+| GET    | `/temperatures?city_id={id}`    | Temperature records for one city             |
+
+Example:
+
+```bash
+curl -X POST localhost:8000/cities/ -H "Content-Type: application/json" \
+     -d '{"name": "Kyiv", "additional_info": "Capital of Ukraine"}'
+curl -X POST localhost:8000/temperatures/update
+curl "localhost:8000/temperatures/?city_id=1"
+```
+
+## Project structure
+
+```
+main.py                 # app factory: routers + table creation on startup
+dependencies.py         # get_db session dependency (DbSession alias)
+database/               # engine, session factory, declarative Base
+models/                 # SQLAlchemy models: City, Temperature
+schemas/                # Pydantic schemas for requests/responses
+cities/                 # city router + CRUD functions
+temperatures/           # temperature router, CRUD, async weather client
+```
+
+## Design choices
+
+- **Split by feature.** Each app (`cities`, `temperatures`) has its own router
+  and CRUD module, following FastAPI's "bigger applications" layout. Models and
+  schemas live in shared packages so both apps can use them.
+- **Dependency injection.** `get_db` yields one session per request.
+  `get_city_or_404` is a dependency too, so the get/update/delete routes share
+  the same lookup and 404 handling.
+- **Async fetching.** `POST /temperatures/update` uses `httpx.AsyncClient` and
+  `asyncio.gather` to query all cities concurrently instead of one by one.
+- **Partial failure is OK.** If some cities can't be resolved (typo, network
+  error), the others are still saved. The response lists both `updated` and
+  `failed` cities. Only if *every* city fails does the endpoint return 502.
+- **Error handling.** 404 for unknown cities, 400 for duplicate city names,
+  422 for invalid input (Pydantic), 502 when the weather service is unusable.
+- **Cascading deletes.** Deleting a city deletes its temperature history.
+  SQLite foreign keys are switched on for this.
+
+## Assumptions and simplifications
+
+- City names are unique and are looked up by name in Open-Meteo's geocoding
+  API; the first match is used. Ambiguous names (e.g. "Paris" in Texas vs
+  France) resolve to the most populated match.
+- Temperatures are in °C. `date_time` is the observation time reported by
+  Open-Meteo, in UTC.
+- Tables are created with `Base.metadata.create_all` on startup instead of
+  Alembic migrations, to keep the project small.
+- The database layer is synchronous SQLAlchemy (fine for SQLite); only the
+  external HTTP calls are async.
+- No authentication.
+
+---
+
+<details>
+<summary>Original task description</summary>
+
 ## Task Description
 
 You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
@@ -58,3 +147,5 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+</details>
