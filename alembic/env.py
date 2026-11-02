@@ -1,14 +1,15 @@
 import os
 from logging.config import fileConfig
 
+from alembic import context
 from dotenv import load_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
-from alembic import context
-
-from cities.models import City # noqa
+from cities.models import City  # noqa
 from database import Base
+from temperatures.models import Temperature  # noqa
+
 load_dotenv()
 
 # this is the Alembic Config object, which provides
@@ -27,6 +28,7 @@ config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", ""))
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata
+
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
