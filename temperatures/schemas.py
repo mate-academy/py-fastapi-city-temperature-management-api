@@ -9,13 +9,13 @@ class TemperatureBase(BaseModel):
     temperature: float
 
 
-class Temperature(STemperatureBase):
+class Temperature(TemperatureBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class TemperatureCreate(STemperatureBase):
+class TemperatureCreate(TemperatureBase):
     pass
 
 
