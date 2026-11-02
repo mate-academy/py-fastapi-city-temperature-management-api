@@ -11,12 +11,11 @@ import asyncio
 from city import crud as city_crud
 
 
-
 def get_all_temperatures(
-    db: Session,
-    city_id: int | None = None,
-    skip: int = 0,
-    limit: int = 100,
+        db: Session,
+        city_id: int | None = None,
+        skip: int = 0,
+        limit: int = 100,
 ):
     queryset = db.query(models.DBTemperature)
     if city_id is not None:
@@ -27,10 +26,10 @@ def get_all_temperatures(
 
 
 def create_temperature(
-    db: Session,
-    city_id: int,
-    date_time: datetime,
-    temperature: float,
+        db: Session,
+        city_id: int,
+        date_time: datetime,
+        temperature: float,
 ):
     db_temperature = models.DBTemperature(
         city_id=city_id,
@@ -74,8 +73,6 @@ async def fetch_temperature(city_name: str) -> float | None:
             return weather_data["current"]["temperature_2m"]
     except httpx.HTTPError:
         return None
-
-
 
 
 async def update_temperatures(db: Session) -> None:

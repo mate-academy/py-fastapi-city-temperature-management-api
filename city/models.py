@@ -3,6 +3,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
 
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from temperature.models import DBTemperature
+
 
 class DBCity(Base):
     __tablename__ = "city"

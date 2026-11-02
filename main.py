@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 
 from database import engine, Base
-from city import models as city_models
-from temperature import models as temperature_models
 from city.router import router as city_router
 from temperature.router import router as temperature_router
 
