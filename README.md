@@ -58,3 +58,85 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+
+---
+
+# Weather API
+
+FastAPI application that manages cities and stores their temperature history.
+Temperatures are fetched from the Open-Meteo API.
+
+## How to run
+
+1. Create and activate a virtual environment:
+
+   ```bash
+   python -m venv venv
+   venv\Scripts\activate        # Linux/Mac: source venv/bin/activate
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Start the server from the project root:
+
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+4. Open the interactive docs: http://127.0.0.1:8000/docs
+
+The SQLite database file `weather.db` is created automatically on first start.
+
+## Endpoints
+
+### Cities
+- `POST /cities` create a city
+- `GET /cities` list cities
+- `GET /cities/{city_id}` get one city
+- `PUT /cities/{city_id}` update a city
+- `DELETE /cities/{city_id}` delete a city (its temperature records are deleted too)
+
+### Temperatures
+- `POST /temperatures/update` fetch current temperature for all cities and store it
+- `GET /temperatures` list all temperature records
+- `GET /temperatures?city_id={city_id}` list records of one city
+
+## Project structure
+
+```
+app/
+├── main.py          application entry point
+├── database.py      engine, session, get_db dependency
+├── city/            models, schemas, crud, router for cities
+└── temperature/     models, schemas, crud, router, service for temperatures
+```
+
+## Design choices
+
+- The project is split by domain (`city`, `temperature`), each with the same
+  layers: models, schemas, crud, router. This keeps related code together.
+- Database access is isolated in `crud.py`; routers only handle HTTP.
+- Database sessions are provided through FastAPI dependency injection (`get_db`).
+- Open-Meteo is used because it is free and needs no API key. It works with
+  coordinates, so each city is first resolved through its geocoding API.
+- Temperatures are fetched with `httpx.AsyncClient` and `asyncio.gather`,
+  so all cities are requested concurrently.
+- `service.py` only talks to the external API and does not touch the database.
+- City names are unique; duplicates return 400, missing cities return 404.
+- A failure for one city (not found, network error) does not break the update
+  for the other cities.
+
+## Assumptions and simplifications
+
+- Database work is synchronous (SQLAlchemy); only the external requests are async.
+- Tables are created with `create_all`, no migrations (Alembic) are used.
+- Times are stored in UTC without timezone info.
+- Temperature is in degrees Celsius.
+- City names are expected in English, because the geocoder finds them best.
+- Cities that cannot be found by the geocoder are skipped during the update.
+- Every call to `POST /temperatures/update` adds new records (history is kept).
