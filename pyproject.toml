@@ -1,0 +1,22 @@
+[project]
+name = "py-fastapi-city-temperature-management-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "sofia_pohuliailo", email = "spohuliailo@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.162.0",
+    "httpx>=0.28.1",
+    "pydantic-settings>=2.16.2",
+    "sqlalchemy>=2.1.6",
+]
+
+[project.scripts]
+py-fastapi-city-temperature-management-api = "py_fastapi_city_temperature_management_api:main"
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
