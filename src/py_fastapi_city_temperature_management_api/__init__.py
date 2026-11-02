@@ -1,2 +1,3 @@
-def main() -> None:
-    print("Hello from py-fastapi-city-temperature-management-api!")
+from main import app
+
+__all__ = ["app"]
