@@ -1,60 +1,71 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Project Description
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+A FastAPI application for managing cities and their temperature data.
 
-### Part 1: City CRUD API
+The application has two main features:
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+1. A CRUD (Create, Read, Update, Delete) API for managing cities.
+2. An API that asynchronously fetches current temperatures for all stored cities, saves them to the database, and provides access to temperature history.
 
-### Part 2: Temperature API
+## Technologies
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+- Python
+- FastAPI
+- SQLAlchemy
+- SQLite
+- HTTPX
+- WeatherAPI
 
-### Additional Requirements
+## Installation
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+Clone the repository:
 
-## Evaluation Criteria
+```bash
+git clone YOUR_REPOSITORY_URL
+cd py-fastapi-city-temperature-management-api
+```
 
-Your task will be evaluated based on the following criteria:
+Install dependencies:
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+```bash
+uv sync
+```
 
-## Deliverables
+## Configuration
 
-Please submit the following:
+1. Get a free API key from [WeatherAPI](https://www.weatherapi.com/).
+2. Create a `.env` file in the project root.
+3. Add your API key:
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+```env
+WEATHER_API_KEY=your_api_key
+```
 
-Good luck!
+## Running
+
+Start the server:
+
+```bash
+uv run uvicorn main:app --reload
+```
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/cities/` | Get all cities |
+| POST | `/cities/` | Create a city |
+| GET | `/cities/{city_id}/` | Get a city by ID |
+| PUT | `/cities/{city_id}/` | Update a city |
+| DELETE | `/cities/{city_id}/` | Delete a city |
+| POST | `/temperatures/update/` | Fetch and save current temperatures |
+| GET | `/temperatures/` | Get temperature history |
+| GET | `/temperatures/?city_id=1` | Filter temperatures by city ID |
+
+## Swagger Documentation
+
+Interactive API documentation is available at:
+
+http://127.0.0.1:8000/docs
