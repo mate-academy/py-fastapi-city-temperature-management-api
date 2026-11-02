@@ -86,7 +86,7 @@ uv run alembic upgrade head
 ### 5. Run the application
 
 ```bash
-uv run uvicorn main:app --reload --app-dir src
+uv run py-fastapi-city-temperature-management-api
 ```
 
 The API is now available at `http://127.0.0.1:8000`.
