@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.city import crud, schemas
-from app.city.models import City
-from app.dependencies import get_db
+from src.city import crud, schemas
+from src.city.models import City
+from src.dependencies import get_db
 
 router = APIRouter(prefix="/cities", tags=["cities"])
 

@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.city.models import City
-from app.city.schemas import CityCreate, CityUpdate
+from src.city.models import City
+from src.city.schemas import CityCreate, CityUpdate
 
 
 def get_cities(db: Session, skip: int = 0, limit: int | None = 100) -> list[City]:
