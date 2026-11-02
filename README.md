@@ -58,3 +58,38 @@ Please submit the following:
     - Any assumptions or simplifications you made.
 
 Good luck!
+
+## Running the application
+
+Requires Python 3.10 or newer.
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+The SQLite database (`cities.db`) is created in the current working directory
+when the application starts. Interactive API documentation is available at
+`http://127.0.0.1:8000/docs`.
+
+## API examples
+
+- `POST /cities` with `{"name": "Kyiv", "additional_info": "Ukraine"}` creates a city.
+- `GET /cities` lists cities; `GET /cities/{city_id}` gets one city.
+- `PUT /cities/{city_id}` updates supplied city fields.
+- `DELETE /cities/{city_id}` deletes the city and its temperature history.
+- `POST /temperatures/update` fetches and stores current readings for known cities.
+- `GET /temperatures` lists readings; `GET /temperatures?city_id=1` filters by city.
+
+## Design choices and assumptions
+
+SQLAlchemy models define the SQLite tables, while Pydantic schemas validate
+requests and serialize responses. FastAPI dependencies provide a database
+session per request. City names are unique because temperature lookup uses the
+city name for geocoding. Temperature updates use the Open-Meteo geocoding and
+forecast APIs, require no API key, and skip cities that cannot be resolved or
+whose upstream request fails. The recorded timestamp and temperature come from
+the provider's current observation; the temperature is in Celsius. Deleting a
+city also deletes its temperature history.
