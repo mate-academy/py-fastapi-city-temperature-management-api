@@ -1,12 +1,12 @@
-## Інструкція з запуску
+# City Temperature API
 
-1. **Створіть та активуйте віртуальне середовище**:
+A FastAPI application that manages city data and asynchronously tracks their temperatures using Open-Meteo API.
+
+## Requirements
+- Python 3.10+
+- `uv` package manager
+
+## How to Run
+1. Install dependencies and run using uv:
    ```bash
-   py -m venv .venv
-   # Windows:
-   .venv\Scripts\activate
-   # macOS / Linux:
-   source .venv/bin/activate
-   pip install -r requirements.txt
-   uvicorn app.main:app --reload
-   
+   uv run uvicorn city_temp.main:app --reload

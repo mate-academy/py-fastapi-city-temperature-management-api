@@ -20,6 +20,26 @@ def create_city(db: Session, city: schemas.CityCreate):
   return db_city
 
 
+def update_city(db: Session, city_id: int, city_data: schemas.CityCreate):
+  db_city = get_city(db, city_id)
+  if not db_city:
+    return None
+  db_city.name = city_data.name
+  db_city.additional_info = city_data.additional_info
+  db.commit()
+  db.refresh(db_city)
+  return db_city
+
+
+def delete_city(db: Session, city_id: int):
+  db_city = get_city(db, city_id)
+  if not db_city:
+    return None
+  db.delete(db_city)
+  db.commit()
+  return db_city
+
+
 def get_temperatures(db: Session, city_id: int | None = None):
   query = db.query(models.Temperature)
   if city_id is not None:
