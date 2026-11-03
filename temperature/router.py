@@ -5,14 +5,13 @@ from dependencies import get_db
 from temperature import crud
 from temperature.schemas import TemperatureRead
 
-import asyncio
 
 router = APIRouter(prefix="/temperatures", tags=["Temperatures"])
 
 
 @router.post("/update", status_code=status.HTTP_200_OK)
 async def update_temperatures(db: Session = Depends(get_db)):
-  created_count = asyncio.run(crud.update_temperatures_for_all_cities(db))
+  created_count = await crud.update_temperatures_for_all_cities(db)
   return {
       "message": f"Successfully updated temperatures for {created_count} cities"
   }

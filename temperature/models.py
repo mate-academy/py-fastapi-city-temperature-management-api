@@ -14,4 +14,4 @@ class Temperature(Base):
     temperature: Mapped[float] = mapped_column()
     city_id: Mapped[int] = mapped_column(ForeignKey("city.id"))
 
-    city: Mapped["city"] = relationship(back_populates="temperatures")
+    city: Mapped["cities"] = relationship(back_populates="temperatures")

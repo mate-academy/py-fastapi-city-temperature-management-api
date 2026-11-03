@@ -4,7 +4,7 @@ from city import models
 from city import schemas
 
 
-def get_all_cites(db: Session):
+def get_all_cities(db: Session):
     return db.query(models.City).all()
 
 

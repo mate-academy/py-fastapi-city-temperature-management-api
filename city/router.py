@@ -11,7 +11,7 @@ router = APIRouter(prefix="/cities", tags=["Cities"])
 
 @router.get("/", response_model=list[schemas.CityRead])
 def read_city(db: Session = Depends(get_db)):
-    return crud.get_all_cites(db=db)
+    return crud.get_all_cities(db=db)
 
 
 @router.post("/", response_model=schemas.CityRead, status_code=status.HTTP_201_CREATED)
