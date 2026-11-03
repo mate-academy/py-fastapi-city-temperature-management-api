@@ -10,4 +10,4 @@ class City(Base):
     name: Mapped[str] = mapped_column(unique=True)
     additional_info: Mapped[str] = mapped_column(nullable=True)
 
-    temperature: Mapped["temperatures"] = relationship(back_populates="cities")
+    temperature: Mapped["temperature"] = relationship(back_populates="city")

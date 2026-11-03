@@ -29,7 +29,7 @@ async def fetch_temperature_for_city(city_name: str) -> float | None:
 
 
 async def update_temperatures_for_all_cities(db: Session):
-  cities = city_crud.get_cities(
+  cities = city_crud.get_all_cities(
       db, limit=1000
   )
 
