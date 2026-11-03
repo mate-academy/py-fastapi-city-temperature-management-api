@@ -11,7 +11,8 @@ class CityCreate(CityBase):
 
 
 class CityUpdate(CityBase):
-    pass
+    name: str | None = None
+    additional_info: str | None = None
 
 
 class City(CityBase):

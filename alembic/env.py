@@ -1,4 +1,3 @@
-
 import asyncio
 from logging.config import fileConfig
 
@@ -9,6 +8,7 @@ from alembic import context
 
 from database import Base
 from settings import settings
+from temperature.models import Temperature
 from city.models import City
 
 

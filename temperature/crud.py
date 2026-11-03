@@ -13,7 +13,7 @@ FORECAST_URL = "https://api.open-meteo.com/v1/forecast"
 
 async def get_temperatures(
         db: AsyncSession,
-        city_id: int
+        city_id: int | None = None
 ) -> list[models.Temperature]:
     stmt = select(models.Temperature)
     if city_id is not None:

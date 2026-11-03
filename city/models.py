@@ -9,4 +9,4 @@ class City(Base):
     
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
-    additional_info: Mapped[str | None] = mapped_column()
+    additional_info: Mapped[str | None] = mapped_column(nullable=True)
