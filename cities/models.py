@@ -16,6 +16,5 @@ class City(Base):
 
     temperature: Mapped[Optional["Temperature"]] = relationship(
         back_populates="city",
-        uselist=False,
         cascade="all, delete-orphan"
     )

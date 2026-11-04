@@ -18,17 +18,7 @@ def get_temperatures(
     return db.scalars(stmt.offset(skip).limit(limit)).all()
 
 
-def create_or_update_temperature(db: Session, city_id: int, temp_val: float):
-    existing_temp = db.scalar(
-        select(Temperature).where(Temperature.city_id == city_id)
-    )
-
-    if existing_temp:
-        existing_temp.temperature = temp_val
-        db.commit()
-        db.refresh(existing_temp)
-        return existing_temp
-
+def add_temperature(db: Session, city_id: int, temp_val: float):
     new_temp = Temperature(city_id=city_id, temperature=temp_val)
     db.add(new_temp)
     db.commit()

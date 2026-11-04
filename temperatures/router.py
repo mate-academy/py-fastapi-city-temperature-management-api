@@ -7,7 +7,7 @@ from database import SessionLocal
 from cities.models import City
 from temperatures import models
 from temperatures import schemas
-from temperatures.crud import create_or_update_temperature
+from temperatures.crud import add_temperature
 from temperatures.services import get_temp
 
 router = APIRouter()
@@ -30,7 +30,7 @@ async def update_temperatures(db: Session = Depends(get_db)):
     for city in cities:
         temp_value = await get_temp(city.name)
         if temp_value is not None:
-            create_or_update_temperature(db=db, city_id=city.id, temp_val=temp_value)
+            add_temperature(db=db, city_id=city.id, temp_val=temp_value)
 
     return "Temperatures updated successfully"
 
