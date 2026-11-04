@@ -8,7 +8,7 @@ from temperature import schemas
 
 router = APIRouter()
 
-@router.get('/temperatures/update/')
+@router.post('/temperatures/update/')
 async def update_temperature(db: SessionLocal = Depends(get_db)):
     return await crud.sync_temperature(db)
 
