@@ -35,3 +35,11 @@ async def sync_temperature(db: Session):
 
 
     return "Temperatures updated."
+
+def get_temperature_list(db: Session, city_id: int | None, commons: dict):
+    query = db.query(DBTemperature)
+
+    if city_id:
+        query = query.filter(DBTemperature.city_id == city_id)
+
+    return query.limit(commons["limit"]).offset(commons["skip"]).all()
