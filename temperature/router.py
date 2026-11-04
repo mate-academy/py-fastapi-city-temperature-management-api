@@ -8,11 +8,11 @@ from temperature import schemas
 
 router = APIRouter()
 
-@router.get('/temperature/update/')
+@router.get('/temperatures/update/')
 async def update_temperature(db: SessionLocal = Depends(get_db)):
     return await crud.sync_temperature(db)
 
 
-@router.get('/temperature/', response_model=list[schemas.TemperatureRead])
+@router.get('/temperatures/', response_model=list[schemas.TemperatureRead])
 def get_temperature_list(commons: CommonsDependencies, city_id: int = None, db: SessionLocal = Depends(get_db)):
     return crud.get_temperature_list(db, city_id, commons)
