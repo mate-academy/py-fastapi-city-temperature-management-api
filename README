@@ -1,0 +1,31 @@
+Running the Project
+
+Set up a Python virtual environment:
+python -m venv .venv
+
+Activate the virtual environment:
+
+On macOS/Linux:
+source .venv/bin/activate
+
+On Windows:
+.venv\Scripts\activate
+
+Install requirements:
+pip install -r requirements.txt
+
+Set the WeatherAPI key (Environment Variable):
+On Windows (CMD):
+set API_KEY=your_weatherapi_key
+
+On Windows (PowerShell):
+$env:API_KEY="your_weatherapi_key"
+
+On macOS/Linux:
+export API_KEY="your_weatherapi_key"
+
+Apply database migrations:
+alembic upgrade head
+
+Start the FastAPI application:
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
