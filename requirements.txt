@@ -3,9 +3,14 @@ annotated-doc==0.0.5
 annotated-types==0.8.0
 anyio==4.15.1
 ast_serialize==0.13.1
+asyncio==4.0.0
+certifi==2026.10.23
+charset-normalizer==3.5.2
 click==8.5.0
 fastapi==0.160.0
 h11==0.16.0
+httpcore==1.0.9
+httpx==0.28.1
 idna==3.20
 librt==0.16.0
 Mako==1.4.3
@@ -16,9 +21,11 @@ opentelemetry-api==1.45.1
 pathspec==1.1.1
 pydantic==2.14.1
 pydantic_core==2.50.1
+requests==2.34.2
 SQLAlchemy==2.1.6
 sqlalchemy-stubs==0.4
 starlette==1.9.0
 typing-inspection==0.4.4
 typing_extensions==4.16.0
+urllib3==2.8.0
 uvicorn==0.54.0
