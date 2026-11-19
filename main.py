@@ -81,3 +81,10 @@ async def update_temperatures(db: Session = Depends(get_db)):
         "message": "Temperatures updated successfully",
         "updated_cities": updated_count,
     }
+
+
+@app.delete("/cities/{city_id}", status_code=204)
+def delete_city(city_id: int, db: Session = Depends(get_db)):
+    deleted = crud.delete_city(db=db, city_id=city_id)
+    if not deleted:
+        raise HTTPException(status_code=404, detail="City not found")
