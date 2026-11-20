@@ -10,7 +10,12 @@ async def get_temperature(
     payload = {"q": city, "key": settings.WEATHER_API_KEY}
     try:
         response = await client.get(settings.URL_WEATHER, params=payload)
-    except httpx.TimeoutException:
+    except httpx.RequestError:
         return None
     if response.is_success:
-        return response.json()["current"]["temp_c"]
+        try:
+            temperature = response.json()["current"]["temp_c"]
+        except (ValueError, KeyError):
+            return None
+        else:
+            return temperature

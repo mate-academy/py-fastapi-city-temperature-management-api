@@ -58,6 +58,5 @@ The app does not start if a required variable is missing.
 
 - Temperature is the current value in °C (`current.temp_c`). `date_time` is the server time when the record was created.
 - WeatherAPI.com resolves cities by name, so an ambiguous name may match a different place (e.g. "Atlantis" exists in Florida and in South Africa).
-- A city the API does not recognise, or a request that times out (7 s), is skipped; the other cities are still saved.
-- A network failure (no connection to the weather API) is not caught on purpose and results in a 500, so the problem is visible.
+- If the weather request for a city fails (unknown city name, timeout of 7 s, network error, unexpected response body), that city is skipped and the other cities are still saved.
 - City names are unique. `PUT` replaces both fields.
