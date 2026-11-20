@@ -1,60 +1,63 @@
-## Task Description
+# City Temperature Management API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+A FastAPI application with two apps: a CRUD API for cities and a temperature API that fetches the current temperature for every city from [WeatherAPI.com](https://www.weatherapi.com/) and keeps the history in the database.
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+**Tech stack:** FastAPI, async SQLAlchemy 2 + aiosqlite (SQLite), Alembic, Pydantic Settings, httpx.
 
-### Part 1: City CRUD API
+## Running locally
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+Requires Python 3.12 and a free WeatherAPI.com key.
 
-### Part 2: Temperature API
+```bash
+python -m venv venv
+source venv/bin/activate          # Windows: venv\Scripts\activate
+pip install -r requirements.txt
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+cp .env.sample .env               # then put your key into WEATHER_API_KEY
+alembic upgrade head
+uvicorn main:app --reload
+```
 
-### Additional Requirements
+Swagger UI: http://127.0.0.1:8000/docs
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+### Environment variables
 
-## Evaluation Criteria
+| Variable | Required | Description |
+|---|---|---|
+| `WEATHER_API_KEY` | yes | WeatherAPI.com key |
+| `URL_WEATHER` | yes | `https://api.weatherapi.com/v1/current.json` |
+| `DATABASE_URL` | no | Defaults to `sqlite+aiosqlite:///./city_temperature_management.db` |
 
-Your task will be evaluated based on the following criteria:
+The app does not start if a required variable is missing.
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+## Endpoints
 
-## Deliverables
+| Method | Path | Description |
+|---|---|---|
+| POST | `/cities/` | Create a city (400 if the name is taken) |
+| GET | `/cities/` | List all cities |
+| GET | `/cities/{city_id}/` | Get one city (404 if missing) |
+| PUT | `/cities/{city_id}/` | Update a city (404 / 400) |
+| DELETE | `/cities/{city_id}/` | Delete a city with its history (204) |
+| POST | `/temperatures/update/` | Fetch and store current temperatures |
+| GET | `/temperatures/` | List all temperature records |
+| GET | `/temperatures/?city_id={id}` | Records for one city (404 if missing) |
 
-Please submit the following:
+## Design choices
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+- **Two apps, one layout.** `city/` and `temperature/` each have `models`, `schemas`, `crud` and `router`. Routers handle HTTP (status codes, 404/400), CRUD functions only talk to the database.
+- **Dependency injection.** `get_db` in `dependencies.py` yields an `AsyncSession` per request via `Depends`.
+- **Async all the way.** Async SQLAlchemy with aiosqlite; Alembic uses the async template and reads the same `DATABASE_URL` from settings.
+- **Concurrent weather requests.** `POST /temperatures/update/` opens one `httpx.AsyncClient` and requests all cities at once with `asyncio.gather`. Each city's coroutine returns a ready `Temperature` object or `None`; the successful ones are saved with a single commit.
+- **Weather client is separate.** `temperature/weather_api.py` only knows the external API (city name in, temperature or `None` out), not the database models.
+- **Cascade delete.** The `City.temperatures` relationship uses `cascade="all, delete-orphan"`, so deleting a city removes its temperature history.
+- **No N+1 / implicit IO.** Temperature records are loaded together with their city (`selectinload`), which the nested city in the response needs under `AsyncSession`.
+- **No extra index on `temperature.city_id`.** The table is written to on every update; an index can be added with a migration if filtering by city becomes a hot path.
 
-Good luck!
+## Assumptions and simplifications
+
+- Temperature is the current value in °C (`current.temp_c`). `date_time` is the server time when the record was created.
+- WeatherAPI.com resolves cities by name, so an ambiguous name may match a different place (e.g. "Atlantis" exists in Florida and in South Africa).
+- A city the API does not recognise, or a request that times out (7 s), is skipped; the other cities are still saved.
+- A network failure (no connection to the weather API) is not caught on purpose and results in a 500, so the problem is visible.
+- City names are unique. `PUT` replaces both fields.
