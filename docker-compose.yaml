@@ -1,2 +1,31 @@
 services:
-  
+  weather_api:
+    build:
+      context: .
+    command: sh -c "
+      alembic upgrade head &&
+      uvicorn main:app --host 0.0.0.0 --reload
+      "
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./:/app/
+    restart: on-failure
+
+  db:
+    image: postgres:16-alpine
+    restart: on-failure
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - local_db:${PGDATA}
+
+
+volumes:
+  local_db:

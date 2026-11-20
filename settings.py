@@ -6,8 +6,7 @@ class Settings(BaseSettings):
     SQLALCHEMY_DATABASE_URL: str = "sqlite+aiosqlite:///db.sqlite3"
 
     model_config = SettingsConfigDict(
-        case_sensitive=True,
-        env_file=".env",
+        case_sensitive=True, env_file=".env", extra="ignore"
     )
 
 
