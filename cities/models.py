@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from engine import Base
 
-
 if TYPE_CHECKING:
     from temperatures.models import Temperature
 
@@ -18,5 +17,8 @@ class City(Base):
     additional_info: Mapped[str | None]
 
     temperatures: Mapped[list["Temperature"]] = relationship(
-        back_populates="city", cascade="all, delete-orphan", lazy="raise"
+        back_populates="city",
+        cascade="all, delete-orphan",
+        lazy="raise",
+        passive_deletes=True,
     )
