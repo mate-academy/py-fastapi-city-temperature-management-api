@@ -40,6 +40,22 @@ Once the application is running, interactive API documentation is available at:
 - `POST /temperatures/update` — Fetch and save current temperatures for all cities
 - `GET /temperatures` — Get a list of all temperature records (supports filtering via `?city_id={city_id}`)
 
+## Design choices
+
+The data from WeatherAPI is fetched via async library httpx via async client.
+Func fetch_data simply makes a request for one city and return TemperatureCreate model (Schema).
+To make process faster func do requests via TaskGroup and after that get result `task.result()`
+and create Temperature instances in results.
+Then crud.create_all_cities_temperature makes commit to bd and refresh all temperature instances and return it as a
+result.
+
+## Assumptions
+
+To accelerate code I used async library httpx and TaskGroup with AsyncClient to make request faster (because it is I/O
+bound task).
+After that I get result from all tasks from TaskGroup, created Temperature instances.
+add_all was used to make only 1 SQL query and refresh Temperature instances via async `db.refresh(temperature)`
+
 ## Author
 
 Built by [Neyrony](https://github.com/Neyrony).  
