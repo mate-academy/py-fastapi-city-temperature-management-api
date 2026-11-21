@@ -1,4 +1,5 @@
 import httpx
+from fastapi import HTTPException
 
 from cities.models import City
 from settings import settings
@@ -10,11 +11,21 @@ WEATHER_API_URL = (
 
 
 async def fetch_data(client: httpx.AsyncClient, city: City) -> TemperatureCreate:
-    return TemperatureCreate.model_validate(
-        {
-            "city_id": city.id,
-            "temperature": (
-                await client.get(WEATHER_API_URL + f"&q={city.name}")
-            ).json()["current"]["temp_c"],
-        }
-    )
+    try:
+        return TemperatureCreate.model_validate(
+            {
+                "city_id": city.id,
+                "temperature": (
+                    await client.get(WEATHER_API_URL + f"&q={city.name}")
+                ).json()["current"]["temp_c"],
+            }
+        )
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=502, detail=f"Network error while fetching weather: {e}"
+        )
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(
+            status_code=502,
+            detail=f"Weather provider error: {e.response.status_code}",
+        )

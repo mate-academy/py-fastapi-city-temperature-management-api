@@ -1,6 +1,6 @@
 from asyncio import TaskGroup
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from httpx import AsyncClient
 
 from cities import crud as cities_crud
@@ -15,7 +15,12 @@ router = APIRouter(
 )
 
 
-@router.post("/update", response_model=list[TemperatureRead], status_code=201)
+@router.post(
+    "/update",
+    response_model=list[TemperatureRead],
+    status_code=status.HTTP_201_CREATED,
+    responses={502: {"description": "Weather api server problem"}},
+)
 async def update_cities(db: SessionDep):
     cities = await cities_crud.all_cities_list(db=db)
 
