@@ -25,6 +25,11 @@ services:
       - "5433:5432"
     volumes:
       - local_db:${PGDATA}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 
 volumes:
