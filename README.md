@@ -1,60 +1,63 @@
-## Task Description
+# Weather Fetcher API
 
-You are required to create a FastAPI application that manages city data and their corresponding temperature data. The application will have two main components (apps):
+## Description
 
-1. A CRUD (Create, Read, Update, Delete) API for managing city data.
-2. An API that fetches current temperature data for all cities in the database and stores this data in the database. This API should also provide a list endpoint to retrieve the history of all temperature data.
+Via this project, you can store cities and maintain their temperature history.
 
-### Part 1: City CRUD API
+## Prerequisites
 
-1. Create a new FastAPI application.
-2. Define a Pydantic model `City` with the following fields:
-    - `id`: a unique identifier for the city.
-    - `name`: the name of the city.
-    - `additional_info`: any additional information about the city.
-3. Implement a SQLite database using SQLAlchemy and create a corresponding `City` table.
-4. Implement the following endpoints:
-    - `POST /cities`: Create a new city.
-    - `GET /cities`: Get a list of all cities.
-    - **Optional**: `GET /cities/{city_id}`: Get the details of a specific city.
-    - **Optional**: `PUT /cities/{city_id}`: Update the details of a specific city.
-    - `DELETE /cities/{city_id}`: Delete a specific city.
+1. Create a `.env` file to store secret keys and fill it with data according to `.env.sample`.
+2. To get a `WEATHER_API_KEY`, go to [WeatherAPI](https://www.weatherapi.com/), create an account, copy your API key,
+   and save it in the `.env` file.
 
-### Part 2: Temperature API
+## Run
 
-1. Define a Pydantic model `Temperature` with the following fields:
-    - `id`: a unique identifier for the temperature record.
-    - `city_id`: a reference to the city.
-    - `date_time`: the date and time when the temperature was recorded.
-    - `temperature`: the recorded temperature.
-2. Create a corresponding `Temperature` table in the database.
-3. Implement an endpoint `POST /temperatures/update` that fetches the current temperature for all cities in the database from an online resource of your choice. Store this data in the `Temperature` table. You should use an async function to fetch the temperature data.
-4. Implement the following endpoints:
-    - `GET /temperatures`: Get a list of all temperature records.
-    - `GET /temperatures/?city_id={city_id}`: Get the temperature records for a specific city.
+> **Note:** Docker should be installed on your machine.
 
-### Additional Requirements
+```bash
+docker-compose up --build
+```
 
-- Use dependency injection where appropriate.
-- Organize your project according to the FastAPI project structure guidelines.
+## Documentation
 
-## Evaluation Criteria
+Once the application is running, interactive API documentation is available at:
 
-Your task will be evaluated based on the following criteria:
+- **Swagger UI:** `http://localhost:8001/docs` (or `/docs`)
+- **ReDoc:** `http://localhost:8001/redoc` (or `/redoc`)
 
-- Functionality: Your application should meet all the requirements outlined above.
-- Code Quality: Your code should be clean, readable, and well-organized.
-- Error Handling: Your application should handle potential errors gracefully.
-- Documentation: Your code should be well-documented (README.md).
+## API Endpoints
 
-## Deliverables
+### Cities
 
-Please submit the following:
+- `POST /cities` — Create a new city
+- `GET /cities` — Get a list of all cities
+- `GET /cities/{city_id}` — Get details of a specific city
+- `PUT /cities/{city_id}` — Update a specific city
+- `DELETE /cities/{city_id}` — Delete a specific city
 
-- The complete source code of your application.
-- A README file that includes:
-    - Instructions on how to run your application.
-    - A brief explanation of your design choices.
-    - Any assumptions or simplifications you made.
+### Temperatures
 
-Good luck!
+- `POST /temperatures/update` — Fetch and save current temperatures for all cities
+- `GET /temperatures` — Get a list of all temperature records (supports filtering via `?city_id={city_id}`)
+
+## Design choices
+
+The data from WeatherAPI is fetched via async library httpx via async client.
+Func fetch_data simply makes a request for one city and return TemperatureCreate model (Schema).
+To make process faster func do requests via TaskGroup and after that get result `task.result()`
+and create Temperature instances in results.
+Then crud.create_all_cities_temperature makes commit to bd and refresh all temperature instances and return it as a
+result.
+
+## Assumptions
+
+To accelerate code I used async library httpx and TaskGroup with AsyncClient to make request faster (because it is I/O
+bound task).
+After that I get result from all tasks from TaskGroup, created Temperature instances.
+add_all was used to make only 1 SQL query and refresh Temperature instances via async `db.refresh(temperature)`
+
+## Author
+
+Built by [Neyrony](https://github.com/Neyrony).  
+Feel free to open an issue or a pull request if you have suggestions or find a bug.
+
