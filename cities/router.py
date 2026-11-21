@@ -11,7 +11,7 @@ router = APIRouter(
 
 @router.get("/", response_model=list[CityRead])
 async def get_all_cities(db: SessionDep, pagination: PaginationHelper):
-    return await crud.all_cities_list(
+    return await crud.all_cities_list_with_pagination(
         db=db, skip=pagination.skip, limit=pagination.limit
     )
 
