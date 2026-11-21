@@ -32,7 +32,9 @@ async def update_cities(db: SessionDep):
 
 
 @router.get("/", response_model=list[TemperatureRead])
-async def read_cities(db: SessionDep, pagination: PaginationHelper):
+async def read_cities(
+    db: SessionDep, pagination: PaginationHelper, city_id: int | None = None
+):
     return await crud.all_temperature(
-        db=db, limit=pagination.limit, skip=pagination.skip
+        db=db, limit=pagination.limit, skip=pagination.skip, city_id=city_id
     )

@@ -9,5 +9,5 @@ __pycache__/
 .dockerignore
 Dockerfile
 docker-compose.yaml
-README.md
+README_instruction.md
 models.svg

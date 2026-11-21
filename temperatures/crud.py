@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -17,5 +19,12 @@ async def create_all_cities_temperature(
     return temperatures
 
 
-async def all_temperature(db: AsyncSession, skip: int, limit: int):
-    return (await db.scalars(select(Temperature).offset(skip).limit(limit))).all()
+async def all_temperature(
+    db: AsyncSession, skip: int, limit: int, city_id: int | None = None
+) -> Sequence[Temperature]:
+    stmt = select(Temperature).offset(skip).limit(limit)
+
+    if city_id is not None:
+        stmt = stmt.where(Temperature.city_id == city_id)
+
+    return (await db.scalars(stmt)).all()
