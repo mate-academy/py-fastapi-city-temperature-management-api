@@ -12,13 +12,15 @@ WEATHER_API_URL = (
 
 async def fetch_data(client: httpx.AsyncClient, city: City) -> TemperatureCreate:
     try:
+        data = await client.get(WEATHER_API_URL + f"&q={city.name}")
+        if "error" in data:
+            error_msg = data["error"].get("message", "Unknown provider error")
+            raise HTTPException(
+                status_code=400, detail=f"WeatherAPI error: {error_msg}"
+            )
+
         return TemperatureCreate.model_validate(
-            {
-                "city_id": city.id,
-                "temperature": (
-                    await client.get(WEATHER_API_URL + f"&q={city.name}")
-                ).json()["current"]["temp_c"],
-            }
+            {"city_id": city.id, "temperature": (data.json()["current"]["temp_c"],)}
         )
     except httpx.RequestError as e:
         raise HTTPException(
