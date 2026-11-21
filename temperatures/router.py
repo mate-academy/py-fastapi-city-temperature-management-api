@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from httpx import AsyncClient
 
 from cities import crud as cities_crud
-from dependencies import SessionDep
+from dependencies import SessionDep, PaginationHelper
 from temperatures import crud
 from temperatures.models import Temperature
 from temperatures.schemas import TemperatureRead
@@ -29,3 +29,10 @@ async def update_cities(db: SessionDep):
     result = [Temperature(**task.result().model_dump()) for task in results]
 
     return await crud.create_all_cities_temperature(db=db, temperatures=result)
+
+
+@router.get("/", response_model=list[TemperatureRead])
+async def read_cities(db: SessionDep, pagination: PaginationHelper):
+    return await crud.all_temperature(
+        db=db, limit=pagination.limit, skip=pagination.skip
+    )

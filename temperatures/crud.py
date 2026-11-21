@@ -1,9 +1,11 @@
-from dependencies import SessionDep
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from temperatures.models import Temperature
 
 
 async def create_all_cities_temperature(
-    db: SessionDep, temperatures: list[Temperature]
+    db: AsyncSession, temperatures: list[Temperature]
 ) -> list[Temperature]:
     db.add_all(temperatures)
 
@@ -13,3 +15,7 @@ async def create_all_cities_temperature(
         await db.refresh(temperature)
 
     return temperatures
+
+
+async def all_temperature(db: AsyncSession, skip: int, limit: int):
+    return (await db.scalars(select(Temperature).offset(skip).limit(limit))).all()
