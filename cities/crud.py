@@ -7,8 +7,14 @@ from cities.models import City
 from cities.schemas import CityCreate
 
 
-async def all_cities_list(db: AsyncSession, skip: int, limit: int) -> Sequence[City]:
+async def all_cities_list_with_pagination(
+    db: AsyncSession, skip: int, limit: int
+) -> Sequence[City]:
     return (await db.scalars(select(City).offset(skip).limit(limit))).all()
+
+
+async def all_cities_list(db: AsyncSession):
+    return (await db.scalars(select(City))).all()
 
 
 async def city_by_id(db: AsyncSession, city_id: int) -> City | None:
