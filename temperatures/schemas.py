@@ -3,16 +3,16 @@ import datetime
 from pydantic import BaseModel, ConfigDict
 
 
-class Temperature(BaseModel):
+class TemperatureBase(BaseModel):
     temperature: float
     city_id: int
 
 
-class TemperatureCreate(Temperature):
+class TemperatureCreate(TemperatureBase):
     pass
 
 
-class TemperatureRead(Temperature):
+class Temperature(TemperatureBase):
     id: int
     date_time: datetime.datetime
 
